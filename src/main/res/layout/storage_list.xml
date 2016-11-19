@@ -3,6 +3,21 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <RelativeLayout
+        android:background="@color/colorPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="100dp">
+
+        <TextView
+            android:text="@string/choose_storage"
+            android:textSize="17sp"
+            android:textColor="@android:color/white"
+            android:fontFamily="sans-serif-condensed"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+
     <ListView
         android:id="@+id/storage_list_view"
         android:layout_width="wrap_content"
