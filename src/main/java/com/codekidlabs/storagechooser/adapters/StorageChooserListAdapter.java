@@ -14,13 +14,10 @@ import java.util.List;
 
 public class StorageChooserListAdapter extends BaseAdapter {
 
-    List<Storages> storagesList;
-    Context mContext;
-    boolean shouldShowMemoryBar;
+    private List<Storages> storagesList;
+    private Context mContext;
+    private boolean shouldShowMemoryBar;
 
-
-    private TextView storageName;
-    private TextView memoryStatus;
 
     public StorageChooserListAdapter(List<Storages> storagesList, Context mContext, boolean shouldShowMemoryBar) {
         this.storagesList = storagesList;
@@ -49,8 +46,8 @@ public class StorageChooserListAdapter extends BaseAdapter {
 
         View rootView = inflater.inflate(R.layout.row_storage, viewGroup, false);
 
-        storageName = (TextView) rootView.findViewById(R.id.storage_name);
-        memoryStatus = (TextView) rootView.findViewById(R.id.memory_status);
+        TextView storageName = (TextView) rootView.findViewById(R.id.storage_name);
+        TextView memoryStatus = (TextView) rootView.findViewById(R.id.memory_status);
 
         Storages storages = storagesList.get(i);
 
