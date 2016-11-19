@@ -15,11 +15,13 @@ public class StorageChooserBuilder {
     private Activity chooserActivity;
     private static boolean showMemoryBar;
     private FragmentManager fragmentManager;
+    private static String preDefinedPath;
 
     private StorageChooserBuilder(Activity activity, FragmentManager mFragmentManager, boolean mShowMemoryBar, int mMemoryTextColor, String mPath) {
         setChooserActivity(activity);
         setShowMemoryBar(mShowMemoryBar);
         setFragmentManager(mFragmentManager);
+        setPreDefinedPath(mPath);
     }
 
     private void init() {
@@ -50,6 +52,14 @@ public class StorageChooserBuilder {
 
     private void setFragmentManager(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
+    }
+
+    public static String getPreDefinedPath() {
+        return preDefinedPath;
+    }
+
+    public static void setPreDefinedPath(String preDefinedPath) {
+        StorageChooserBuilder.preDefinedPath = preDefinedPath;
     }
 
     private static Dialog getStorageChooserDialog(Activity activity) {

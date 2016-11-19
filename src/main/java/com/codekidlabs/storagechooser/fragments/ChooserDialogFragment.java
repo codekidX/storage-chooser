@@ -3,8 +3,10 @@ package com.codekidlabs.storagechooser.fragments;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,9 +62,9 @@ public class ChooserDialogFragment extends DialogFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                if(i == INTERNAL_STORAGE_POSITION) {
-//
-//                }
+                if(i == INTERNAL_STORAGE_POSITION) {
+                    Log.e("TAG", Environment.getExternalStorageDirectory() + StorageChooserBuilder.getPreDefinedPath());
+                }
             }
         });
 
