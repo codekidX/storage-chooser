@@ -2,6 +2,7 @@ package com.codekidlabs.storagechooser.fragments;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.StorageChooserBuilder;
 import com.codekidlabs.storagechooser.adapters.StorageChooserListAdapter;
 import com.codekidlabs.storagechooser.models.Storages;
+import com.codekidlabs.storagechooser.utils.DiskUtil;
 import com.codekidlabs.storagechooser.utils.MemoryUtil;
 
 import java.util.ArrayList;
@@ -33,6 +35,9 @@ public class ChooserDialogFragment extends DialogFragment {
 
     private static final int INTERNAL_STORAGE_POSITION = 0;
     private static final int EXTERNAL_STORAGE_POSITION = 1;
+
+    private static final String EXTERNAL_STORAGE_PATH_KITKAT = "/storage/extSdCard";
+    private static final String EXTERNAL_STORAGE_PATH_LOLLIPOP = "/storage/sdcard1";
 
     private static List<Storages> storagesList;
 
@@ -64,9 +69,15 @@ public class ChooserDialogFragment extends DialogFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (i) {
                     case INTERNAL_STORAGE_POSITION:
-                        Log.e("TAG", Environment.getExternalStorageDirectory() + StorageChooserBuilder.getPreDefinedPath());
+                        Log.d("TAG", Environment.getExternalStorageDirectory() + StorageChooserBuilder.getPreDefinedPath());
                         break;
-
+                    case EXTERNAL_STORAGE_POSITION:
+                        if(DiskUtil.getSdkVersion() >= Build.VERSION_CODES.LOLLIPOP) {
+                            Log.d("TAG", EXTERNAL_STORAGE_PATH_LOLLIPOP + StorageChooserBuilder.getPreDefinedPath());
+                        } else {
+                            Log.d("TAG", EXTERNAL_STORAGE_PATH_KITKAT + StorageChooserBuilder.getPreDefinedPath());
+                        }
+                        break;
                 }
             }
         });
