@@ -12,7 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.codekidlabs.storagechooser.R;
-import com.codekidlabs.storagechooser.StorageChooserDialog;
+import com.codekidlabs.storagechooser.StorageChooserBuilder;
 import com.codekidlabs.storagechooser.adapters.StorageChooserListAdapter;
 import com.codekidlabs.storagechooser.models.Storages;
 import com.codekidlabs.storagechooser.utils.MemoryUtil;
@@ -47,7 +47,7 @@ public class ChooserDialogFragment extends DialogFragment {
 
     private View getLayout(LayoutInflater inflater, ViewGroup container) {
         mLayout = inflater.inflate(R.layout.storage_list, container, false);
-        initListView(getContext(), mLayout, StorageChooserDialog.isShowMemoryBar());
+        initListView(getContext(), mLayout, StorageChooserBuilder.isShowMemoryBar());
         return mLayout;
     }
 
@@ -97,7 +97,7 @@ public class ChooserDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog d = StorageChooserDialog.dialog;
+        Dialog d = StorageChooserBuilder.dialog;
         d.setContentView(getLayout(LayoutInflater.from(getContext()), mContainer));
         return d;
     }

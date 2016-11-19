@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentManager;
 import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
 
 
-public class StorageChooserDialog {
+public class StorageChooserBuilder {
 
     public static Dialog dialog;
 
@@ -16,7 +16,7 @@ public class StorageChooserDialog {
     private static boolean showMemoryBar;
     private FragmentManager fragmentManager;
 
-    private StorageChooserDialog(Activity activity, FragmentManager mFragmentManager, boolean mShowMemoryBar, int mMemoryTextColor, String mPath) {
+    private StorageChooserBuilder(Activity activity, FragmentManager mFragmentManager, boolean mShowMemoryBar, int mMemoryTextColor, String mPath) {
         setChooserActivity(activity);
         setShowMemoryBar(mShowMemoryBar);
         setFragmentManager(mFragmentManager);
@@ -41,7 +41,7 @@ public class StorageChooserDialog {
     }
 
     private void setShowMemoryBar(boolean showMemoryBar) {
-        StorageChooserDialog.showMemoryBar = showMemoryBar;
+        StorageChooserBuilder.showMemoryBar = showMemoryBar;
     }
 
     private FragmentManager getFragmentManager() {
@@ -103,7 +103,7 @@ public class StorageChooserDialog {
         }
 
         public void show() {
-            new StorageChooserDialog(mActivity, mFragmentManager, mShowMemoryBar, mMemoryTextColor, mPath).init();
+            new StorageChooserBuilder(mActivity, mFragmentManager, mShowMemoryBar, mMemoryTextColor, mPath).init();
         }
     }
 
