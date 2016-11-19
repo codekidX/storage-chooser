@@ -21,7 +21,7 @@
     <ListView
         android:id="@+id/storage_list_view"
         android:divider="@null"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
 </LinearLayout>
