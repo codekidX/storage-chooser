@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ListView;
 
 import com.codekidlabs.storagechooser.R;
+import com.codekidlabs.storagechooser.adapters.StorageChooserListAdapter;
 import com.codekidlabs.storagechooser.models.Storages;
 import com.codekidlabs.storagechooser.utils.MemoryUtil;
 
@@ -26,23 +27,26 @@ public class StorageChooserDialog {
     private static final String INTERNAL_STORAGE = "Internal Storage";
     private static final String EXTERNAL_STORAGE = "External Storage";
 
-    private List<Storages> storagesList;
+    private static List<Storages> storagesList;
 
     private static Dialog getStorageChooserDialog(Context context, boolean shouldShowMemoryBar) {
         Dialog dialog = new Dialog(context);
         LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View storageChooserView = layoutInflater.inflate(R.layout.storage_list,null);;
         dialog.setContentView(storageChooserView);
+        initListView(context, storageChooserView, shouldShowMemoryBar);
         return dialog;
     }
 
-    private void initListView(View view, boolean shouldShowMemoryBar) {
+    private static void initListView(Context context, View view, boolean shouldShowMemoryBar) {
         ListView listView = (ListView) view.findViewById(R.id.storage_list_view);
         populateList();
 
+        listView.setAdapter(new StorageChooserListAdapter(storagesList, context, shouldShowMemoryBar));
+
     }
 
-    private void populateList() {
+    private static void populateList() {
         storagesList = new ArrayList<Storages>();
 
         if(MemoryUtil.isExternalStorageAvailable()) {
