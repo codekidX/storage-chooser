@@ -2,7 +2,6 @@ package com.codekidlabs.storagechooser;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.app.FragmentManager;
 
@@ -13,27 +12,27 @@ public class StorageChooserDialog {
 
     public static Dialog dialog;
 
-    Activity chooserActivity;
-    static boolean showMemoryBar;
-    FragmentManager fragmentManager;
+    private Activity chooserActivity;
+    private static boolean showMemoryBar;
+    private FragmentManager fragmentManager;
 
-    public StorageChooserDialog(Activity activity, FragmentManager mFragmentManager, boolean mShowMemoryBar, int mMemoryTextColor, String mPath) {
+    private StorageChooserDialog(Activity activity, FragmentManager mFragmentManager, boolean mShowMemoryBar, int mMemoryTextColor, String mPath) {
         setChooserActivity(activity);
         setShowMemoryBar(mShowMemoryBar);
         setFragmentManager(mFragmentManager);
     }
 
     private void init() {
-        dialog = getStorageChooserDialog(getChooserActivity(), isShowMemoryBar());
+        dialog = getStorageChooserDialog(getChooserActivity());
         ChooserDialogFragment chooserDialogFragment = new ChooserDialogFragment();
         chooserDialogFragment.show(getFragmentManager(),"storagechooser_dialog");
     }
 
-    public Activity getChooserActivity() {
+    private Activity getChooserActivity() {
         return chooserActivity;
     }
 
-    public void setChooserActivity(Activity chooserActivity) {
+    private void setChooserActivity(Activity chooserActivity) {
         this.chooserActivity = chooserActivity;
     }
 
@@ -41,22 +40,20 @@ public class StorageChooserDialog {
         return showMemoryBar;
     }
 
-    public void setShowMemoryBar(boolean showMemoryBar) {
-        this.showMemoryBar = showMemoryBar;
+    private void setShowMemoryBar(boolean showMemoryBar) {
+        StorageChooserDialog.showMemoryBar = showMemoryBar;
     }
 
-    public FragmentManager getFragmentManager() {
+    private FragmentManager getFragmentManager() {
         return fragmentManager;
     }
 
-    public void setFragmentManager(FragmentManager fragmentManager) {
+    private void setFragmentManager(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
     }
 
-    private static Dialog getStorageChooserDialog(Activity activity, boolean shouldShowMemoryBar) {
-        Context context = activity.getApplicationContext();
-        Dialog dialog = new Dialog(activity);
-        return dialog;
+    private static Dialog getStorageChooserDialog(Activity activity) {
+        return new Dialog(activity);
     }
 
 
