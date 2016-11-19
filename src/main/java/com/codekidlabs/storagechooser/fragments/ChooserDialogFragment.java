@@ -8,6 +8,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.codekidlabs.storagechooser.R;
@@ -26,7 +27,10 @@ public class ChooserDialogFragment extends DialogFragment {
     private ViewGroup mContainer;
 
     private static final String INTERNAL_STORAGE_TITLE = "Internal Storage";
-    private static final String EXTERNAL_STORAGE_TOTLE = "External Storage";
+    private static final String EXTERNAL_STORAGE_TITLE = "External Storage";
+
+    private static final int INTERNAL_STORAGE_POSITION = 0;
+    private static final int EXTERNAL_STORAGE_POSITION = 1;
 
     private static List<Storages> storagesList;
 
@@ -53,6 +57,15 @@ public class ChooserDialogFragment extends DialogFragment {
 
         listView.setAdapter(new StorageChooserListAdapter(storagesList, context, shouldShowMemoryBar));
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                if(i == INTERNAL_STORAGE_POSITION) {
+//
+//                }
+            }
+        });
+
     }
 
     private static void populateList() {
@@ -65,7 +78,7 @@ public class ChooserDialogFragment extends DialogFragment {
             storageInternal.setMemoryTotalSize(MemoryUtil.getTotalInternalMemorySize());
 
             Storages storageExternal = new Storages();
-            storageInternal.setStorageTitle(EXTERNAL_STORAGE_TOTLE);
+            storageInternal.setStorageTitle(EXTERNAL_STORAGE_TITLE);
             storageInternal.setMemoryAvailableSize(MemoryUtil.getAvailableExternalMemorySize());
             storageInternal.setMemoryTotalSize(MemoryUtil.getTotalExternalMemorySize());
 
