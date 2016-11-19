@@ -62,8 +62,11 @@ public class ChooserDialogFragment extends DialogFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(i == INTERNAL_STORAGE_POSITION) {
-                    Log.e("TAG", Environment.getExternalStorageDirectory() + StorageChooserBuilder.getPreDefinedPath());
+                switch (i) {
+                    case INTERNAL_STORAGE_POSITION:
+                        Log.e("TAG", Environment.getExternalStorageDirectory() + StorageChooserBuilder.getPreDefinedPath());
+                        break;
+
                 }
             }
         });

@@ -12,10 +12,6 @@ import com.codekidlabs.storagechooser.models.Storages;
 
 import java.util.List;
 
-/**
- * Created by Home on 19-11-2016.
- */
-
 public class StorageChooserListAdapter extends BaseAdapter {
 
     List<Storages> storagesList;
