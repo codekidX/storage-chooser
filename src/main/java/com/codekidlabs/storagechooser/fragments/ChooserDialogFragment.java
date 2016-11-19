@@ -25,8 +25,8 @@ public class ChooserDialogFragment extends DialogFragment {
     private View mLayout;
     private ViewGroup mContainer;
 
-    private static final String INTERNAL_STORAGE = "Internal Storage";
-    private static final String EXTERNAL_STORAGE = "External Storage";
+    private static final String INTERNAL_STORAGE_TITLE = "Internal Storage";
+    private static final String EXTERNAL_STORAGE_TOTLE = "External Storage";
 
     private static List<Storages> storagesList;
 
@@ -60,12 +60,12 @@ public class ChooserDialogFragment extends DialogFragment {
 
         if(MemoryUtil.isExternalStorageAvailable()) {
             Storages storageInternal = new Storages();
-            storageInternal.setStorageTitle(INTERNAL_STORAGE);
+            storageInternal.setStorageTitle(INTERNAL_STORAGE_TITLE);
             storageInternal.setMemoryAvailableSize(MemoryUtil.getAvailableInternalMemorySize());
             storageInternal.setMemoryTotalSize(MemoryUtil.getTotalInternalMemorySize());
 
             Storages storageExternal = new Storages();
-            storageInternal.setStorageTitle(EXTERNAL_STORAGE);
+            storageInternal.setStorageTitle(EXTERNAL_STORAGE_TOTLE);
             storageInternal.setMemoryAvailableSize(MemoryUtil.getAvailableExternalMemorySize());
             storageInternal.setMemoryTotalSize(MemoryUtil.getTotalExternalMemorySize());
 
@@ -73,7 +73,7 @@ public class ChooserDialogFragment extends DialogFragment {
             storagesList.add(storageExternal);
         } else {
             Storages storageInternal = new Storages();
-            storageInternal.setStorageTitle(INTERNAL_STORAGE);
+            storageInternal.setStorageTitle(INTERNAL_STORAGE_TITLE);
             storageInternal.setMemoryAvailableSize(MemoryUtil.getAvailableInternalMemorySize());
             storageInternal.setMemoryTotalSize(MemoryUtil.getTotalInternalMemorySize());
 

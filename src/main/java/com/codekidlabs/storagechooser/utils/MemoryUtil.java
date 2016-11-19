@@ -1,5 +1,6 @@
 package com.codekidlabs.storagechooser.utils;
 
+import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 
@@ -10,8 +11,15 @@ public class MemoryUtil {
     private static final String ERROR = "error";
 
     public static boolean isExternalStorageAvailable() {
-        return android.os.Environment.getExternalStorageState().equals(
-                android.os.Environment.MEDIA_MOUNTED);
+        File extStorageDir;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            extStorageDir = new File("/storage/sdcard1");
+
+            return extStorageDir.exists();
+        } else {
+            extStorageDir = new File("/storage/extSdCard");
+            return extStorageDir.exists();
+        }
     }
 
     public static String getAvailableInternalMemorySize() {
