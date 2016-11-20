@@ -45,7 +45,30 @@ Before you implement this library here are some notes that you can follow to avo
 ----------
 
 
-### Implementation
+### Path Finder Implementation
+
+For Lollipop and above SDK versions the naming of external sdcard is changed due to integration of SELinux. Path Finder helps the user to choose the name of the Extrernal Storage which can then be used for further purposes. 
+
+**NOTE:** Storage Chooser needs External Storage Name and that can be done by Running Path Finder Dialog first. 
+
+Schematic is same and simple.
+
+```
+// Initialize Builder
+
+ExternalStoragePathFinder.Builder builder = new ExternalStoragePathFinder.Builder()
+.withActivity(MainActivity.this)
+.withFragmentManager(getSupportFragmentManager())
+.actionSave(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()))
+.build();
+
+// Show dialog whenever you want by
+builder.show();
+```
+
+-------
+
+### Storage Chooser Implementation
 
 Nothing fancy to do here, it's straightforward and uses a simple Builder to make everything work smoothly.
 
@@ -68,7 +91,6 @@ StorageChooserBuilder.Builder builder = new StorageChooserBuilder.Builder()
 .build();
 
 // Show dialog whenever you want by
-
 builder.show();
 ```
 
@@ -77,7 +99,7 @@ builder.show();
 > 
 > In the above example of implementation STATIC_PATH is "/Downloads/CodekidLabs". Now when user selects Internal Storage from **StorageChooserDialog** the path will return "/storage/emulated/0/Downloads/CodekidLabs" which will be the directory of operations for your app.
 
-> Same goes if user user chooses External Storage.
+> Same goes if user user chooses External Storage. [/storage/**SdCard Name from PathFinder**/ + STATIC_PATH ]
 
 
 
