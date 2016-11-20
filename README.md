@@ -25,7 +25,7 @@ Add this to your root build.gradle file under repositories:
 
 Add this to your app level build.gradle as dependency:
 
-    com.gitlab.codekidX:storage-chooser-library:rel:b0.1
+    com.gitlab.codekidX:storage-chooser-library:b0.1
 
 ----------
 Notes
