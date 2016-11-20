@@ -136,7 +136,9 @@ public class ChooserDialogFragment extends DialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         StorageChooserBuilder.STORAGE_STATIC_PATH = mPath;
-        DiskUtil.saveChooserPathPreference(StorageChooserBuilder.getUserSharedPreference(), StorageChooserBuilder.getUserSharedPreferenceKey());
+        if(StorageChooserBuilder.getUserSharedPreference() != null) {
+            DiskUtil.saveChooserPathPreference(StorageChooserBuilder.getUserSharedPreference(), StorageChooserBuilder.getUserSharedPreferenceKey());
+        }
         super.onDismiss(dialog);
     }
 }
