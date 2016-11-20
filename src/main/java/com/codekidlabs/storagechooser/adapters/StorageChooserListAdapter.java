@@ -73,7 +73,7 @@ public class StorageChooserListAdapter extends BaseAdapter {
     private int getPercentile(String memoryAvailableSize, String memoryTotalSize) {
         int percent = (getMemoryFromString(memoryAvailableSize) * 100) / getMemoryFromString(memoryTotalSize);
         Log.d("TAG", "percentage: " + percent);
-        return percent;
+        return 100 - percent;
     }
 
     private int getMemoryFromString(String size) {

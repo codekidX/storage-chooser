@@ -2,7 +2,6 @@ package com.codekidlabs.storagechooser;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.graphics.Color;
 import android.support.v4.app.FragmentManager;
 
 import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
