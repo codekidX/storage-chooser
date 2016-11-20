@@ -93,15 +93,6 @@ public class StorageChooserBuilder {
             return this;
         }
 
-        public Builder withPrimaryColor(int color) {
-            if(color == 0) {
-                mMemoryTextColor = Color.BLACK;
-            } else {
-                mMemoryTextColor = color;
-            }
-            return this;
-        }
-
         public Builder withPredefinedPath(String path) {
             mPath = path;
             return this;
