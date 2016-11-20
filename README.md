@@ -50,7 +50,12 @@ Before you implement this library here are some notes that you can follow to avo
 Nothing fancy to do here, it's straightforward and uses a simple Builder to make everything work smoothly.
 
 ```
+// a common path flow which does not change whether user chose internal or external storage
 private static final String STATIC_PATH = "/Downloads/CodekidLabs";
+// pass your sharedPreference to actionSave() in builder
+private SharedPreference yourPreference;
+// with key
+private static final String DOWNLOAD_DIR_KEY = "my_download_dir";
 
 // Initialize Builder
 
@@ -58,6 +63,7 @@ StorageChooserBuilder.Builder builder = new StorageChooserBuilder.Builder()
 .withActivity(MainActivity.this)
 .withFragmentManager(getSupportFragmentManager())
 .withMemoryBar(true)
+.actionSave(yourPreference, DOWNLOAD_DIR_KEY) // read more about this in the documantation 'Wiki' of library repo
 .withPredefinedPath(STATIC_PATH)
 .build();
 
