@@ -9,17 +9,22 @@ import java.io.File;
 public class MemoryUtil {
 
     private static final String ERROR = "error";
+    private static String mNewStorageName;
 
     public static boolean isExternalStorageAvailable() {
         File extStorageDir;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            extStorageDir = new File("/storage/sdcard1");
+            extStorageDir = new File("/storage/" + mNewStorageName);
 
             return extStorageDir.exists();
         } else {
             extStorageDir = new File("/storage/extSdCard");
             return extStorageDir.exists();
         }
+    }
+
+    public static void initNewStorageName(String name) {
+        mNewStorageName = name;
     }
 
     public static String getAvailableInternalMemorySize() {

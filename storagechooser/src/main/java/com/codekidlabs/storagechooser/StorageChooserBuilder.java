@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.support.v4.app.FragmentManager;
 
 import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
+import com.codekidlabs.storagechooser.utils.MemoryUtil;
 
 
 public class StorageChooserBuilder {
@@ -34,6 +35,7 @@ public class StorageChooserBuilder {
         setUserSharedPreference(sharedPreferences);
         setUserSharedPreferenceKey(key);
 
+        MemoryUtil.initNewStorageName(sharedPreferences.getString(ExternalStoragePathFinder.EXTERNAL_STORAGE_PATH_KEY,""));
     }
 
     private void init() {
