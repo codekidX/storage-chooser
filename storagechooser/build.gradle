@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 
-group='com.gitlab.codekidX:storage-chooser-library:b0.1'
+group='com.gitlab.codekidX'
 
 android {
     compileSdkVersion 25

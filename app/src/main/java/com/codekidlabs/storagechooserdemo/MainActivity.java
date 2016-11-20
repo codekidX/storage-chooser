@@ -12,8 +12,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.codekidlabs.storagechooser.ExternalStoragePathFinder;
 import com.codekidlabs.storagechooser.StorageChooserBuilder;
 
 public class MainActivity extends AppCompatActivity {
@@ -37,6 +39,21 @@ public class MainActivity extends AppCompatActivity {
                         .withPredefinedPath("/Downloads/OpenGApps")
                         .actionSave(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()), "download_dir")
                         .build();
+                builder.show();
+            }
+        });
+
+        Button pathFinderButton = (Button) findViewById(R.id.path_finder_button);
+
+        pathFinderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ExternalStoragePathFinder.Builder builder = new ExternalStoragePathFinder.Builder()
+                        .withActivity(MainActivity.this)
+                        .withFragmentManager(getSupportFragmentManager())
+                        .actionSave(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()))
+                        .build();
+
                 builder.show();
             }
         });
