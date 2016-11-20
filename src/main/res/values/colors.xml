@@ -3,4 +3,6 @@
     <color name="colorPrimary">#2d6c55</color>
     <color name="colorPrimaryDark">#235644</color>
     <color name="colorAccent">#ff9c40</color>
+
+    <color name="colorCyanListClick">#d6c8f5f3</color>
 </resources>

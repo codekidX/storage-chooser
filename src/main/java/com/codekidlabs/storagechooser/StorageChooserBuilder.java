@@ -2,6 +2,7 @@ package com.codekidlabs.storagechooser;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.SharedPreferences;
 import android.support.v4.app.FragmentManager;
 
 import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
@@ -10,17 +11,29 @@ import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
 public class StorageChooserBuilder {
 
     public static Dialog dialog;
+    public static String STORAGE_STATIC_PATH;
 
     private Activity chooserActivity;
     private static boolean showMemoryBar;
     private FragmentManager fragmentManager;
     private static String preDefinedPath;
+    private static SharedPreferences userSharedPreference;
+    private static String userSharedPreferenceKey;
 
-    private StorageChooserBuilder(Activity activity, FragmentManager mFragmentManager, boolean mShowMemoryBar, int mMemoryTextColor, String mPath) {
+    private StorageChooserBuilder(Activity activity,
+                                  FragmentManager mFragmentManager,
+                                  boolean mShowMemoryBar,
+                                  SharedPreferences sharedPreferences,
+                                  String key,
+                                  String mPath) {
+
         setChooserActivity(activity);
         setShowMemoryBar(mShowMemoryBar);
         setFragmentManager(mFragmentManager);
         setPreDefinedPath(mPath);
+        setUserSharedPreference(sharedPreferences);
+        setUserSharedPreferenceKey(key);
+
     }
 
     private void init() {
@@ -65,14 +78,30 @@ public class StorageChooserBuilder {
         return new Dialog(activity);
     }
 
+    public static SharedPreferences getUserSharedPreference() {
+        return userSharedPreference;
+    }
+
+    public static void setUserSharedPreference(SharedPreferences userSharedPreference) {
+        StorageChooserBuilder.userSharedPreference = userSharedPreference;
+    }
+
+    public static String getUserSharedPreferenceKey() {
+        return userSharedPreferenceKey;
+    }
+
+    public static void setUserSharedPreferenceKey(String userSharedPreferenceKey) {
+        StorageChooserBuilder.userSharedPreferenceKey = userSharedPreferenceKey;
+    }
 
     public static class Builder {
 
         private Activity mActivity;
         private FragmentManager mFragmentManager;
         private boolean mShowMemoryBar;
-        private int mMemoryTextColor = 0;
         private String mPath;
+        private SharedPreferences mSharedPreferences;
+        private String mSharedPreferencesKey;
 
         public Builder() {
         }
@@ -97,15 +126,19 @@ public class StorageChooserBuilder {
             return this;
         }
 
+        public Builder actionSave(SharedPreferences sharedPreferences, String spKey) {
+            mSharedPreferences = sharedPreferences;
+            mSharedPreferencesKey = spKey;
+            return this;
+        }
+
 
         public Builder build() {
             return this;
         }
 
         public void show() {
-            new StorageChooserBuilder(mActivity, mFragmentManager, mShowMemoryBar, mMemoryTextColor, mPath).init();
+            new StorageChooserBuilder(mActivity, mFragmentManager, mShowMemoryBar, mSharedPreferences, mSharedPreferencesKey, mPath).init();
         }
     }
-
-
 }

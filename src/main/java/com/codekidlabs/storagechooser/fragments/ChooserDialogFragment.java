@@ -2,11 +2,13 @@ package com.codekidlabs.storagechooser.fragments;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +43,16 @@ public class ChooserDialogFragment extends DialogFragment {
 
     private static List<Storages> storagesList;
 
+    private static ChooserDialogFragment sChooserDialogFragment;
+
+    private static String mPath;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        sChooserDialogFragment = this;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -69,7 +81,10 @@ public class ChooserDialogFragment extends DialogFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (i) {
                     case INTERNAL_STORAGE_POSITION:
-                        Log.d("TAG", Environment.getExternalStorageDirectory() + StorageChooserBuilder.getPreDefinedPath());
+                        mPath = Environment.getExternalStorageDirectory() + StorageChooserBuilder.getPreDefinedPath();
+                        Log.d("TAG", mPath);
+                        view.setBackgroundColor(ContextCompat.getColor(sChooserDialogFragment.getContext(), R.color.colorCyanListClick));
+                        sChooserDialogFragment.dismiss();
                         break;
                     case EXTERNAL_STORAGE_POSITION:
                         if(DiskUtil.getSdkVersion() >= Build.VERSION_CODES.LOLLIPOP) {
@@ -116,5 +131,12 @@ public class ChooserDialogFragment extends DialogFragment {
         Dialog d = StorageChooserBuilder.dialog;
         d.setContentView(getLayout(LayoutInflater.from(getContext()), mContainer));
         return d;
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        StorageChooserBuilder.STORAGE_STATIC_PATH = mPath;
+        DiskUtil.saveChooserPathPreference(StorageChooserBuilder.getUserSharedPreference(), StorageChooserBuilder.getUserSharedPreferenceKey());
+        super.onDismiss(dialog);
     }
 }
