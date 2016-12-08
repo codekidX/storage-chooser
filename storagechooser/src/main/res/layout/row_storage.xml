@@ -25,6 +25,7 @@
     <TextView
         android:id="@+id/memory_status"
         android:textColor="@color/colorPrimaryDark"
+        android:textSize="13sp"
         android:layout_gravity="end"
         android:layout_marginTop="4dp"
         android:layout_marginStart="16dp"
