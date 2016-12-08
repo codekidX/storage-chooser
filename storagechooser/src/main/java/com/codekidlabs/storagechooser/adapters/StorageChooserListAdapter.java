@@ -112,6 +112,8 @@ public class StorageChooserListAdapter extends BaseAdapter {
             mem = Integer.parseInt(size.replace(",","").replace("MB",""));
         } else if (size.contains("GiB")){
             mem = Integer.parseInt(size.replace(",","").replace("GiB",""));
+        } else {
+            mem = Integer.parseInt(size.replace(",","").replace("KB",""));
         }
 
 
