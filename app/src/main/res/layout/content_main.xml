@@ -19,10 +19,20 @@
         android:text="Hello World!" />
 
     <Button
-        android:id="@+id/path_finder_button"
-        android:text="Path Finder"
+        android:id="@+id/storage_chooser_button_memorybar"
+        android:text="Storage Chooser w/ MemoryBar"
         android:padding="16dp"
+        android:layout_marginTop="16dp"
         android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/storage_chooser_button"
+        android:layout_below="@id/storage_chooser_button_memorybar"
+        android:text="Storage Chooser"
+        android:padding="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </RelativeLayout>

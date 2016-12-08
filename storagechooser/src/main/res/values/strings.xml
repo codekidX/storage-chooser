@@ -2,4 +2,8 @@
     <string name="app_name">Storage Chooser</string>
     <string name="choose_storage">Choose Storage</string>
     <string name="choose_external_storage">Choose External Storage</string>
+
+    <string name="external_storage">External storage</string>
+    <!-- Usb storage descripton -->
+    <string name="usb_storage">USB storage</string>
 </resources>

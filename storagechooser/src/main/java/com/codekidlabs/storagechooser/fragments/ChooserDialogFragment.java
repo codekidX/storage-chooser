@@ -9,6 +9,7 @@ import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +24,10 @@ import com.codekidlabs.storagechooser.models.Storages;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
 import com.codekidlabs.storagechooser.utils.MemoryUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
 
 
 public class ChooserDialogFragment extends DialogFragment {
@@ -35,11 +38,7 @@ public class ChooserDialogFragment extends DialogFragment {
     private static final String INTERNAL_STORAGE_TITLE = "Internal Storage";
     private static final String EXTERNAL_STORAGE_TITLE = "External Storage";
 
-    private static final int INTERNAL_STORAGE_POSITION = 0;
-    private static final int EXTERNAL_STORAGE_POSITION = 1;
-
     private static final String EXTERNAL_STORAGE_PATH_KITKAT = "/storage/extSdCard";
-    private static final String EXTERNAL_STORAGE_PATH_LOLLIPOP = "/storage/sdcard1";
 
     private static List<Storages> storagesList;
 
@@ -79,21 +78,6 @@ public class ChooserDialogFragment extends DialogFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                switch (i) {
-                    case INTERNAL_STORAGE_POSITION:
-                        mPath = Environment.getExternalStorageDirectory() + StorageChooserBuilder.getPreDefinedPath();
-                        Log.d("TAG", mPath);
-                        view.setBackgroundColor(ContextCompat.getColor(sChooserDialogFragment.getContext(), R.color.colorCyanListClick));
-                        sChooserDialogFragment.dismiss();
-                        break;
-                    case EXTERNAL_STORAGE_POSITION:
-                        if(DiskUtil.getSdkVersion() >= Build.VERSION_CODES.LOLLIPOP) {
-                            Log.d("TAG", EXTERNAL_STORAGE_PATH_LOLLIPOP + StorageChooserBuilder.getPreDefinedPath());
-                        } else {
-                            Log.d("TAG", EXTERNAL_STORAGE_PATH_KITKAT + StorageChooserBuilder.getPreDefinedPath());
-                        }
-                        break;
-                }
             }
         });
 
@@ -102,27 +86,30 @@ public class ChooserDialogFragment extends DialogFragment {
     private static void populateList() {
         storagesList = new ArrayList<Storages>();
 
-        if(MemoryUtil.isExternalStorageAvailable()) {
-            Storages storageInternal = new Storages();
-            storageInternal.setStorageTitle(INTERNAL_STORAGE_TITLE);
-            storageInternal.setMemoryAvailableSize(MemoryUtil.getAvailableInternalMemorySize());
-            storageInternal.setMemoryTotalSize(MemoryUtil.getTotalInternalMemorySize());
+        File storageDir = new File("/storage");
+        File internalStorageDir = Environment.getExternalStorageDirectory();
 
-            Storages storageExternal = new Storages();
-            storageInternal.setStorageTitle(EXTERNAL_STORAGE_TITLE);
-            storageInternal.setMemoryAvailableSize(MemoryUtil.getAvailableExternalMemorySize());
-            storageInternal.setMemoryTotalSize(MemoryUtil.getTotalExternalMemorySize());
+        File[] volumeList = storageDir.listFiles();
 
-            storagesList.add(storageInternal);
-            storagesList.add(storageExternal);
-        } else {
-            Storages storageInternal = new Storages();
-            storageInternal.setStorageTitle(INTERNAL_STORAGE_TITLE);
-            storageInternal.setMemoryAvailableSize(MemoryUtil.getAvailableInternalMemorySize());
-            storageInternal.setMemoryTotalSize(MemoryUtil.getTotalInternalMemorySize());
+            Storages storages = new Storages();
 
-            storagesList.add(storageInternal);
-        }
+            // just add the internal storage and avoid adding emulated henceforth
+            storages.setStorageTitle(INTERNAL_STORAGE_TITLE);
+            storages.setMemoryTotalSize(MemoryUtil.getTotalMemorySize(internalStorageDir));
+            storages.setMemoryAvailableSize(MemoryUtil.getAvailableMemorySize(internalStorageDir));
+            storagesList.add(storages);
+
+
+            for(File f: volumeList) {
+
+                if(!f.getName().equals(MemoryUtil.SELF_DIR_NAME) && !f.getName().equals(MemoryUtil.EMULATED_DIR_NAME)) {
+                    Storages sharedStorage = new Storages();
+                    sharedStorage.setStorageTitle(f.getName());
+                    sharedStorage.setMemoryTotalSize(MemoryUtil.getTotalMemorySize(f));
+                    sharedStorage.setMemoryAvailableSize(MemoryUtil.getAvailableMemorySize(f));
+                    storagesList.add(sharedStorage);
+                }
+            }
 
     }
 

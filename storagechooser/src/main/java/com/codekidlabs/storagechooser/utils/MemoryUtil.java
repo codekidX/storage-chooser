@@ -5,66 +5,52 @@ import android.os.Environment;
 import android.os.StatFs;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class MemoryUtil {
 
     private static final String ERROR = "error";
-    private static String mNewStorageName;
+    public static final String SELF_DIR_NAME = "self";
+    public static final String EMULATED_DIR_NAME = "emulated";
 
-    public static boolean isExternalStorageAvailable() {
-        File extStorageDir;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            extStorageDir = new File("/storage/" + mNewStorageName);
+    public static boolean isExternalStoragePresent() {
+        return getStorageListSize() == 0;
+    }
 
-            return extStorageDir.exists();
-        } else {
-            extStorageDir = new File("/storage/extSdCard");
-            return extStorageDir.exists();
+    public static int getStorageListSize() {
+        File storageDir = new File("/storage");
+        List<File> volumeList = new ArrayList<File>();
+        Collections.addAll(volumeList, storageDir.listFiles());
+        // seggregate the list
+        for(int i=0;i < volumeList.size(); i++) {
+            if(volumeList.get(i).getName().equals(SELF_DIR_NAME)) {
+                volumeList.remove(i);
+            }
+            if(volumeList.get(i).getName().equals(EMULATED_DIR_NAME)) {
+                volumeList.remove(i);
+            }
         }
+
+        return volumeList.size();
     }
 
-    public static void initNewStorageName(String name) {
-        mNewStorageName = name;
-    }
 
-    public static String getAvailableInternalMemorySize() {
-        File path = Environment.getDataDirectory();
-        StatFs stat = new StatFs(path.getPath());
-        long blockSize = stat.getBlockSize();
-        long availableBlocks = stat.getAvailableBlocks();
-        return formatSize(availableBlocks * blockSize);
-    }
 
-    public static String getTotalInternalMemorySize() {
-        File path = Environment.getDataDirectory();
-        StatFs stat = new StatFs(path.getPath());
-        long blockSize = stat.getBlockSize();
-        long totalBlocks = stat.getBlockCount();
-        return formatSize(totalBlocks * blockSize);
-    }
 
-    public static String getAvailableExternalMemorySize() {
-        if (isExternalStorageAvailable()) {
-            File path = Environment.getExternalStorageDirectory();
-            StatFs stat = new StatFs(path.getPath());
+    public static String getAvailableMemorySize(File file) {
+            StatFs stat = new StatFs(file.getPath());
             long blockSize = stat.getBlockSize();
             long availableBlocks = stat.getAvailableBlocks();
             return formatSize(availableBlocks * blockSize);
-        } else {
-            return ERROR;
-        }
     }
 
-    public static String getTotalExternalMemorySize() {
-        if (isExternalStorageAvailable()) {
-            File path = Environment.getExternalStorageDirectory();
-            StatFs stat = new StatFs(path.getPath());
+    public static String getTotalMemorySize(File file) {
+            StatFs stat = new StatFs(file.getPath());
             long blockSize = stat.getBlockSize();
             long totalBlocks = stat.getBlockCount();
             return formatSize(totalBlocks * blockSize);
-        } else {
-            return ERROR;
-        }
     }
 
     public static String formatSize(long size) {
@@ -76,6 +62,10 @@ public class MemoryUtil {
             if (size >= 1024) {
                 suffix = "MB";
                 size /= 1024;
+                if (size >= 1024) {
+                    suffix = "GiB";
+                    size /= 1024;
+                }
             }
         }
 

@@ -34,8 +34,6 @@ public class StorageChooserBuilder {
         setPreDefinedPath(mPath);
         setUserSharedPreference(sharedPreferences);
         setUserSharedPreferenceKey(key);
-
-        MemoryUtil.initNewStorageName(sharedPreferences.getString(ExternalStoragePathFinder.EXTERNAL_STORAGE_PATH_KEY,""));
     }
 
     private void init() {

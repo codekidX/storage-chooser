@@ -20,7 +20,8 @@
 
     <ListView
         android:id="@+id/storage_list_view"
-        android:divider="@null"
+        android:divider="@drawable/divider"
+        android:dividerHeight="0.5dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

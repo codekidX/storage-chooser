@@ -13,8 +13,8 @@
 
     <ProgressBar
         android:id="@+id/memory_bar"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="4dp"
         style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
@@ -24,6 +24,7 @@
     <TextView
         android:id="@+id/memory_status"
         android:textColor="@color/colorPrimaryDark"
+        android:layout_gravity="end"
         android:layout_marginTop="4dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"

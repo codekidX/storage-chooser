@@ -1,14 +1,14 @@
 package com.codekidlabs.storagechooserdemo;
 
-import android.app.Dialog;
-import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
-import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.codekidlabs.storagechooser.ExternalStoragePathFinder;
 import com.codekidlabs.storagechooser.StorageChooserBuilder;
+import com.codekidlabs.storagechooser.utils.MemoryUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,8 +29,35 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+            }
+        });
+
+        Button storageChooserButton = (Button) findViewById(R.id.storage_chooser_button);
+        
+
+        storageChooserButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                StorageChooserBuilder.Builder builder = new StorageChooserBuilder.Builder()
+                        .withActivity(MainActivity.this)
+                        .withFragmentManager(getSupportFragmentManager())
+                        .withPredefinedPath("/Downloads/OpenGApps")
+                        .actionSave(sharedPreferences, "download_dir")
+                        .build();
+                builder.show();
+            }
+        });
+
+        Button storageChooserButtonMemorybar = (Button) findViewById(R.id.storage_chooser_button_memorybar);
+
+
+        storageChooserButtonMemorybar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 StorageChooserBuilder.Builder builder = new StorageChooserBuilder.Builder()
@@ -37,23 +65,8 @@ public class MainActivity extends AppCompatActivity {
                         .withFragmentManager(getSupportFragmentManager())
                         .withMemoryBar(true)
                         .withPredefinedPath("/Downloads/OpenGApps")
-                        .actionSave(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()), "download_dir")
+                        .actionSave(sharedPreferences, "download_dir")
                         .build();
-                builder.show();
-            }
-        });
-
-        Button pathFinderButton = (Button) findViewById(R.id.path_finder_button);
-
-        pathFinderButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ExternalStoragePathFinder.Builder builder = new ExternalStoragePathFinder.Builder()
-                        .withActivity(MainActivity.this)
-                        .withFragmentManager(getSupportFragmentManager())
-                        .actionSave(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()))
-                        .build();
-
                 builder.show();
             }
         });

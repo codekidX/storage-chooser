@@ -1,6 +1,10 @@
 package com.codekidlabs.storagechooser.adapters;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,9 +57,13 @@ public class StorageChooserListAdapter extends BaseAdapter {
         ProgressBar memoryBar = (ProgressBar) rootView.findViewById(R.id.memory_bar);
 
         Storages storages = storagesList.get(i);
+        final SpannableStringBuilder str = new SpannableStringBuilder(storages.getStorageTitle() + " (" + storages.getMemoryTotalSize() + ")");
 
-        storageName.setText(storages.getStorageTitle());
-        memoryStatus.setText(storages.getMemoryAvailableSize() + "/" + storages.getMemoryTotalSize() + " free");
+        str.setSpan(new android.text.style.StyleSpan(Typeface.ITALIC), getSpannableIndex(str), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        String availableText = storages.getMemoryAvailableSize() + " free";
+
+        storageName.setText(str);
+        memoryStatus.setText(availableText);
 
         // THE ONE AND ONLY MEMORY BAR
         if(shouldShowMemoryBar) {
@@ -70,6 +78,10 @@ public class StorageChooserListAdapter extends BaseAdapter {
 
     }
 
+    private int getSpannableIndex(SpannableStringBuilder str) {
+            return str.toString().indexOf("(") + 1;
+    }
+
     private int getPercentile(String memoryAvailableSize, String memoryTotalSize) {
         int percent = (getMemoryFromString(memoryAvailableSize) * 100) / getMemoryFromString(memoryTotalSize);
         Log.d("TAG", "percentage: " + percent);
@@ -77,7 +89,7 @@ public class StorageChooserListAdapter extends BaseAdapter {
     }
 
     private int getMemoryFromString(String size) {
-        int mem = Integer.parseInt(size.replace(",","").replace("MB",""));
+        int mem = Integer.parseInt(size.replace(",","").replace("GiB",""));
         Log.d("TAG", "Memory:"+ mem);
         return mem;
     }

@@ -5,4 +5,5 @@
     <color name="colorAccent">#ff9c40</color>
 
     <color name="colorCyanListClick">#d6c8f5f3</color>
+    <color name="colorListDivider">#89606060</color>
 </resources>
