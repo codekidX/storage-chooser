@@ -102,7 +102,9 @@ public class ChooserDialogFragment extends DialogFragment {
 
             for(File f: volumeList) {
 
-                if(!f.getName().equals(MemoryUtil.SELF_DIR_NAME) && !f.getName().equals(MemoryUtil.EMULATED_DIR_NAME)) {
+                if(!f.getName().equals(MemoryUtil.SELF_DIR_NAME)
+                        && !f.getName().equals(MemoryUtil.EMULATED_DIR_NAME)
+                        && !f.getName().equals(MemoryUtil.SDCARD0_DIR_NAME)) {
                     Storages sharedStorage = new Storages();
                     sharedStorage.setStorageTitle(f.getName());
                     sharedStorage.setMemoryTotalSize(MemoryUtil.getTotalMemorySize(f));

@@ -89,7 +89,15 @@ public class StorageChooserListAdapter extends BaseAdapter {
     }
 
     private int getMemoryFromString(String size) {
-        int mem = Integer.parseInt(size.replace(",","").replace("GiB",""));
+        int mem = 0;
+
+        if(size.contains("MB")) {
+            mem = Integer.parseInt(size.replace(",","").replace("MB",""));
+        } else if (size.contains("GiB")){
+            mem = Integer.parseInt(size.replace(",","").replace("GiB",""));
+        }
+
+
         Log.d("TAG", "Memory:"+ mem);
         return mem;
     }
