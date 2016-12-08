@@ -78,16 +78,33 @@ public class StorageChooserListAdapter extends BaseAdapter {
 
     }
 
+    /**
+     * return the spannable index of character '('
+     * @param str SpannableStringBuilder to apply typeface changes
+     * @return index of '('
+     */
     private int getSpannableIndex(SpannableStringBuilder str) {
             return str.toString().indexOf("(") + 1;
     }
 
+    /**
+     * calculate percentage of memory left for memorybar
+     * @param memoryAvailableSize SpannableStringBuilder to apply typeface changes
+     * @param memoryTotalSize SpannableStringBuilder to apply typeface changes
+     * @return integer value of the percentage with amount of storage used
+     */
     private int getPercentile(String memoryAvailableSize, String memoryTotalSize) {
         int percent = (getMemoryFromString(memoryAvailableSize) * 100) / getMemoryFromString(memoryTotalSize);
         Log.d("TAG", "percentage: " + percent);
         return 100 - percent;
     }
 
+    /**
+     * remove MB. GiB text that we got from MemoryUtil.getAvailableMemorySize() &
+     * MemoryUtil.getTotalMemorySize()
+     * @param size String in the format of user readable string, with MB, GiB .. suffix
+     * @return integer value of the percentage with amount of storage used
+     */
     private int getMemoryFromString(String size) {
         int mem = 0;
 

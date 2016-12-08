@@ -1,6 +1,8 @@
 package com.codekidlabs.storagechooser.models;
 
-
+/**
+ * A model that is used as the element to store any data regarding storage volumes/disks
+ */
 public class Storages {
 
     String storageTitle;

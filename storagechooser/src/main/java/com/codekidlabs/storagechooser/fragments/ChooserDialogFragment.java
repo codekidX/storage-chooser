@@ -69,6 +69,9 @@ public class ChooserDialogFragment extends DialogFragment {
         return mLayout;
     }
 
+    /**
+     * storage listView related code in this block
+     */
     private static void initListView(Context context, View view, boolean shouldShowMemoryBar) {
         ListView listView = (ListView) view.findViewById(R.id.storage_list_view);
         populateList();
@@ -83,6 +86,9 @@ public class ChooserDialogFragment extends DialogFragment {
 
     }
 
+    /**
+     * populate storageList with necessary storages with filter applied
+     */
     private static void populateList() {
         storagesList = new ArrayList<Storages>();
 
@@ -122,6 +128,11 @@ public class ChooserDialogFragment extends DialogFragment {
         return d;
     }
 
+    /**
+     * basically for this library onDismiss is and will only be called when the user clicks any
+     * item from the listView
+     * @param dialog DialogInterface with dismiss call
+     */
     @Override
     public void onDismiss(DialogInterface dialog) {
         StorageChooserBuilder.STORAGE_STATIC_PATH = mPath;

@@ -1,7 +1,6 @@
 package com.codekidlabs.storagechooser.utils;
 
-import android.os.Build;
-import android.os.Environment;
+
 import android.os.StatFs;
 
 import java.io.File;
@@ -20,11 +19,15 @@ public class MemoryUtil {
         return getStorageListSize() == 0;
     }
 
+    /**
+     * Returns an the number of the files inside '/storage' directory
+     * @return
+     */
     public static int getStorageListSize() {
         File storageDir = new File("/storage");
         List<File> volumeList = new ArrayList<File>();
         Collections.addAll(volumeList, storageDir.listFiles());
-        // seggregate the list
+        // segregate the list
         for(int i=0;i < volumeList.size(); i++) {
             if(volumeList.get(i).getName().equals(SELF_DIR_NAME)) {
                 volumeList.remove(i);
@@ -41,8 +44,11 @@ public class MemoryUtil {
     }
 
 
-
-
+    /**
+     * calculate available/free size of any directory
+     * @param file File to use it with StatFs
+     * @return string formatted using formatSize()
+     */
     public static String getAvailableMemorySize(File file) {
             StatFs stat = new StatFs(file.getPath());
             long blockSize = stat.getBlockSize();
@@ -50,6 +56,11 @@ public class MemoryUtil {
             return formatSize(availableBlocks * blockSize);
     }
 
+    /**
+     * calculate total size of any directory
+     * @param file File to use it with StatFs
+     * @return
+     */
     public static String getTotalMemorySize(File file) {
             StatFs stat = new StatFs(file.getPath());
             long blockSize = stat.getBlockSize();
@@ -57,6 +68,12 @@ public class MemoryUtil {
             return formatSize(totalBlocks * blockSize);
     }
 
+    /**
+     * mainly to format the available bytes into user readable string
+     * @param size long - value gained from the getTotalMemorySize() and getAvailableMemorySize()
+     *             using StatFs
+     * @return a formatted string with KB, MB, GiB suffix
+     */
     public static String formatSize(long size) {
         String suffix = null;
 

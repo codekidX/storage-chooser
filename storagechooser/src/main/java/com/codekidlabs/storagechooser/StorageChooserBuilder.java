@@ -21,6 +21,15 @@ public class StorageChooserBuilder {
     private static SharedPreferences userSharedPreference;
     private static String userSharedPreferenceKey;
 
+    /**
+     * basic constructor of StorageChooserBuilder
+     * @param activity to use with dialog window addition
+     * @param mFragmentManager again used for showing dialog
+     * @param mShowMemoryBar determines whether to show memorybar inside listview or not
+     * @param sharedPreferences used for saving the current configured path by this library
+     * @param key String key for the above preference
+     * @param mPath predefined static path provided by the developer
+     */
     private StorageChooserBuilder(Activity activity,
                                   FragmentManager mFragmentManager,
                                   boolean mShowMemoryBar,
@@ -36,6 +45,9 @@ public class StorageChooserBuilder {
         setUserSharedPreferenceKey(key);
     }
 
+    /**
+     * init creates and shows the storage chooser dialog
+     */
     private void init() {
         dialog = getStorageChooserDialog(getChooserActivity());
         ChooserDialogFragment chooserDialogFragment = new ChooserDialogFragment();
@@ -94,6 +106,15 @@ public class StorageChooserBuilder {
         StorageChooserBuilder.userSharedPreferenceKey = userSharedPreferenceKey;
     }
 
+    /**
+     * @class Builder
+     *  - as the name suggests it gets all the configurations provided by the developer and
+     *    passes them to the StorageChooserBuilder class using the constructor.
+     *
+     *    NOTE: The dialog is still not yet show even though the builder instance is present.
+     *    show() is called seperately on the builder because it does not return a builder but
+     *    triggers init() inside the StorageChooserBuilder class.
+     */
     public static class Builder {
 
         private Activity mActivity;
