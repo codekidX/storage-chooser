@@ -9,6 +9,10 @@ import com.codekidlabs.storagechooser.StorageChooserBuilder;
 
 public class DiskUtil {
 
+    public static final String IN_MB = "MB";
+    public static final String IN_GB = "GiB";
+    public static final String SC_PREFERENCE_KEY = "storage_chooser_path";
+
     public static int getSdkVersion() {
         return Build.VERSION.SDK_INT;
     }

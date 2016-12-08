@@ -42,15 +42,6 @@ public class ChooserDialogFragment extends DialogFragment {
 
     private static List<Storages> storagesList;
 
-    private static ChooserDialogFragment sChooserDialogFragment;
-
-    private static String mPath;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        sChooserDialogFragment = this;
-    }
 
     @Nullable
     @Override
@@ -65,7 +56,7 @@ public class ChooserDialogFragment extends DialogFragment {
 
     private View getLayout(LayoutInflater inflater, ViewGroup container) {
         mLayout = inflater.inflate(R.layout.storage_list, container, false);
-        initListView(getContext(), mLayout, StorageChooserBuilder.isShowMemoryBar());
+        initListView(getContext(), mLayout, StorageChooserBuilder.sConfig.isShowMemoryBar());
         return mLayout;
     }
 
@@ -135,9 +126,8 @@ public class ChooserDialogFragment extends DialogFragment {
      */
     @Override
     public void onDismiss(DialogInterface dialog) {
-        StorageChooserBuilder.STORAGE_STATIC_PATH = mPath;
-        if(StorageChooserBuilder.getUserSharedPreference() != null) {
-            DiskUtil.saveChooserPathPreference(StorageChooserBuilder.getUserSharedPreference(), StorageChooserBuilder.getUserSharedPreferenceKey());
+        if(StorageChooserBuilder.sConfig.getPreference() != null) {
+            DiskUtil.saveChooserPathPreference(StorageChooserBuilder.sConfig.getPreference(), DiskUtil.SC_PREFERENCE_KEY);
         }
         super.onDismiss(dialog);
     }

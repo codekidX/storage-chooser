@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.support.v4.app.FragmentManager;
 
 import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
+import com.codekidlabs.storagechooser.models.Config;
 import com.codekidlabs.storagechooser.utils.MemoryUtil;
 
 
@@ -14,44 +15,33 @@ public class StorageChooserBuilder {
     public static Dialog dialog;
     public static String STORAGE_STATIC_PATH;
 
+    public static Config sConfig;
     private Activity chooserActivity;
-    private static boolean showMemoryBar;
-    private FragmentManager fragmentManager;
-    private static String preDefinedPath;
-    private static SharedPreferences userSharedPreference;
-    private static String userSharedPreferenceKey;
 
     /**
      * basic constructor of StorageChooserBuilder
-     * @param activity to use with dialog window addition
-     * @param mFragmentManager again used for showing dialog
-     * @param mShowMemoryBar determines whether to show memorybar inside listview or not
-     * @param sharedPreferences used for saving the current configured path by this library
-     * @param key String key for the above preference
-     * @param mPath predefined static path provided by the developer
+     * @param config to use with dialog window addition
      */
-    private StorageChooserBuilder(Activity activity,
-                                  FragmentManager mFragmentManager,
-                                  boolean mShowMemoryBar,
-                                  SharedPreferences sharedPreferences,
-                                  String key,
-                                  String mPath) {
-
+    public StorageChooserBuilder(Activity activity, Config config) {
+        setsConfig(config);
         setChooserActivity(activity);
-        setShowMemoryBar(mShowMemoryBar);
-        setFragmentManager(mFragmentManager);
-        setPreDefinedPath(mPath);
-        setUserSharedPreference(sharedPreferences);
-        setUserSharedPreferenceKey(key);
     }
 
     /**
      * init creates and shows the storage chooser dialog
      */
-    private void init() {
+    public void init() {
         dialog = getStorageChooserDialog(getChooserActivity());
         ChooserDialogFragment chooserDialogFragment = new ChooserDialogFragment();
-        chooserDialogFragment.show(getFragmentManager(),"storagechooser_dialog");
+        chooserDialogFragment.show(sConfig.getFragmentManager(),"storagechooser_dialog");
+    }
+
+    public static Config getsConfig() {
+        return sConfig;
+    }
+
+    public static void setsConfig(Config sConfig) {
+        StorageChooserBuilder.sConfig = sConfig;
     }
 
     private Activity getChooserActivity() {
@@ -62,50 +52,9 @@ public class StorageChooserBuilder {
         this.chooserActivity = chooserActivity;
     }
 
-    public static boolean isShowMemoryBar() {
-        return showMemoryBar;
-    }
-
-    private void setShowMemoryBar(boolean showMemoryBar) {
-        StorageChooserBuilder.showMemoryBar = showMemoryBar;
-    }
-
-    private FragmentManager getFragmentManager() {
-        return fragmentManager;
-    }
-
-    private void setFragmentManager(FragmentManager fragmentManager) {
-        this.fragmentManager = fragmentManager;
-    }
-
-    public static String getPreDefinedPath() {
-        return preDefinedPath;
-    }
-
-    public static void setPreDefinedPath(String preDefinedPath) {
-        StorageChooserBuilder.preDefinedPath = preDefinedPath;
-    }
-
     private static Dialog getStorageChooserDialog(Activity activity) {
         return new Dialog(activity);
     }
-
-    public static SharedPreferences getUserSharedPreference() {
-        return userSharedPreference;
-    }
-
-    public static void setUserSharedPreference(SharedPreferences userSharedPreference) {
-        StorageChooserBuilder.userSharedPreference = userSharedPreference;
-    }
-
-    public static String getUserSharedPreferenceKey() {
-        return userSharedPreferenceKey;
-    }
-
-    public static void setUserSharedPreferenceKey(String userSharedPreferenceKey) {
-        StorageChooserBuilder.userSharedPreferenceKey = userSharedPreferenceKey;
-    }
-
     /**
      * @class Builder
      *  - as the name suggests it gets all the configurations provided by the developer and
@@ -119,10 +68,13 @@ public class StorageChooserBuilder {
 
         private Activity mActivity;
         private FragmentManager mFragmentManager;
-        private boolean mShowMemoryBar;
+        private int mMemorySize;
+        private String mMemorySuffix;
+        private boolean mActionSave;
         private String mPath;
         private SharedPreferences mSharedPreferences;
         private String mSharedPreferencesKey;
+        private boolean mShowMemoryBar;
 
         public Builder() {
         }
@@ -147,9 +99,19 @@ public class StorageChooserBuilder {
             return this;
         }
 
-        public Builder actionSave(SharedPreferences sharedPreferences, String spKey) {
+        public Builder withMemoryThreshold(int size, String suffix) {
+            mMemorySize = size;
+            mMemorySuffix = suffix;
+            return this;
+        }
+
+        public Builder withPreference(SharedPreferences sharedPreferences) {
             mSharedPreferences = sharedPreferences;
-            mSharedPreferencesKey = spKey;
+            return this;
+        }
+
+        public Builder actionSave(boolean save) {
+            mActionSave = save;
             return this;
         }
 
@@ -159,7 +121,15 @@ public class StorageChooserBuilder {
         }
 
         public void show() {
-            new StorageChooserBuilder(mActivity, mFragmentManager, mShowMemoryBar, mSharedPreferences, mSharedPreferencesKey, mPath).init();
+            Config devConfig =  new Config();
+            devConfig.setActionSave(mActionSave);
+            devConfig.setPredefinedPath(mPath);
+            devConfig.setFragmentManager(mFragmentManager);
+            devConfig.setPreference(mSharedPreferences);
+            devConfig.setShowMemoryBar(mShowMemoryBar);
+            devConfig.setMemoryThreshold(mMemorySize);
+            devConfig.setThresholdSuffix(mMemorySuffix);
+            new StorageChooserBuilder(mActivity, devConfig).init();
         }
     }
 }

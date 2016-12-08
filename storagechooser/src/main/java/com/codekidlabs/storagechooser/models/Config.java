@@ -1,6 +1,7 @@
 package com.codekidlabs.storagechooser.models;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.preference.Preference;
 import android.support.v4.app.FragmentManager;
 
@@ -10,22 +11,13 @@ import android.support.v4.app.FragmentManager;
  */
 public class Config {
 
-    private Activity activity;
     private FragmentManager fragmentManager;
     private String predefinedPath;
+    private boolean showMemoryBar;
     private boolean actionSave;
-    private Preference preference;
+    private SharedPreferences preference;
     private int memoryThreshold;
     private String thresholdSuffix;
-
-
-    public Activity getActivity() {
-        return activity;
-    }
-
-    public void setActivity(Activity activity) {
-        this.activity = activity;
-    }
 
     public FragmentManager getFragmentManager() {
         return fragmentManager;
@@ -43,6 +35,14 @@ public class Config {
         this.predefinedPath = predefinedPath;
     }
 
+    public boolean isShowMemoryBar() {
+        return showMemoryBar;
+    }
+
+    public void setShowMemoryBar(boolean showMemoryBar) {
+        this.showMemoryBar = showMemoryBar;
+    }
+
     public boolean isActionSave() {
         return actionSave;
     }
@@ -51,11 +51,11 @@ public class Config {
         this.actionSave = actionSave;
     }
 
-    public Preference getPreference() {
+    public SharedPreferences getPreference() {
         return preference;
     }
 
-    public void setPreference(Preference preference) {
+    public void setPreference(SharedPreferences preference) {
         this.preference = preference;
     }
 
