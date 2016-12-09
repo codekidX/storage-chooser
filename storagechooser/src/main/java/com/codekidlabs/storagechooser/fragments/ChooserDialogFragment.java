@@ -3,6 +3,7 @@ package com.codekidlabs.storagechooser.fragments;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -40,7 +41,7 @@ public class ChooserDialogFragment extends DialogFragment {
 
     private static final String EXTERNAL_STORAGE_PATH_KITKAT = "/storage/extSdCard";
 
-    private static List<Storages> storagesList;
+    private List<Storages> storagesList;
 
 
     @Nullable
@@ -63,7 +64,7 @@ public class ChooserDialogFragment extends DialogFragment {
     /**
      * storage listView related code in this block
      */
-    private static void initListView(Context context, View view, boolean shouldShowMemoryBar) {
+    private void initListView(Context context, View view, boolean shouldShowMemoryBar) {
         ListView listView = (ListView) view.findViewById(R.id.storage_list_view);
         populateList();
 
@@ -72,6 +73,14 @@ public class ChooserDialogFragment extends DialogFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if(i == 0) {
+                    String thePath = Environment.getExternalStorageDirectory().getAbsolutePath() + StorageChooserBuilder.sConfig.getPredefinedPath();
+                    DiskUtil.saveChooserPathPreference(StorageChooserBuilder.sConfig.getPreference(), thePath);
+                } else {
+                    String thePath = "/storage/" + storagesList.get(i).getStorageTitle() + StorageChooserBuilder.sConfig.getPredefinedPath();
+                    DiskUtil.saveChooserPathPreference(StorageChooserBuilder.sConfig.getPreference(), thePath);
+                }
+                ChooserDialogFragment.this.dismiss();
             }
         });
 
@@ -80,7 +89,7 @@ public class ChooserDialogFragment extends DialogFragment {
     /**
      * populate storageList with necessary storages with filter applied
      */
-    private static void populateList() {
+    private void populateList() {
         storagesList = new ArrayList<Storages>();
 
         File storageDir = new File("/storage");
@@ -126,9 +135,6 @@ public class ChooserDialogFragment extends DialogFragment {
      */
     @Override
     public void onDismiss(DialogInterface dialog) {
-        if(StorageChooserBuilder.sConfig.getPreference() != null) {
-            DiskUtil.saveChooserPathPreference(StorageChooserBuilder.sConfig.getPreference(), DiskUtil.SC_PREFERENCE_KEY);
-        }
         super.onDismiss(dialog);
     }
 }

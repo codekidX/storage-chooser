@@ -17,9 +17,9 @@ public class DiskUtil {
         return Build.VERSION.SDK_INT;
     }
 
-    public static void saveChooserPathPreference(SharedPreferences sharedPreferences, String key) {
+    public static void saveChooserPathPreference(SharedPreferences sharedPreferences, String path) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(key, StorageChooserBuilder.STORAGE_STATIC_PATH);
+        editor.putString(SC_PREFERENCE_KEY, path);
         editor.apply();
     }
 
