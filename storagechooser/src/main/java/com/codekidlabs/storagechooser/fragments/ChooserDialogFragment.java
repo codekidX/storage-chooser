@@ -73,17 +73,35 @@ public class ChooserDialogFragment extends DialogFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(i == 0) {
-                    String thePath = Environment.getExternalStorageDirectory().getAbsolutePath() + StorageChooserBuilder.sConfig.getPredefinedPath();
-                    DiskUtil.saveChooserPathPreference(StorageChooserBuilder.sConfig.getPreference(), thePath);
+                String dirPAth = evaluatePath(i);
+                if(StorageChooserBuilder.sConfig.isActionSave()) {
+                    DiskUtil.saveChooserPathPreference(StorageChooserBuilder.sConfig.getPreference(), dirPAth);
                 } else {
-                    String thePath = "/storage/" + storagesList.get(i).getStorageTitle() + StorageChooserBuilder.sConfig.getPredefinedPath();
-                    DiskUtil.saveChooserPathPreference(StorageChooserBuilder.sConfig.getPreference(), thePath);
+                    Log.d("StorageChooser", "Chosen path: " + dirPAth);
                 }
                 ChooserDialogFragment.this.dismiss();
             }
         });
 
+    }
+
+    /**
+     * evaluates path with respect to the list click position
+     * @param i position in list
+     * @return String with the required path for developers
+     */
+    private String evaluatePath(int i) {
+        String preDefPath = StorageChooserBuilder.sConfig.getPredefinedPath();
+        if(preDefPath == null) {
+            Log.e("StorageChooser", "Cannot return a path, set withPredefinedPath() in your builder.");
+            return null;
+        } else {
+            if(i == 0) {
+                return Environment.getExternalStorageDirectory().getAbsolutePath() + preDefPath;
+            } else {
+                return "/storage/" + storagesList.get(i).getStorageTitle() + preDefPath;
+            }
+        }
     }
 
     /**

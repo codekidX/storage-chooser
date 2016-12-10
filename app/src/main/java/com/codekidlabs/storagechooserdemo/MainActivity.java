@@ -48,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
                         .withActivity(MainActivity.this)
                         .withFragmentManager(getSupportFragmentManager())
                         .withPredefinedPath("/Downloads/OpenGApps")
-                        .actionSave(true)
                         .withPreference(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()))
                         .build();
                 builder.show();
@@ -67,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
                         .withMemoryBar(true)
                         .withPredefinedPath("/Downloads/OpenGApps")
                         .withPreference(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()))
-                        .actionSave(true)
                         .build();
                 builder.show();
             }

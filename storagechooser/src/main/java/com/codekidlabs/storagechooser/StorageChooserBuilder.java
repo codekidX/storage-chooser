@@ -70,11 +70,10 @@ public class StorageChooserBuilder {
         private FragmentManager mFragmentManager;
         private int mMemorySize;
         private String mMemorySuffix;
-        private boolean mActionSave;
+        private boolean mActionSave = false;
         private String mPath;
         private SharedPreferences mSharedPreferences;
-        private String mSharedPreferencesKey;
-        private boolean mShowMemoryBar;
+        private boolean mShowMemoryBar = false;
 
         public Builder() {
         }
