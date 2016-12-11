@@ -1,33 +1,39 @@
 package com.codekidlabs.storagechooserdemo;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.Toast;
+import android.widget.TextView;
 
-import com.codekidlabs.storagechooser.ExternalStoragePathFinder;
 import com.codekidlabs.storagechooser.StorageChooserBuilder;
-import com.codekidlabs.storagechooser.utils.MemoryUtil;
+import com.codekidlabs.storagechooserdemo.utils.TypefaceUtil;
 
 public class MainActivity extends AppCompatActivity {
+
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(DialogFragment.STYLE_NO_TITLE);
         setContentView(R.layout.activity_main);
+        context = getApplicationContext();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        TextView scTitle = (TextView) findViewById(R.id.sc_title);
+        TypefaceUtil.setTypefaceBold(context, scTitle);
 
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
@@ -35,11 +41,14 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                BottomSheetDialogFragment reportSheet = new ReportBottomSheet();
+                reportSheet.show(getSupportFragmentManager(), "report_sheet");
             }
         });
 
         Button storageChooserButton = (Button) findViewById(R.id.storage_chooser_button);
-        
+        TypefaceUtil.setTypefaceBold(context,storageChooserButton);
+        storageChooserButton.setBackgroundColor(getColorFromResource(context,android.R.color.white));
 
         storageChooserButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,14 +57,15 @@ public class MainActivity extends AppCompatActivity {
                         .withActivity(MainActivity.this)
                         .withFragmentManager(getSupportFragmentManager())
                         .withPredefinedPath("/Downloads/OpenGApps")
-                        .withPreference(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()))
+                        .withPreference(sharedPreferences)
                         .build();
                 builder.show();
             }
         });
 
         Button storageChooserButtonMemorybar = (Button) findViewById(R.id.storage_chooser_button_memorybar);
-
+        TypefaceUtil.setTypefaceBold(context,storageChooserButtonMemorybar);
+        storageChooserButtonMemorybar.setBackgroundColor(getColorFromResource(context,android.R.color.white));
 
         storageChooserButtonMemorybar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,32 +75,17 @@ public class MainActivity extends AppCompatActivity {
                         .withFragmentManager(getSupportFragmentManager())
                         .withMemoryBar(true)
                         .withPredefinedPath("/Downloads/OpenGApps")
-                        .withPreference(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()))
+                        .withPreference(sharedPreferences)
                         .build();
                 builder.show();
             }
         });
+
+        TextView explanationText = (TextView) findViewById(R.id.explanation_text);
+        TypefaceUtil.setTypefaceRegular(context, explanationText);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+    public static int getColorFromResource(Context context, int id) {
+        return ContextCompat.getColor(context, id);
     }
 }
