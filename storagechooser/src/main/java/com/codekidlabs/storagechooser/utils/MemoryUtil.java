@@ -101,4 +101,18 @@ public class MemoryUtil {
         if (suffix != null) resultBuffer.append(suffix);
         return resultBuffer.toString();
     }
+
+    public static long suffixedSize(long size, String suffix) {
+
+        switch (suffix) {
+            case "KB":
+                return (long) (size/Math.pow(1024, 3));
+            case "MB":
+                return (long) (size/Math.pow(1024, 2));
+            case "GiB":
+                return  size/104;
+            default:
+                return 0;
+        }
+    }
 }

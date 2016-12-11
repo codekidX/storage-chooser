@@ -74,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
                         .withActivity(MainActivity.this)
                         .withFragmentManager(getSupportFragmentManager())
                         .withMemoryBar(true)
+                        .setDialogTitle("Ashish's Chooser")
+                        .setInternalStorageText("My Internal")
                         .withPredefinedPath("/Downloads/OpenGApps")
                         .withPreference(sharedPreferences)
                         .build();
