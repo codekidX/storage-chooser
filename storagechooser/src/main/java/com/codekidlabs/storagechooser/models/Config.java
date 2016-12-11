@@ -1,8 +1,6 @@
 package com.codekidlabs.storagechooser.models;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
-import android.preference.Preference;
 import android.support.v4.app.FragmentManager;
 
 /**
@@ -18,6 +16,8 @@ public class Config {
     private SharedPreferences preference;
     private int memoryThreshold;
     private String thresholdSuffix;
+    private String dialogTitle;
+    private String internalStorageText;
 
     public FragmentManager getFragmentManager() {
         return fragmentManager;
@@ -73,5 +73,21 @@ public class Config {
 
     public void setThresholdSuffix(String thresholdSuffix) {
         this.thresholdSuffix = thresholdSuffix;
+    }
+
+    public String getDialogTitle() {
+        return dialogTitle;
+    }
+
+    public void setDialogTitle(String dialogTitle) {
+        this.dialogTitle = dialogTitle;
+    }
+
+    public String getInternalStorageText() {
+        return internalStorageText;
+    }
+
+    public void setInternalStorageText(String internalStorageText) {
+        this.internalStorageText = internalStorageText;
     }
 }

@@ -9,6 +9,7 @@
         android:layout_height="100dp">
 
         <TextView
+            android:id="@+id/dialog_title"
             android:text="@string/choose_storage"
             android:textSize="17sp"
             android:textColor="@android:color/white"

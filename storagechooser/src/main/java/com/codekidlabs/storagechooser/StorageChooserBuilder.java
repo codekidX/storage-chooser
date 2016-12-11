@@ -67,16 +67,13 @@ public class StorageChooserBuilder {
     public static class Builder {
 
         private Activity mActivity;
-        private FragmentManager mFragmentManager;
-        private int mMemorySize;
-        private String mMemorySuffix;
-        private boolean mActionSave;
-        private String mPath;
-        private SharedPreferences mSharedPreferences;
-        private String mSharedPreferencesKey;
-        private boolean mShowMemoryBar;
+        private boolean mActionSave = false;
+        private boolean mShowMemoryBar = false;
+
+        Config devConfig;
 
         public Builder() {
+            devConfig =  new Config();
         }
 
         public Builder withActivity(Activity activity) {
@@ -85,7 +82,7 @@ public class StorageChooserBuilder {
         }
 
         public Builder withFragmentManager(FragmentManager fragmentManager) {
-            mFragmentManager = fragmentManager;
+            devConfig.setFragmentManager(fragmentManager);
             return this;
         }
 
@@ -95,23 +92,33 @@ public class StorageChooserBuilder {
         }
 
         public Builder withPredefinedPath(String path) {
-            mPath = path;
+            devConfig.setPredefinedPath(path);
             return this;
         }
 
         public Builder withMemoryThreshold(int size, String suffix) {
-            mMemorySize = size;
-            mMemorySuffix = suffix;
+            devConfig.setMemoryThreshold(size);
+            devConfig.setThresholdSuffix(suffix);
             return this;
         }
 
         public Builder withPreference(SharedPreferences sharedPreferences) {
-            mSharedPreferences = sharedPreferences;
+            devConfig.setPreference(sharedPreferences);
             return this;
         }
 
         public Builder actionSave(boolean save) {
             mActionSave = save;
+            return this;
+        }
+
+        public Builder setDialogTitle(String title) {
+            devConfig.setDialogTitle(title);
+            return this;
+        }
+
+        public Builder setInternalStorageText(String storageNameText) {
+            devConfig.setInternalStorageText(storageNameText);
             return this;
         }
 
@@ -121,14 +128,8 @@ public class StorageChooserBuilder {
         }
 
         public void show() {
-            Config devConfig =  new Config();
             devConfig.setActionSave(mActionSave);
-            devConfig.setPredefinedPath(mPath);
-            devConfig.setFragmentManager(mFragmentManager);
-            devConfig.setPreference(mSharedPreferences);
             devConfig.setShowMemoryBar(mShowMemoryBar);
-            devConfig.setMemoryThreshold(mMemorySize);
-            devConfig.setThresholdSuffix(mMemorySuffix);
             new StorageChooserBuilder(mActivity, devConfig).init();
         }
     }

@@ -44,30 +44,6 @@ Before you implement this library here are some notes that you can follow to avo
 
 ----------
 
-
-### Path Finder Implementation
-
-For Lollipop and above SDK versions the naming of external sdcard is changed due to integration of SELinux. Path Finder helps the user to choose the name of the Extrernal Storage which can then be used for further purposes. 
-
-**NOTE:** Storage Chooser needs External Storage Name and that can be done by Running Path Finder Dialog first. 
-
-Schematic is same and simple.
-
-```
-// Initialize Builder
-
-ExternalStoragePathFinder.Builder builder = new ExternalStoragePathFinder.Builder()
-.withActivity(MainActivity.this)
-.withFragmentManager(getSupportFragmentManager())
-.actionSave(PreferenceManager.getDefaultSharedPreferences(getApplicationContext()))
-.build();
-
-// Show dialog whenever you want by
-builder.show();
-```
-
--------
-
 ### Storage Chooser Implementation
 
 Nothing fancy to do here, it's straightforward and uses a simple Builder to make everything work smoothly.
@@ -75,18 +51,17 @@ Nothing fancy to do here, it's straightforward and uses a simple Builder to make
 ```
 // a common path flow which does not change whether user chose internal or external storage
 private static final String STATIC_PATH = "/Downloads/CodekidLabs";
-// pass your sharedPreference to actionSave() in builder
 private SharedPreference yourPreference;
-// with key
-private static final String DOWNLOAD_DIR_KEY = "my_download_dir";
+
+// ---------------------------------------------
 
 // Initialize Builder
-
 StorageChooserBuilder.Builder builder = new StorageChooserBuilder.Builder()
 .withActivity(MainActivity.this)
 .withFragmentManager(getSupportFragmentManager())
-.withMemoryBar(true)
-.actionSave(yourPreference, DOWNLOAD_DIR_KEY) // read more about this in the documantation 'Wiki' of library repo
+.withMemoryBar(true) // shows a nice visual representation of memory available 
+.actionSave(true) // saves the path of internal/external storage to yourPreference
+.withPreference(yourPreference) // needed if action save is true
 .withPredefinedPath(STATIC_PATH)
 .build();
 
@@ -99,11 +74,11 @@ builder.show();
 > 
 > In the above example of implementation STATIC_PATH is "/Downloads/CodekidLabs". Now when user selects Internal Storage from **StorageChooserDialog** the path will return "/storage/emulated/0/Downloads/CodekidLabs" which will be the directory of operations for your app.
 
-> Same goes if user user chooses External Storage. [/storage/**SdCard Name from PathFinder**/ + STATIC_PATH ]
+> Same goes if user chooses External Storage. [/storage/**Gibberish SDcard Name**/ + STATIC_PATH ]
 
 
 
 
 ### Support Storage Chooser
 
-This is a community based project so help by fixing bugs and adding your ideas to it by clicking **Create pull request**
+This is a community based project so help fixing bugs by adding your fixes to it by clicking **Create pull request**

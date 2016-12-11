@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.StorageChooserBuilder;
@@ -58,6 +60,12 @@ public class ChooserDialogFragment extends DialogFragment {
     private View getLayout(LayoutInflater inflater, ViewGroup container) {
         mLayout = inflater.inflate(R.layout.storage_list, container, false);
         initListView(getContext(), mLayout, StorageChooserBuilder.sConfig.isShowMemoryBar());
+
+        if(StorageChooserBuilder.sConfig.getDialogTitle() !=null) {
+            TextView dialogTitle = (TextView) mLayout.findViewById(R.id.dialog_title);
+            dialogTitle.setText(StorageChooserBuilder.sConfig.getDialogTitle());
+        }
+
         return mLayout;
     }
 
@@ -73,17 +81,39 @@ public class ChooserDialogFragment extends DialogFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(i == 0) {
-                    String thePath = Environment.getExternalStorageDirectory().getAbsolutePath() + StorageChooserBuilder.sConfig.getPredefinedPath();
-                    DiskUtil.saveChooserPathPreference(StorageChooserBuilder.sConfig.getPreference(), thePath);
+                String dirPAth = evaluatePath(i);
+                if(StorageChooserBuilder.sConfig.isActionSave()) {
+                    DiskUtil.saveChooserPathPreference(StorageChooserBuilder.sConfig.getPreference(), dirPAth);
                 } else {
-                    String thePath = "/storage/" + storagesList.get(i).getStorageTitle() + StorageChooserBuilder.sConfig.getPredefinedPath();
-                    DiskUtil.saveChooserPathPreference(StorageChooserBuilder.sConfig.getPreference(), thePath);
+                    Log.d("StorageChooser", "Chosen path: " + dirPAth);
                 }
                 ChooserDialogFragment.this.dismiss();
             }
         });
 
+    }
+
+    /**
+     * evaluates path with respect to the list click position
+     * @param i position in list
+     * @return String with the required path for developers
+     */
+    private String evaluatePath(int i) {
+        String preDefPath = StorageChooserBuilder.sConfig.getPredefinedPath();
+        if(preDefPath == null) {
+            Log.e("StorageChooser", "Cannot return a path, set withPredefinedPath() in your builder.");
+            return null;
+        } else {
+            if(i == 0) {
+                return Environment.getExternalStorageDirectory().getAbsolutePath() + preDefPath;
+            } else {
+                return "/storage/" + storagesList.get(i).getStorageTitle() + preDefPath;
+            }
+        }
+    }
+
+    private boolean doesPassMemoryThreshold(long threshold, String memorySuffix, long availableSpace) {
+        return true;
     }
 
     /**
@@ -97,44 +127,40 @@ public class ChooserDialogFragment extends DialogFragment {
 
         File[] volumeList = storageDir.listFiles();
 
-            Storages storages = new Storages();
+        Storages storages = new Storages();
 
-            // just add the internal storage and avoid adding emulated henceforth
+        // just add the internal storage and avoid adding emulated henceforth
+        if(StorageChooserBuilder.sConfig.getInternalStorageText() !=null) {
+            storages.setStorageTitle(StorageChooserBuilder.sConfig.getInternalStorageText());
+        } else {
             storages.setStorageTitle(INTERNAL_STORAGE_TITLE);
-            storages.setMemoryTotalSize(MemoryUtil.getTotalMemorySize(internalStorageDir));
-            storages.setMemoryAvailableSize(MemoryUtil.getAvailableMemorySize(internalStorageDir));
-            storagesList.add(storages);
+        }
+
+        storages.setMemoryTotalSize(MemoryUtil.getTotalMemorySize(internalStorageDir));
+        storages.setMemoryAvailableSize(MemoryUtil.getAvailableMemorySize(internalStorageDir));
+        storagesList.add(storages);
 
 
-            for(File f: volumeList) {
+        for(File f: volumeList) {
 
-                if(!f.getName().equals(MemoryUtil.SELF_DIR_NAME)
-                        && !f.getName().equals(MemoryUtil.EMULATED_DIR_NAME)
-                        && !f.getName().equals(MemoryUtil.SDCARD0_DIR_NAME)) {
-                    Storages sharedStorage = new Storages();
-                    sharedStorage.setStorageTitle(f.getName());
-                    sharedStorage.setMemoryTotalSize(MemoryUtil.getTotalMemorySize(f));
-                    sharedStorage.setMemoryAvailableSize(MemoryUtil.getAvailableMemorySize(f));
-                    storagesList.add(sharedStorage);
-                }
+            if(!f.getName().equals(MemoryUtil.SELF_DIR_NAME)
+                    && !f.getName().equals(MemoryUtil.EMULATED_DIR_NAME)
+                    && !f.getName().equals(MemoryUtil.SDCARD0_DIR_NAME)) {
+                Storages sharedStorage = new Storages();
+                sharedStorage.setStorageTitle(f.getName());
+                sharedStorage.setMemoryTotalSize(MemoryUtil.getTotalMemorySize(f));
+                sharedStorage.setMemoryAvailableSize(MemoryUtil.getAvailableMemorySize(f));
+                storagesList.add(sharedStorage);
             }
+        }
 
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog d = StorageChooserBuilder.dialog;
         d.setContentView(getLayout(LayoutInflater.from(getContext()), mContainer));
         return d;
-    }
-
-    /**
-     * basically for this library onDismiss is and will only be called when the user clicks any
-     * item from the listView
-     * @param dialog DialogInterface with dismiss call
-     */
-    @Override
-    public void onDismiss(DialogInterface dialog) {
-        super.onDismiss(dialog);
     }
 }
