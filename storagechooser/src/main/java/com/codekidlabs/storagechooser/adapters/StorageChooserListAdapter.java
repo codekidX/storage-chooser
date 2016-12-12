@@ -88,11 +88,11 @@ public class StorageChooserListAdapter extends BaseAdapter {
 
     private void runMemorybarAnimation(int pos) {
         MemorybarAnimation animation = new MemorybarAnimation(memoryBar,0, memoryPercentile);
-        animation.setDuration(1200);
+        animation.setDuration(1000);
         animation.setInterpolator(new AccelerateDecelerateInterpolator());
 
         if(pos > 0) {
-            animation.setStartOffset(400);
+            animation.setStartOffset(300);
         }
 
         memoryBar.startAnimation(animation);

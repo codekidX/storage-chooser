@@ -18,6 +18,7 @@ public class Config {
     private String thresholdSuffix;
     private String dialogTitle;
     private String internalStorageText;
+    private boolean allowCustomPath;
 
     public FragmentManager getFragmentManager() {
         return fragmentManager;
@@ -89,5 +90,13 @@ public class Config {
 
     public void setInternalStorageText(String internalStorageText) {
         this.internalStorageText = internalStorageText;
+    }
+
+    public boolean isAllowCustomPath() {
+        return allowCustomPath;
+    }
+
+    public void setAllowCustomPath(boolean allowCustomPath) {
+        this.allowCustomPath = allowCustomPath;
     }
 }

@@ -2,21 +2,20 @@ package com.codekidlabs.storagechooser.fragments;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.os.Build;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,8 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
-public class ChooserDialogFragment extends DialogFragment {
+public class CustomChooserFragment extends DialogFragment {
 
     private View mLayout;
     private ViewGroup mContainer;
@@ -46,7 +44,6 @@ public class ChooserDialogFragment extends DialogFragment {
 
     private static final String EXTERNAL_STORAGE_PATH_KITKAT = "/storage/extSdCard";
 
-    private List<Storages> storagesList;
     private List<String> customStoragesList;
 
 
@@ -62,16 +59,11 @@ public class ChooserDialogFragment extends DialogFragment {
     }
 
     private View getLayout(LayoutInflater inflater, ViewGroup container) {
-        mLayout = inflater.inflate(R.layout.storage_list, container, false);
+        mLayout = inflater.inflate(R.layout.custom_storage_list, container, false);
         initListView(getContext(), mLayout, StorageChooserBuilder.sConfig.isShowMemoryBar());
-
-        if(StorageChooserBuilder.sConfig.getDialogTitle() !=null) {
-            TextView dialogTitle = (TextView) mLayout.findViewById(R.id.dialog_title);
-            dialogTitle.setText(StorageChooserBuilder.sConfig.getDialogTitle());
-        }
-
         return mLayout;
     }
+
 
     /**
      * storage listView related code in this block
@@ -80,23 +72,11 @@ public class ChooserDialogFragment extends DialogFragment {
         ListView listView = (ListView) view.findViewById(R.id.storage_list_view);
         populateList();
 
-        listView.setAdapter(new StorageChooserListAdapter(storagesList, context, shouldShowMemoryBar));
+        listView.setAdapter(new StorageChooserCustomListAdapter(customStoragesList, context, shouldShowMemoryBar));
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String dirPAth = evaluatePath(i);
-                if(StorageChooserBuilder.sConfig.isAllowCustomPath()) {
-                    CustomChooserFragment c = new CustomChooserFragment();
-                    c.show(StorageChooserBuilder.sConfig.getFragmentManager(), "custom_chooser");
-                } else {
-                    if(StorageChooserBuilder.sConfig.isActionSave()) {
-                        DiskUtil.saveChooserPathPreference(StorageChooserBuilder.sConfig.getPreference(), dirPAth);
-                    } else {
-                        Log.d("StorageChooser", "Chosen path: " + dirPAth);
-                    }
-                }
-                ChooserDialogFragment.this.dismiss();
             }
         });
 
@@ -117,7 +97,7 @@ public class ChooserDialogFragment extends DialogFragment {
             if(i == 0) {
                 return Environment.getExternalStorageDirectory().getAbsolutePath() + preDefPath;
             } else {
-                return "/storage/" + storagesList.get(i).getStorageTitle() + preDefPath;
+                return "/storage/" + customStoragesList.get(i);
             }
         }
     }
@@ -130,38 +110,16 @@ public class ChooserDialogFragment extends DialogFragment {
      * populate storageList with necessary storages with filter applied
      */
     private void populateList() {
-        storagesList = new ArrayList<Storages>();
+        customStoragesList = new ArrayList<String>();
 
         File storageDir = new File("/storage");
         File internalStorageDir = Environment.getExternalStorageDirectory();
 
-        File[] volumeList = storageDir.listFiles();
-
-        Storages storages = new Storages();
-
-        // just add the internal storage and avoid adding emulated henceforth
-        if(StorageChooserBuilder.sConfig.getInternalStorageText() !=null) {
-            storages.setStorageTitle(StorageChooserBuilder.sConfig.getInternalStorageText());
-        } else {
-            storages.setStorageTitle(INTERNAL_STORAGE_TITLE);
-        }
-
-        storages.setMemoryTotalSize(MemoryUtil.getTotalMemorySize(internalStorageDir));
-        storages.setMemoryAvailableSize(MemoryUtil.getAvailableMemorySize(internalStorageDir));
-        storagesList.add(storages);
+        File[] volumeList = internalStorageDir.listFiles();
 
 
         for(File f: volumeList) {
-
-            if(!f.getName().equals(MemoryUtil.SELF_DIR_NAME)
-                    && !f.getName().equals(MemoryUtil.EMULATED_DIR_NAME)
-                    && !f.getName().equals(MemoryUtil.SDCARD0_DIR_NAME)) {
-                Storages sharedStorage = new Storages();
-                sharedStorage.setStorageTitle(f.getName());
-                sharedStorage.setMemoryTotalSize(MemoryUtil.getTotalMemorySize(f));
-                sharedStorage.setMemoryAvailableSize(MemoryUtil.getAvailableMemorySize(f));
-                storagesList.add(sharedStorage);
-            }
+            customStoragesList.add(f.getName());
         }
 
     }
@@ -171,6 +129,11 @@ public class ChooserDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog d = StorageChooserBuilder.dialog;
         d.setContentView(getLayout(LayoutInflater.from(getContext()), mContainer));
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(d.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.MATCH_PARENT;
+        d.getWindow().setAttributes(lp);
         return d;
     }
 }
