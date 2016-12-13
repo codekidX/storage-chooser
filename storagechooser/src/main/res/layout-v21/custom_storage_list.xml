@@ -9,16 +9,34 @@
         android:layout_width="match_parent"
         android:layout_height="60dp">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_margin="8dp"
+            android:orientation="horizontal"
             android:background="@drawable/path_layout_bg"
             android:layout_centerInParent="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <RelativeLayout
+                android:layout_width="50dp"
+                android:background="@color/chevronBgColor"
+                android:layout_height="match_parent">
+
+                <ImageButton
+                    android:src="@drawable/chevron_left"
+                    android:tint="@android:color/white"
+                    android:stateListAnimator="@null"
+                    android:backgroundTint="@android:color/transparent"
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </RelativeLayout>
+
+
             <TextView
                 android:id="@+id/path_chosen"
-                android:layout_centerVertical="true"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:text="blahblahblah"
@@ -28,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
     </RelativeLayout>
 
