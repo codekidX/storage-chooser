@@ -69,6 +69,7 @@ public class StorageChooserBuilder {
         private Activity mActivity;
         private boolean mActionSave = false;
         private boolean mShowMemoryBar = false;
+        private boolean mAllowCustomPath = false;
 
         Config devConfig;
 
@@ -122,6 +123,11 @@ public class StorageChooserBuilder {
             return this;
         }
 
+        public  Builder allowCustomPath(boolean allowCustomPath) {
+            mAllowCustomPath = allowCustomPath;
+            return this;
+        }
+
 
         public Builder build() {
             return this;
@@ -130,6 +136,7 @@ public class StorageChooserBuilder {
         public void show() {
             devConfig.setActionSave(mActionSave);
             devConfig.setShowMemoryBar(mShowMemoryBar);
+            devConfig.setAllowCustomPath(mAllowCustomPath);
             new StorageChooserBuilder(mActivity, devConfig).init();
         }
     }

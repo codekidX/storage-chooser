@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
                         .withMemoryBar(true)
                         .setDialogTitle("Ashish's Chooser")
                         .setInternalStorageText("My Internal")
+                        .allowCustomPath(true)
                         .withPredefinedPath("/Downloads/OpenGApps")
                         .withPreference(sharedPreferences)
                         .build();

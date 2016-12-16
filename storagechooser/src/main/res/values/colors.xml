@@ -6,4 +6,7 @@
 
     <color name="colorCyanListClick">#d6c8f5f3</color>
     <color name="colorListDivider">#89606060</color>
+
+    <color name="pathLayoutBgColor">#7cffffff</color>
+    <color name="chevronBgColor">#53ffffff</color>
 </resources>
