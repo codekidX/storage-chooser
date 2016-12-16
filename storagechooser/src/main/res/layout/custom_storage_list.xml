@@ -23,6 +23,7 @@
                 android:layout_height="match_parent">
 
                 <ImageButton
+                    android:id="@+id/back_button"
                     android:src="@drawable/chevron_left"
                     android:tint="@android:color/white"
                     android:background="@android:color/transparent"
@@ -60,12 +61,14 @@
 
 
     <Button
+        android:id="@+id/select_button"
         android:text="SELECT"
         android:textColor="@color/colorPrimaryDark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
+        android:textStyle="bold"
         android:background="@android:color/transparent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"

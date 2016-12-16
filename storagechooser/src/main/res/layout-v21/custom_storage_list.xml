@@ -23,6 +23,7 @@
                 android:layout_height="match_parent">
 
                 <ImageButton
+                    android:id="@+id/back_button"
                     android:src="@drawable/chevron_left"
                     android:tint="@android:color/white"
                     android:stateListAnimator="@null"
@@ -61,6 +62,7 @@
 
 
     <Button
+        android:id="@+id/select_button"
         android:text="SELECT"
         android:textColor="@color/colorPrimaryDark"
         android:layout_width="wrap_content"
