@@ -25,7 +25,7 @@ Add this to your root build.gradle file under repositories:
 
 Add this to your app level build.gradle as dependency:
 
-    com.gitlab.codekidX:storage-chooser-library:b0.1
+    com.github.codekidX:storage-chooser-library:0.1.12
 
 ----------
 Notes
@@ -76,6 +76,40 @@ builder.show();
 
 > Same goes if user chooses External Storage. [/storage/**Gibberish SDcard Name**/ + STATIC_PATH ]
 
+
+LICENSE
+-------------
+
+This project is licensed with modified LGPL-3.0 with following rules removed. See wiki for more details on why this decision was made.
+
+> **Changes:**
+
+> - d) Do one of the following:
+	0) Convey the Minimal Corresponding Source under the terms of this
+	License, and the Corresponding Application Code in a form
+	suitable for, and under terms that permit, the user to
+	recombine or relink the Application with a modified version of
+	the Linked Version to produce a modified Combined Work, in the
+	manner specified by section 6 of the GNU GPL for conveying
+	Corresponding Source.
+	1) Use a suitable shared library mechanism for linking with the
+	Library.  A suitable mechanism is one that (a) uses at run time
+	a copy of the Library already present on the user's computer
+	system, and (b) will operate properly with a modified version
+	of the Library that is interface-compatible with the Linked
+	Version.
+
+> - e) Provide Installation Information, but only if you would otherwise
+   be required to provide such information under section 6 of the
+   GNU GPL, and only to the extent that such information is
+   necessary to install and execute a modified version of the
+   Combined Work produced by recombining or relinking the
+   Application with a modified version of the Linked Version. (If
+   you use option 4d0, the Installation Information must accompany
+   the Minimal Corresponding Source and Corresponding Application
+   Code. If you use option 4d1, you must provide the Installation
+   Information in the manner specified by section 6 of the GNU GPL
+   for conveying Corresponding Source.)
 
 
 
