@@ -1,3 +1,96 @@
+
+Save New Duplicate & Edit Just Text Twitter
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
 Storage Chooser
 ===================
 
@@ -80,36 +173,11 @@ builder.show();
 LICENSE
 -------------
 
-This project is licensed with modified LGPL-3.0 with following rules removed. See wiki for more details on why this decision was made.
+This project is licensed with a modified LGPL-3.0, section 4d and 4e are removed. The reason is that requiring a replaceable linked libraries within APKs while retaining functionality is hard to comply with.
 
-> **Changes:**
+In practice, you can use this library as-is, with a notification of it being used. If you make any changes, you are required to publish your changes under a copyleft license.
 
-> - d) Do one of the following:
-	0) Convey the Minimal Corresponding Source under the terms of this
-	License, and the Corresponding Application Code in a form
-	suitable for, and under terms that permit, the user to
-	recombine or relink the Application with a modified version of
-	the Linked Version to produce a modified Combined Work, in the
-	manner specified by section 6 of the GNU GPL for conveying
-	Corresponding Source.
-	1) Use a suitable shared library mechanism for linking with the
-	Library.  A suitable mechanism is one that (a) uses at run time
-	a copy of the Library already present on the user's computer
-	system, and (b) will operate properly with a modified version
-	of the Library that is interface-compatible with the Linked
-	Version.
-
-> - e) Provide Installation Information, but only if you would otherwise
-   be required to provide such information under section 6 of the
-   GNU GPL, and only to the extent that such information is
-   necessary to install and execute a modified version of the
-   Combined Work produced by recombining or relinking the
-   Application with a modified version of the Linked Version. (If
-   you use option 4d0, the Installation Information must accompany
-   the Minimal Corresponding Source and Corresponding Application
-   Code. If you use option 4d1, you must provide the Installation
-   Information in the manner specified by section 6 of the GNU GPL
-   for conveying Corresponding Source.)
+Read more about this in wiki and why these changes were made.
 
 
 
