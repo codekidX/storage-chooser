@@ -12,6 +12,15 @@ and provides a clean and neat library to switch between storages.
 
 ----------
 
+Preview
+-------------
+
+![Predefined chooser](http://i.imgur.com/d2UOCB6.gif)
+
+![Custom path chooser](http://i.imgur.com/zfFVzYQ.gif)
+
+----------
+
 Installation
 -------------
 
@@ -25,7 +34,7 @@ Add this to your root build.gradle file under repositories:
 
 Add this to your app level build.gradle as dependency:
 
-    com.github.codekidX:storage-chooser-library:0.1.12
+    com.github.codekidX:storage-chooser:0.1.12
 
 ----------
 Notes
