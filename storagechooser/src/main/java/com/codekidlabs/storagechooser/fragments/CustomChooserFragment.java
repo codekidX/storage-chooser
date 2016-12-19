@@ -200,7 +200,7 @@ public class CustomChooserFragment extends DialogFragment {
         //if the path length is greater than that of the addressbar length
         // we need to clip the starting part so that it fits the length and makes some room
         int pathLength = theSelectedPath.length();
-        if(pathLength >= 35) {
+        if(pathLength >= 25) {
             // how many directories did user choose
             int slashCount = getSlashCount(theSelectedPath);
             if(slashCount > 2) {

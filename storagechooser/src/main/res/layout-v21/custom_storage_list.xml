@@ -18,6 +18,7 @@
             android:layout_height="match_parent">
 
             <RelativeLayout
+                android:id="@+id/back_button_holder"
                 android:layout_width="50dp"
                 android:background="@color/chevronBgColor"
                 android:layout_height="match_parent">
@@ -26,12 +27,26 @@
                     android:id="@+id/back_button"
                     android:src="@drawable/chevron_left"
                     android:tint="@android:color/white"
-                    android:stateListAnimator="@null"
-                    android:backgroundTint="@android:color/transparent"
+                    android:background="@android:color/transparent"
                     android:layout_centerInParent="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
+            </RelativeLayout>
 
+            <RelativeLayout
+                android:id="@+id/new_folder_button_holder"
+                android:layout_width="50dp"
+                android:background="@color/chevronBgColor"
+                android:layout_height="match_parent">
+
+                <ImageButton
+                    android:id="@+id/new_folder_button"
+                    android:src="@drawable/plus"
+                    android:tint="@android:color/white"
+                    android:background="@android:color/transparent"
+                    android:layout_centerInParent="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
             </RelativeLayout>
 
 
@@ -68,8 +83,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:stateListAnimator="@null"
-        android:backgroundTint="@android:color/white"
+        android:textStyle="bold"
+        android:background="@android:color/transparent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="8dp" />
