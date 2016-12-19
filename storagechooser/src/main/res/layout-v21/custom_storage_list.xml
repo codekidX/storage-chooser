@@ -54,8 +54,7 @@
     <ListView
         android:layout_below="@id/custom_path_header"
         android:id="@+id/storage_list_view"
-        android:divider="@drawable/divider"
-        android:dividerHeight="0.5dp"
+        android:divider="@null"
         android:layout_marginBottom="50dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

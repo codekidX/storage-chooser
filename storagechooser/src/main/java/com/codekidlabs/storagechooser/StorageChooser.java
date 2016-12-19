@@ -7,10 +7,9 @@ import android.support.v4.app.FragmentManager;
 
 import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
 import com.codekidlabs.storagechooser.models.Config;
-import com.codekidlabs.storagechooser.utils.MemoryUtil;
 
 
-public class StorageChooserBuilder {
+public class StorageChooser {
 
     public static Dialog dialog;
     public static String STORAGE_STATIC_PATH;
@@ -18,22 +17,51 @@ public class StorageChooserBuilder {
     public static Config sConfig;
     private Activity chooserActivity;
 
+    public static OnSelectListener onSelectListener;
+
     /**
-     * basic constructor of StorageChooserBuilder
+     * basic constructor of StorageChooser
      * @param config to use with dialog window addition
      */
-    public StorageChooserBuilder(Activity activity, Config config) {
+    public StorageChooser(Activity activity, Config config) {
         setsConfig(config);
         setChooserActivity(activity);
     }
 
     /**
-     * init creates and shows the storage chooser dialog
+     * blank constructor of StorageChooser
+     * no params used only for internal library use
      */
-    public void init() {
+    public StorageChooser() {
+    }
+
+    public interface OnSelectListener {
+
+        public void onSelect(String path);
+    }
+
+    /**
+     * show() shows the storage chooser dialog
+     */
+    public void show() {
+        init();
+    }
+
+    /**
+     * init() creates the storage chooser dialog
+     */
+    private void init() {
         dialog = getStorageChooserDialog(getChooserActivity());
         ChooserDialogFragment chooserDialogFragment = new ChooserDialogFragment();
         chooserDialogFragment.show(sConfig.getFragmentManager(),"storagechooser_dialog");
+    }
+
+    public void setOnSelectListener(OnSelectListener onSelectListener) {
+        this.onSelectListener = onSelectListener;
+    }
+
+    public OnSelectListener getOnSelectListener() {
+        return onSelectListener;
     }
 
     public static Config getsConfig() {
@@ -41,7 +69,7 @@ public class StorageChooserBuilder {
     }
 
     public static void setsConfig(Config sConfig) {
-        StorageChooserBuilder.sConfig = sConfig;
+        StorageChooser.sConfig = sConfig;
     }
 
     private Activity getChooserActivity() {
@@ -58,11 +86,11 @@ public class StorageChooserBuilder {
     /**
      * @class Builder
      *  - as the name suggests it gets all the configurations provided by the developer and
-     *    passes them to the StorageChooserBuilder class using the constructor.
+     *    passes them to the StorageChooser class using the constructor.
      *
      *    NOTE: The dialog is still not yet show even though the builder instance is present.
      *    show() is called seperately on the builder because it does not return a builder but
-     *    triggers init() inside the StorageChooserBuilder class.
+     *    triggers init() inside the StorageChooser class.
      */
     public static class Builder {
 
@@ -129,15 +157,11 @@ public class StorageChooserBuilder {
         }
 
 
-        public Builder build() {
-            return this;
-        }
-
-        public void show() {
+        public StorageChooser build() {
             devConfig.setActionSave(mActionSave);
             devConfig.setShowMemoryBar(mShowMemoryBar);
             devConfig.setAllowCustomPath(mAllowCustomPath);
-            new StorageChooserBuilder(mActivity, devConfig).init();
+            return new StorageChooser(mActivity, devConfig);
         }
     }
 }

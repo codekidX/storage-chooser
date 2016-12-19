@@ -2,16 +2,11 @@ package com.codekidlabs.storagechooser.fragments;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.codekidlabs.storagechooser.R;
-import com.codekidlabs.storagechooser.StorageChooserBuilder;
-import com.codekidlabs.storagechooser.adapters.StorageChooserCustomListAdapter;
+import com.codekidlabs.storagechooser.StorageChooser;
 import com.codekidlabs.storagechooser.adapters.StorageChooserListAdapter;
 import com.codekidlabs.storagechooser.models.Storages;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
@@ -64,11 +58,11 @@ public class ChooserDialogFragment extends DialogFragment {
 
     private View getLayout(LayoutInflater inflater, ViewGroup container) {
         mLayout = inflater.inflate(R.layout.storage_list, container, false);
-        initListView(getContext(), mLayout, StorageChooserBuilder.sConfig.isShowMemoryBar());
+        initListView(getContext(), mLayout, StorageChooser.sConfig.isShowMemoryBar());
 
-        if(StorageChooserBuilder.sConfig.getDialogTitle() !=null) {
+        if(StorageChooser.sConfig.getDialogTitle() !=null) {
             TextView dialogTitle = (TextView) mLayout.findViewById(R.id.dialog_title);
-            dialogTitle.setText(StorageChooserBuilder.sConfig.getDialogTitle());
+            dialogTitle.setText(StorageChooser.sConfig.getDialogTitle());
         }
 
         return mLayout;
@@ -87,21 +81,21 @@ public class ChooserDialogFragment extends DialogFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                if(StorageChooserBuilder.sConfig.isAllowCustomPath()) {
+                if(StorageChooser.sConfig.isAllowCustomPath()) {
                     String dirPath = evaluatePath(i);
                     CustomChooserFragment c = new CustomChooserFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString(DiskUtil.SC_PREFERENCE_KEY, dirPath);
                     c.setArguments(bundle);
-                    c.show(StorageChooserBuilder.sConfig.getFragmentManager(), "custom_chooser");
+                    c.show(StorageChooser.sConfig.getFragmentManager(), "custom_chooser");
                 } else {
                     String dirPath = evaluatePath(i);
-                    if(StorageChooserBuilder.sConfig.isActionSave()) {
-                        String preDef = StorageChooserBuilder.sConfig.getPredefinedPath();
+                    if(StorageChooser.sConfig.isActionSave()) {
+                        String preDef = StorageChooser.sConfig.getPredefinedPath();
                         if(preDef != null) {
                             dirPath = dirPath + preDef;
                         }
-                        DiskUtil.saveChooserPathPreference(StorageChooserBuilder.sConfig.getPreference(), dirPath);
+                        DiskUtil.saveChooserPathPreference(StorageChooser.sConfig.getPreference(), dirPath);
                     } else {
                         Log.d("StorageChooser", "Chosen path: " + dirPath);
                     }
@@ -144,8 +138,8 @@ public class ChooserDialogFragment extends DialogFragment {
         Storages storages = new Storages();
 
         // just add the internal storage and avoid adding emulated henceforth
-        if(StorageChooserBuilder.sConfig.getInternalStorageText() !=null) {
-            storages.setStorageTitle(StorageChooserBuilder.sConfig.getInternalStorageText());
+        if(StorageChooser.sConfig.getInternalStorageText() !=null) {
+            storages.setStorageTitle(StorageChooser.sConfig.getInternalStorageText());
         } else {
             storages.setStorageTitle(INTERNAL_STORAGE_TITLE);
         }
@@ -173,7 +167,7 @@ public class ChooserDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog d = StorageChooserBuilder.dialog;
+        Dialog d = StorageChooser.dialog;
         d.setContentView(getLayout(LayoutInflater.from(getContext()), mContainer));
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(d.getWindow().getAttributes());

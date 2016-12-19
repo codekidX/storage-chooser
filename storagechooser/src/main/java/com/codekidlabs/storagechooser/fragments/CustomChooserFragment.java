@@ -22,14 +22,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.codekidlabs.storagechooser.R;
-import com.codekidlabs.storagechooser.StorageChooserBuilder;
+import com.codekidlabs.storagechooser.StorageChooser;
 import com.codekidlabs.storagechooser.adapters.StorageChooserCustomListAdapter;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
 import com.codekidlabs.storagechooser.utils.FileUtil;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -50,6 +49,10 @@ public class CustomChooserFragment extends DialogFragment {
     private static final String INTERNAL_STORAGE_TITLE = "Internal Storage";
     private static final String EXTERNAL_STORAGE_TITLE = "ExtSD";
 
+
+    private static final int FLAG_DISSMISS_NORMAL = 0;
+    private static final int FLAG_DISSMISS_INIT_DIALOG = 1;
+
     private static String theSelectedPath = "";
     private static String mAddressClippedPath = "";
 
@@ -60,12 +63,14 @@ public class CustomChooserFragment extends DialogFragment {
     private View.OnClickListener mSelectButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(StorageChooserBuilder.sConfig.isActionSave()) {
-                DiskUtil.saveChooserPathPreference(StorageChooserBuilder.sConfig.getPreference(), theSelectedPath);
+            if(StorageChooser.sConfig.isActionSave()) {
+                DiskUtil.saveChooserPathPreference(StorageChooser.sConfig.getPreference(), theSelectedPath);
             } else {
                 Log.d("StorageChooser", "Chosen path: " + theSelectedPath);
             }
-            CustomChooserFragment.this.dismiss();
+
+            StorageChooser.onSelectListener.onSelect(theSelectedPath);
+            dissmissDialog(FLAG_DISSMISS_NORMAL);
         }
 
     };
@@ -81,7 +86,7 @@ public class CustomChooserFragment extends DialogFragment {
         int slashIndex = theSelectedPath.lastIndexOf("/");
 
         if(theSelectedPath.equals(mBundlePath)) {
-            dissmissDialog();
+            dissmissDialog(FLAG_DISSMISS_INIT_DIALOG);
         } else {
             theSelectedPath = theSelectedPath.substring(0, slashIndex);
             Log.e("SCLib", "Performing back action: " + theSelectedPath);
@@ -89,12 +94,20 @@ public class CustomChooserFragment extends DialogFragment {
         }
     }
 
-    private void dissmissDialog() {
+    private void dissmissDialog(int flag) {
         theSelectedPath = "";
         mAddressClippedPath = "";
-        this.dismiss();
-        ChooserDialogFragment c = new ChooserDialogFragment();
-        c.show(StorageChooserBuilder.sConfig.getFragmentManager(), "storagechooser_dialog");
+
+        switch (flag) {
+            case FLAG_DISSMISS_INIT_DIALOG:
+                ChooserDialogFragment c = new ChooserDialogFragment();
+                c.show(StorageChooser.sConfig.getFragmentManager(), "storagechooser_dialog");
+                this.dismiss();
+                break;
+            case FLAG_DISSMISS_NORMAL:
+                this.dismiss();
+                break;
+        }
     }
 
     @Nullable
@@ -110,7 +123,7 @@ public class CustomChooserFragment extends DialogFragment {
 
     private View getLayout(LayoutInflater inflater, ViewGroup container) {
         mLayout = inflater.inflate(R.layout.custom_storage_list, container, false);
-        initListView(getContext(), mLayout, StorageChooserBuilder.sConfig.isShowMemoryBar());
+        initListView(getContext(), mLayout, StorageChooser.sConfig.isShowMemoryBar());
 
         mBackButton = (ImageButton) mLayout.findViewById(R.id.back_button);
         mSelectButton = (Button) mLayout.findViewById(R.id.select_button);
@@ -149,7 +162,7 @@ public class CustomChooserFragment extends DialogFragment {
      * @return String with the required path for developers
      */
     private String evaluatePath(int i) {
-        String preDefPath = StorageChooserBuilder.sConfig.getPredefinedPath();
+        String preDefPath = StorageChooser.sConfig.getPredefinedPath();
         if(preDefPath == null) {
             Log.e("StorageChooser", "Cannot return a path, set withPredefinedPath() in your builder.");
             return null;
@@ -232,7 +245,7 @@ public class CustomChooserFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog d = StorageChooserBuilder.dialog;
+        Dialog d = StorageChooser.dialog;
         d.setContentView(getLayout(LayoutInflater.from(getContext()), mContainer));
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(d.getWindow().getAttributes());

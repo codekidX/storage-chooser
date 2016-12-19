@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 
 import com.codekidlabs.storagechooser.ExternalStoragePathFinder;
-import com.codekidlabs.storagechooser.StorageChooserBuilder;
 
 public class DiskUtil {
 

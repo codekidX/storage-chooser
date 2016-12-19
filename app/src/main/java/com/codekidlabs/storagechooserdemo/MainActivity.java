@@ -2,7 +2,6 @@ package com.codekidlabs.storagechooserdemo;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.BottomSheetDialogFragment;
@@ -11,11 +10,12 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.codekidlabs.storagechooser.StorageChooserBuilder;
+import com.codekidlabs.storagechooser.StorageChooser;
 import com.codekidlabs.storagechooserdemo.utils.TypefaceUtil;
 
 public class MainActivity extends AppCompatActivity {
@@ -53,13 +53,14 @@ public class MainActivity extends AppCompatActivity {
         storageChooserButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                StorageChooserBuilder.Builder builder = new StorageChooserBuilder.Builder()
+                StorageChooser storageChooser = new StorageChooser.Builder()
                         .withActivity(MainActivity.this)
                         .withFragmentManager(getSupportFragmentManager())
                         .withPredefinedPath("/Downloads/OpenGApps")
                         .withPreference(sharedPreferences)
                         .build();
-                builder.show();
+
+                storageChooser.show();
             }
         });
 
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         storageChooserButtonMemorybar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                StorageChooserBuilder.Builder builder = new StorageChooserBuilder.Builder()
+                StorageChooser storageChooser = new StorageChooser.Builder()
                         .withActivity(MainActivity.this)
                         .withFragmentManager(getSupportFragmentManager())
                         .withMemoryBar(true)
@@ -80,7 +81,15 @@ public class MainActivity extends AppCompatActivity {
                         .withPredefinedPath("/Downloads/OpenGApps")
                         .withPreference(sharedPreferences)
                         .build();
-                builder.show();
+
+                storageChooser.setOnSelectListener(new StorageChooser.OnSelectListener() {
+                    @Override
+                    public void onSelect(String path) {
+                        Log.e("SELECTLISTENER_PATH", path);
+                    }
+                });
+
+                storageChooser.show();
             }
         });
 
