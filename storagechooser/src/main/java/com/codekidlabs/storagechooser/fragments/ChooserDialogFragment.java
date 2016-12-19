@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.StorageChooser;
+import com.codekidlabs.storagechooser.StorageChooserView;
 import com.codekidlabs.storagechooser.adapters.StorageChooserListAdapter;
 import com.codekidlabs.storagechooser.models.Storages;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
@@ -60,9 +61,9 @@ public class ChooserDialogFragment extends DialogFragment {
         mLayout = inflater.inflate(R.layout.storage_list, container, false);
         initListView(getContext(), mLayout, StorageChooser.sConfig.isShowMemoryBar());
 
-        if(StorageChooser.sConfig.getDialogTitle() !=null) {
+        if(StorageChooserView.CHOOSER_HEADING !=null) {
             TextView dialogTitle = (TextView) mLayout.findViewById(R.id.dialog_title);
-            dialogTitle.setText(StorageChooser.sConfig.getDialogTitle());
+            dialogTitle.setText(StorageChooserView.CHOOSER_HEADING);
         }
 
         return mLayout;
@@ -138,8 +139,8 @@ public class ChooserDialogFragment extends DialogFragment {
         Storages storages = new Storages();
 
         // just add the internal storage and avoid adding emulated henceforth
-        if(StorageChooser.sConfig.getInternalStorageText() !=null) {
-            storages.setStorageTitle(StorageChooser.sConfig.getInternalStorageText());
+        if(StorageChooserView.INTERNAL_STORAGE_TEXT !=null) {
+            storages.setStorageTitle(StorageChooserView.INTERNAL_STORAGE_TEXT);
         } else {
             storages.setStorageTitle(INTERNAL_STORAGE_TITLE);
         }

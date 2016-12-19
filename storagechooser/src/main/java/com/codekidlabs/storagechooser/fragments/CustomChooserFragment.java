@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.StorageChooser;
+import com.codekidlabs.storagechooser.StorageChooserView;
 import com.codekidlabs.storagechooser.adapters.StorageChooserCustomListAdapter;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
 import com.codekidlabs.storagechooser.utils.FileUtil;
@@ -127,6 +128,10 @@ public class CustomChooserFragment extends DialogFragment {
 
         mBackButton = (ImageButton) mLayout.findViewById(R.id.back_button);
         mSelectButton = (Button) mLayout.findViewById(R.id.select_button);
+
+        if(StorageChooserView.LABEL_SELECT != null) {
+            mSelectButton.setText(StorageChooserView.LABEL_SELECT);
+        }
 
         mBackButton.setOnClickListener(mBackButtonClickListener);
         mSelectButton.setOnClickListener(mSelectButtonClickListener);
