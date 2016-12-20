@@ -6,7 +6,8 @@ package com.codekidlabs.storagechooser;
 
 public class StorageChooserView {
 
-    public static String LABEL_SELECT;
+    public static String LABEL_SELECT = "Select";
+    public static String LABEL_CREATE = "Create";
     public static String CHOOSER_HEADING;
     public static String INTERNAL_STORAGE_TEXT;
     public static String TOAST_FOLDER_CREATED = "Folder Created";
@@ -16,6 +17,10 @@ public class StorageChooserView {
 
     public static void setLabelSelect(String labelSelect) {
         LABEL_SELECT = labelSelect;
+    }
+
+    public static void setLabelCreate(String labelCreate) {
+        LABEL_CREATE = labelCreate;
     }
 
     public static void setChooserHeading(String chooserHeading) {

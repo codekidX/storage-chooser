@@ -103,7 +103,6 @@
 
         <Button
             android:id="@+id/create_folder_button"
-            android:text="Create"
             android:textColor="@android:color/white"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
@@ -118,7 +117,6 @@
 
     <Button
         android:id="@+id/select_button"
-        android:text="SELECT"
         android:textColor="@color/colorPrimaryDark"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

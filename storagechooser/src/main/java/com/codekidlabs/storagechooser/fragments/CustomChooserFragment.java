@@ -232,9 +232,9 @@ public class CustomChooserFragment extends DialogFragment {
             mNewFolderButtonHolder.setVisibility(View.GONE);
         }
 
-        if(StorageChooserView.LABEL_SELECT != null) {
-            mSelectButton.setText(StorageChooserView.LABEL_SELECT);
-        }
+        // set label of buttons [localization]
+        mSelectButton.setText(StorageChooserView.LABEL_SELECT);
+        mCreateButton.setText(StorageChooserView.LABEL_CREATE);
 
         mBackButton.setOnClickListener(mBackButtonClickListener);
         mSelectButton.setOnClickListener(mSelectButtonClickListener);
