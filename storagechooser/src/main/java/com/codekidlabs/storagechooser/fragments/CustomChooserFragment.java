@@ -50,13 +50,15 @@ import java.util.List;
 public class CustomChooserFragment extends DialogFragment {
 
     private View mLayout;
+    private View mInactiveGradient;
     private ViewGroup mContainer;
 
     private TextView mPathChosen;
     private ImageButton mBackButton;
     private Button mSelectButton;
     private Button mCreateButton;
-    private ImageView mNewFolderButton;
+    private ImageView mNewFolderImageView;
+    private Button mNewFolderButton;
     private EditText mFolderNameEditText;
     private TextInputLayout mFolderNameETLayout;
 
@@ -138,14 +140,21 @@ public class CustomChooserFragment extends DialogFragment {
         mNewFolderView.setVisibility(View.VISIBLE);
         Animation anim = AnimationUtils.loadAnimation(getContext(), R.anim.anim_new_folder_view);
         mNewFolderView.startAnimation(anim);
+        mInactiveGradient.startAnimation(anim);
 
-        mNewFolderButton.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.drawable_plus_to_close));
-        // image button animation
-        Animatable animatable = (Animatable) mNewFolderButton.getDrawable();
-        animatable.start();
+        if(isSleekView()) {
+            mNewFolderImageView.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.drawable_plus_to_close));
+            // image button animation
+            Animatable animatable = (Animatable) mNewFolderImageView.getDrawable();
+            animatable.start();
+            mNewFolderImageView.setOnClickListener(mNewFolderButtonCloseListener);
+        } else {
+            mNewFolderButton.setOnClickListener(mNewFolderButtonCloseListener);
+            mNewFolderButton.setText(StorageChooserView.LABEL_CANCEL);
+//            mNewFolderButton.setTextColor(ContextCompat.getColor(getContext(), android.R.color.holo_red_light));
+        }
 
 //        mNewFolderButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.window_close));
-        mNewFolderButton.setOnClickListener(mNewFolderButtonCloseListener);
 
         //listview should not be clickable
         StorageChooserCustomListAdapter.shouldEnable = false;
@@ -154,18 +163,25 @@ public class CustomChooserFragment extends DialogFragment {
     private void hideAddFolderView() {
         Animation anim = AnimationUtils.loadAnimation(getContext(), R.anim.anim_close_folder_view);
         mNewFolderView.startAnimation(anim);
+        mInactiveGradient.startAnimation(anim);
         mNewFolderView.setVisibility(View.INVISIBLE);
+        mInactiveGradient.setVisibility(View.INVISIBLE);
 
-        mNewFolderButton.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.drawable_close_to_plus));
-        // image button animation
-        Animatable animatable = (Animatable) mNewFolderButton.getDrawable();
-        animatable.start();
-
+        if(isSleekView()) {
+            mNewFolderImageView.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.drawable_close_to_plus));
+            // image button animation
+            Animatable animatable = (Animatable) mNewFolderImageView.getDrawable();
+            animatable.start();
+            mNewFolderImageView.setOnClickListener(mNewFolderButtonClickListener);
+        } else {
+            mNewFolderButton.setOnClickListener(mNewFolderButtonClickListener);
+            mNewFolderButton.setText(StorageChooserView.LABEL_NEW_FOLDER);
+//            mNewFolderButton.setTextColor(ContextCompat.getColor(getContext(), StorageChooserView.SC_SECONDARY_ACTION_COLOR));
+        }
         //listview should be clickable
         StorageChooserCustomListAdapter.shouldEnable = true;
 
 //        mNewFolderButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.plus));
-        mNewFolderButton.setOnClickListener(mNewFolderButtonClickListener);
     }
 
     private int isFolderViewVisible() {
@@ -212,12 +228,20 @@ public class CustomChooserFragment extends DialogFragment {
     }
 
     private View getLayout(LayoutInflater inflater, ViewGroup container) {
-        mLayout = inflater.inflate(R.layout.custom_storage_list, container, false);
+        mLayout = inflater.inflate(StorageChooserView.VIEW_SC, container, false);
         initListView(getContext(), mLayout, StorageChooser.sConfig.isShowMemoryBar());
 
         mBackButton = (ImageButton) mLayout.findViewById(R.id.back_button);
         mSelectButton = (Button) mLayout.findViewById(R.id.select_button);
-        mNewFolderButton = (ImageView) mLayout.findViewById(R.id.new_folder_button);
+        if(isSleekView()) {
+            mNewFolderImageView = (ImageView) mLayout.findViewById(R.id.new_folder_button);
+            mNewFolderImageView.setOnClickListener(mNewFolderButtonClickListener);
+        } else {
+            mNewFolderButton = (Button) mLayout.findViewById(R.id.new_folder_button);
+            mNewFolderButton.setText(StorageChooserView.LABEL_NEW_FOLDER);
+            mNewFolderButton.setOnClickListener(mNewFolderButtonClickListener);
+            mNewFolderButton.setTextColor(ContextCompat.getColor(getContext(), StorageChooserView.SC_SECONDARY_ACTION_COLOR));
+        }
         mCreateButton = (Button) mLayout.findViewById(R.id.create_folder_button);
         RelativeLayout mNewFolderButtonHolder = (RelativeLayout) mLayout.findViewById(R.id.new_folder_button_holder);
         mNewFolderView = (RelativeLayout) mLayout.findViewById(R.id.new_folder_view);
@@ -225,8 +249,11 @@ public class CustomChooserFragment extends DialogFragment {
         mFolderNameETLayout = (TextInputLayout) mLayout.findViewById(R.id.et_folder_name_layout);
         mFolderNameETLayout.setHint(StorageChooserView.TEXTFIELD_HINT);
 
+        mInactiveGradient = mLayout.findViewById(R.id.inactive_gradient);
+
         //at start dont show the new folder view unless user clicks on the add/plus button
         mNewFolderView.setVisibility(View.INVISIBLE);
+        mInactiveGradient.setVisibility(View.INVISIBLE);
 
         if(!StorageChooser.sConfig.isAllowAddFolder()) {
             mNewFolderButtonHolder.setVisibility(View.GONE);
@@ -238,10 +265,13 @@ public class CustomChooserFragment extends DialogFragment {
 
         mBackButton.setOnClickListener(mBackButtonClickListener);
         mSelectButton.setOnClickListener(mSelectButtonClickListener);
-        mNewFolderButton.setOnClickListener(mNewFolderButtonClickListener);
         mCreateButton.setOnClickListener(mCreateButtonClickListener);
 
         return mLayout;
+    }
+
+    private boolean isSleekView() {
+        return StorageChooserView.VIEW_SC == StorageChooserView.SC_LAYOUT_SLEEK;
     }
 
 

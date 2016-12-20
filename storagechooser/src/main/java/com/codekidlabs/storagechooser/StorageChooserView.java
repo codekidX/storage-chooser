@@ -8,6 +8,8 @@ public class StorageChooserView {
 
     public static String LABEL_SELECT = "Select";
     public static String LABEL_CREATE = "Create";
+    public static String LABEL_NEW_FOLDER = "New Folder";
+    public static String LABEL_CANCEL = "Cancel";
     public static String CHOOSER_HEADING;
     public static String INTERNAL_STORAGE_TEXT;
     public static String TOAST_FOLDER_CREATED = "Folder Created";
@@ -15,12 +17,30 @@ public class StorageChooserView {
     public static String TEXTFIELD_HINT = "Folder Name";
     public static String TEXTFIELD_ERROR = "Empty Folder Name";
 
+    // LAYOUTS
+    public static int VIEW_SC = R.layout.custom_storage_list;
+
+    // layout choices
+    public static int SC_LAYOUT_SLEEK = R.layout.custom_storage_list;
+    public static int SC_LAYOUT_SHEET = R.layout.sheet_storage_list;
+
+    // COLORS
+    public static int SC_SECONDARY_ACTION_COLOR = android.R.color.black;
+
     public static void setLabelSelect(String labelSelect) {
         LABEL_SELECT = labelSelect;
     }
 
     public static void setLabelCreate(String labelCreate) {
         LABEL_CREATE = labelCreate;
+    }
+
+    public static void setLabelNewFolder(String labelNewFolder) {
+        LABEL_NEW_FOLDER = labelNewFolder;
+    }
+
+    public static void setLabelCancel(String labelCancel) {
+        LABEL_CANCEL = labelCancel;
     }
 
     public static void setChooserHeading(String chooserHeading) {
@@ -45,5 +65,13 @@ public class StorageChooserView {
 
     public static void setTextfieldError(String textfieldError) {
         TEXTFIELD_ERROR = textfieldError;
+    }
+
+    public static void setViewSc(int viewSc) {
+        VIEW_SC = viewSc;
+    }
+
+    public static void setScSecondaryActionColor(int scSecondaryActionColor) {
+        SC_SECONDARY_ACTION_COLOR = scSecondaryActionColor;
     }
 }

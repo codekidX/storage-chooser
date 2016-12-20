@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.codekidlabs.storagechooser.StorageChooser;
+import com.codekidlabs.storagechooser.StorageChooserView;
 import com.codekidlabs.storagechooserdemo.utils.TypefaceUtil;
 
 public class MainActivity extends AppCompatActivity {
@@ -89,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("SELECTLISTENER_PATH", path);
                     }
                 });
+
+                StorageChooserView.setViewSc(StorageChooserView.SC_LAYOUT_SHEET);
 
                 storageChooser.show();
             }

@@ -115,6 +115,14 @@
 
     </RelativeLayout>
 
+    <View
+        android:id="@+id/inactive_gradient"
+        android:layout_below="@id/custom_path_header"
+        android:layout_marginBottom="130dp"
+        android:background="@color/inactiveGradientColor"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <Button
         android:id="@+id/select_button"
         android:textColor="@color/colorPrimaryDark"
