@@ -15,9 +15,7 @@ and provides a clean and neat library to switch between storages.
 Preview
 -------------
 
-![Predefined chooser](http://i.imgur.com/d2UOCB6.gif)
-
-![Custom path chooser](http://i.imgur.com/zfFVzYQ.gif)
+![SC Features](https://i.imgur.com/tM2wfqg.gif)
 
 ----------
 
@@ -34,7 +32,7 @@ Add this to your root build.gradle file under repositories:
 
 Add this to your app level build.gradle as dependency:
 
-    com.github.codekidX:storage-chooser:0.1.12
+    com.github.codekidX:storage-chooser:1.0.20
 
 ----------
 Notes
@@ -65,7 +63,7 @@ private SharedPreference yourPreference;
 // ---------------------------------------------
 
 // Initialize Builder
-StorageChooserBuilder.Builder builder = new StorageChooserBuilder.Builder()
+StorageChooser chooser = new StorageChooser.Builder()
 .withActivity(MainActivity.this)
 .withFragmentManager(getSupportFragmentManager())
 .withMemoryBar(true) // shows a nice visual representation of memory available 
@@ -75,7 +73,7 @@ StorageChooserBuilder.Builder builder = new StorageChooserBuilder.Builder()
 .build();
 
 // Show dialog whenever you want by
-builder.show();
+chooser.show();
 ```
 
 
