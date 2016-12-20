@@ -19,6 +19,7 @@ public class Config {
     private String dialogTitle;
     private String internalStorageText;
     private boolean allowCustomPath;
+    private boolean allowAddFolder;
 
     public FragmentManager getFragmentManager() {
         return fragmentManager;
@@ -98,5 +99,13 @@ public class Config {
 
     public void setAllowCustomPath(boolean allowCustomPath) {
         this.allowCustomPath = allowCustomPath;
+    }
+
+    public boolean isAllowAddFolder() {
+        return allowAddFolder;
+    }
+
+    public void setAllowAddFolder(boolean allowAddFolder) {
+        this.allowAddFolder = allowAddFolder;
     }
 }

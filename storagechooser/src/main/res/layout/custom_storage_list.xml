@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <RelativeLayout
@@ -39,10 +41,9 @@
                 android:background="@color/chevronBgColor"
                 android:layout_height="match_parent">
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/new_folder_button"
-                    android:src="@drawable/plus"
-                    android:tint="@android:color/white"
+                    android:src="@drawable/drawable_plus_to_close"
                     android:background="@android:color/transparent"
                     android:layout_centerInParent="true"
                     android:layout_width="wrap_content"
@@ -74,6 +75,46 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+    <RelativeLayout
+        android:id="@+id/new_folder_view"
+        android:background="@color/colorPrimary"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="80dp">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/et_folder_name_layout"
+            android:textColorHint="@color/chevronBgColor"
+            android:layout_toStartOf="@+id/create_folder_button"
+            android:layout_centerVertical="true"
+            android:layout_alignParentStart="true"
+            android:layout_margin="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:id="@+id/et_folder_name"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/create_folder_button"
+            android:text="Create"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:background="@null"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+
+    </RelativeLayout>
 
     <Button
         android:id="@+id/select_button"

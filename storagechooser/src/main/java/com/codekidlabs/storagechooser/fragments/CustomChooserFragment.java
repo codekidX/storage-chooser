@@ -3,13 +3,21 @@ package com.codekidlabs.storagechooser.fragments;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Animatable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
+import android.support.v7.widget.AppCompatImageButton;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -17,9 +25,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.StorageChooser;
@@ -43,8 +55,15 @@ public class CustomChooserFragment extends DialogFragment {
     private TextView mPathChosen;
     private ImageButton mBackButton;
     private Button mSelectButton;
+    private Button mCreateButton;
+    private ImageView mNewFolderButton;
+    private EditText mFolderNameEditText;
+    private TextInputLayout mFolderNameETLayout;
+
+    private RelativeLayout mNewFolderView;
 
     private String mBundlePath;
+    private ListView listView;
 
 
     private static final String INTERNAL_STORAGE_TITLE = "Internal Storage";
@@ -59,6 +78,8 @@ public class CustomChooserFragment extends DialogFragment {
 
     private List<String> customStoragesList;
     private StorageChooserCustomListAdapter customListAdapter;
+
+    private FileUtil fileUtil;
 
 
     private View.OnClickListener mSelectButtonClickListener = new View.OnClickListener() {
@@ -82,6 +103,74 @@ public class CustomChooserFragment extends DialogFragment {
             performBackAction();
         }
     };
+    
+    private View.OnClickListener mNewFolderButtonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            showAddFolderView();
+        }
+    };
+
+    private View.OnClickListener mNewFolderButtonCloseListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            hideAddFolderView();
+        }
+    };
+
+    private View.OnClickListener mCreateButtonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if(validateFolderName()) {
+                boolean success = FileUtil.createDirectory(mFolderNameEditText.getText().toString().trim(), theSelectedPath);
+                if(success) {
+                    Toast.makeText(getContext(), StorageChooserView.TOAST_FOLDER_CREATED, Toast.LENGTH_SHORT).show();
+                    trimPopulate(theSelectedPath);
+                    hideAddFolderView();
+                } else {
+                    Toast.makeText(getContext(), StorageChooserView.TOAST_FOLDER_ERROR, Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    };
+
+    private void showAddFolderView() {
+        mNewFolderView.setVisibility(View.VISIBLE);
+        Animation anim = AnimationUtils.loadAnimation(getContext(), R.anim.anim_new_folder_view);
+        mNewFolderView.startAnimation(anim);
+
+        mNewFolderButton.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.drawable_plus_to_close));
+        // image button animation
+        Animatable animatable = (Animatable) mNewFolderButton.getDrawable();
+        animatable.start();
+
+//        mNewFolderButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.window_close));
+        mNewFolderButton.setOnClickListener(mNewFolderButtonCloseListener);
+
+        //listview should not be clickable
+        StorageChooserCustomListAdapter.shouldEnable = false;
+    }
+
+    private void hideAddFolderView() {
+        Animation anim = AnimationUtils.loadAnimation(getContext(), R.anim.anim_close_folder_view);
+        mNewFolderView.startAnimation(anim);
+        mNewFolderView.setVisibility(View.INVISIBLE);
+
+        mNewFolderButton.setImageDrawable(ContextCompat.getDrawable(getContext(),R.drawable.drawable_close_to_plus));
+        // image button animation
+        Animatable animatable = (Animatable) mNewFolderButton.getDrawable();
+        animatable.start();
+
+        //listview should be clickable
+        StorageChooserCustomListAdapter.shouldEnable = true;
+
+//        mNewFolderButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.plus));
+        mNewFolderButton.setOnClickListener(mNewFolderButtonClickListener);
+    }
+
+    private int isFolderViewVisible() {
+        return mNewFolderView.getVisibility();
+    }
 
     private void performBackAction() {
         int slashIndex = theSelectedPath.lastIndexOf("/");
@@ -128,6 +217,20 @@ public class CustomChooserFragment extends DialogFragment {
 
         mBackButton = (ImageButton) mLayout.findViewById(R.id.back_button);
         mSelectButton = (Button) mLayout.findViewById(R.id.select_button);
+        mNewFolderButton = (ImageView) mLayout.findViewById(R.id.new_folder_button);
+        mCreateButton = (Button) mLayout.findViewById(R.id.create_folder_button);
+        RelativeLayout mNewFolderButtonHolder = (RelativeLayout) mLayout.findViewById(R.id.new_folder_button_holder);
+        mNewFolderView = (RelativeLayout) mLayout.findViewById(R.id.new_folder_view);
+        mFolderNameEditText = (EditText) mLayout.findViewById(R.id.et_folder_name);
+        mFolderNameETLayout = (TextInputLayout) mLayout.findViewById(R.id.et_folder_name_layout);
+        mFolderNameETLayout.setHint(StorageChooserView.TEXTFIELD_HINT);
+
+        //at start dont show the new folder view unless user clicks on the add/plus button
+        mNewFolderView.setVisibility(View.INVISIBLE);
+
+        if(!StorageChooser.sConfig.isAllowAddFolder()) {
+            mNewFolderButtonHolder.setVisibility(View.GONE);
+        }
 
         if(StorageChooserView.LABEL_SELECT != null) {
             mSelectButton.setText(StorageChooserView.LABEL_SELECT);
@@ -135,6 +238,8 @@ public class CustomChooserFragment extends DialogFragment {
 
         mBackButton.setOnClickListener(mBackButtonClickListener);
         mSelectButton.setOnClickListener(mSelectButtonClickListener);
+        mNewFolderButton.setOnClickListener(mNewFolderButtonClickListener);
+        mCreateButton.setOnClickListener(mCreateButtonClickListener);
 
         return mLayout;
     }
@@ -144,7 +249,7 @@ public class CustomChooserFragment extends DialogFragment {
      * storage listView related code in this block
      */
     private void initListView(Context context, View view, boolean shouldShowMemoryBar) {
-        ListView listView = (ListView) view.findViewById(R.id.storage_list_view);
+        listView = (ListView) view.findViewById(R.id.storage_list_view);
         mPathChosen = (TextView) view.findViewById(R.id.path_chosen);
         mBundlePath = this.getArguments().getString(DiskUtil.SC_PREFERENCE_KEY);
         populateList(mBundlePath);
@@ -186,6 +291,7 @@ public class CustomChooserFragment extends DialogFragment {
 
     /**
      * populate storageList with necessary storages with filter applied
+     * @param path defines the path for which list of folder is requested
      */
     private void populateList(String path) {
         if(customStoragesList == null) {
@@ -194,7 +300,7 @@ public class CustomChooserFragment extends DialogFragment {
             customStoragesList.clear();
         }
 
-        FileUtil fileUtil = new FileUtil();
+        fileUtil = new FileUtil();
         theSelectedPath = theSelectedPath +  path;
 
         //if the path length is greater than that of the addressbar length
@@ -240,6 +346,43 @@ public class CustomChooserFragment extends DialogFragment {
         playTheAddressBarAnimation();
     }
 
+    /**
+     * Unlike populate list trim populate only updates the list not the addressbar.
+     * This is used when creating new folder and update to list is required
+     * @param s is the path to be refreshed
+     * */
+    private void trimPopulate(String s) {
+        if(customStoragesList == null) {
+            customStoragesList = new ArrayList<String>();
+        } else {
+            customStoragesList.clear();
+        }
+        File[] volumeList = fileUtil.listFilesForDir(theSelectedPath);
+
+        Log.e("SCLib", theSelectedPath);
+        if(volumeList != null) {
+            for (File f : volumeList) {
+                if(!f.getName().startsWith(".")) {
+                    customStoragesList.add(f.getName());
+                }
+            }
+
+            Collections.sort(customStoragesList, new Comparator<String>() {
+                @Override
+                public int compare(String s1, String s2) {
+                    return s1.compareToIgnoreCase(s2);
+                }
+            });
+        }else {
+            customStoragesList.clear();
+        }
+
+
+        if(customListAdapter !=null) {
+            customListAdapter.notifyDataSetChanged();
+        }
+    }
+
     private void playTheAddressBarAnimation() {
         mPathChosen.setText(mAddressClippedPath);
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.anim_address_bar);
@@ -276,5 +419,19 @@ public class CustomChooserFragment extends DialogFragment {
             }
         }
         return count;
+    }
+
+    /**
+     * Checks if edit text field is empty or not. Since there is only one edit text here no
+     * param is required for now.
+     */
+    private boolean validateFolderName() {
+        if (mFolderNameEditText.getText().toString().trim().isEmpty()) {
+            mFolderNameEditText.setError(StorageChooserView.TEXTFIELD_ERROR);
+            return false;
+        } else {
+            mFolderNameETLayout.setErrorEnabled(false);
+        }
+        return true;
     }
 }
