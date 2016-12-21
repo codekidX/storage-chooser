@@ -18,7 +18,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="6dp"
         android:textSize="16sp"
-        android:textColor="@android:color/black"
         android:layout_toEndOf="@id/path_folder_icon"
         android:layout_centerVertical="true"
         android:layout_width="wrap_content"

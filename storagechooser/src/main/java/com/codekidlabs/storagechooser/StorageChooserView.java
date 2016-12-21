@@ -26,6 +26,7 @@ public class StorageChooserView {
 
     // COLORS
     public static int SC_SECONDARY_ACTION_COLOR = android.R.color.black;
+    public static int SC_TEXTFIELD_HINT_COLOR = R.color.chevronBgColor;
 
     public static void setLabelSelect(String labelSelect) {
         LABEL_SELECT = labelSelect;
@@ -61,6 +62,10 @@ public class StorageChooserView {
 
     public static void setTextfieldHint(String textfieldHint) {
         TEXTFIELD_HINT = textfieldHint;
+    }
+
+    public static void setScTextfieldHintColor(int scTextfieldHintColor) {
+        SC_TEXTFIELD_HINT_COLOR = scTextfieldHintColor;
     }
 
     public static void setTextfieldError(String textfieldError) {

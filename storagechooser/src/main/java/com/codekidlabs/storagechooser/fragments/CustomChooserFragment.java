@@ -3,9 +3,10 @@ package com.codekidlabs.storagechooser.fragments;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.PorterDuff;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Animatable;
-import android.graphics.drawable.Drawable;
+import android.hardware.input.InputManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
@@ -13,16 +14,15 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v7.widget.AppCompatImageButton;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethod;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -75,6 +75,8 @@ public class CustomChooserFragment extends DialogFragment {
     private static final int FLAG_DISSMISS_NORMAL = 0;
     private static final int FLAG_DISSMISS_INIT_DIALOG = 1;
 
+    private boolean isOpen;
+
     private static String theSelectedPath = "";
     private static String mAddressClippedPath = "";
 
@@ -117,6 +119,7 @@ public class CustomChooserFragment extends DialogFragment {
         @Override
         public void onClick(View view) {
             hideAddFolderView();
+            hideKeyboard();
         }
     };
 
@@ -128,6 +131,7 @@ public class CustomChooserFragment extends DialogFragment {
                 if(success) {
                     Toast.makeText(getContext(), StorageChooserView.TOAST_FOLDER_CREATED, Toast.LENGTH_SHORT).show();
                     trimPopulate(theSelectedPath);
+                    hideKeyboard();
                     hideAddFolderView();
                 } else {
                     Toast.makeText(getContext(), StorageChooserView.TOAST_FOLDER_ERROR, Toast.LENGTH_SHORT).show();
@@ -135,6 +139,7 @@ public class CustomChooserFragment extends DialogFragment {
             }
         }
     };
+    private boolean keyboardToggle;
 
     private void showAddFolderView() {
         mNewFolderView.setVisibility(View.VISIBLE);
@@ -153,7 +158,6 @@ public class CustomChooserFragment extends DialogFragment {
             mNewFolderButton.setText(StorageChooserView.LABEL_CANCEL);
 //            mNewFolderButton.setTextColor(ContextCompat.getColor(getContext(), android.R.color.holo_red_light));
         }
-
 //        mNewFolderButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.window_close));
 
         //listview should not be clickable
@@ -163,9 +167,7 @@ public class CustomChooserFragment extends DialogFragment {
     private void hideAddFolderView() {
         Animation anim = AnimationUtils.loadAnimation(getContext(), R.anim.anim_close_folder_view);
         mNewFolderView.startAnimation(anim);
-        mInactiveGradient.startAnimation(anim);
         mNewFolderView.setVisibility(View.INVISIBLE);
-        mInactiveGradient.setVisibility(View.INVISIBLE);
 
         if(isSleekView()) {
             mNewFolderImageView.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.drawable_close_to_plus));
@@ -181,11 +183,20 @@ public class CustomChooserFragment extends DialogFragment {
         //listview should be clickable
         StorageChooserCustomListAdapter.shouldEnable = true;
 
+            mInactiveGradient.startAnimation(anim);
+            mInactiveGradient.setVisibility(View.INVISIBLE);
+
 //        mNewFolderButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.plus));
     }
 
-    private int isFolderViewVisible() {
-        return mNewFolderView.getVisibility();
+    private boolean isFolderViewVisible() {
+        return mNewFolderView.getVisibility() == View.VISIBLE;
+    }
+
+    public void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mFolderNameEditText.getWindowToken(), 0);
+
     }
 
     private void performBackAction() {
@@ -248,6 +259,10 @@ public class CustomChooserFragment extends DialogFragment {
         mFolderNameEditText = (EditText) mLayout.findViewById(R.id.et_folder_name);
         mFolderNameETLayout = (TextInputLayout) mLayout.findViewById(R.id.et_folder_name_layout);
         mFolderNameETLayout.setHint(StorageChooserView.TEXTFIELD_HINT);
+
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mFolderNameEditText.setHintTextColor(ContextCompat.getColor(getContext(), StorageChooserView.SC_TEXTFIELD_HINT_COLOR));
+        }
 
         mInactiveGradient = mLayout.findViewById(R.id.inactive_gradient);
 
