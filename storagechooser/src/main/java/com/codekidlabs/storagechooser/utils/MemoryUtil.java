@@ -72,16 +72,16 @@ public class MemoryUtil {
      * mainly to format the available bytes into user readable string
      * @param size long - value gained from the getTotalMemorySize() and getAvailableMemorySize()
      *             using StatFs
-     * @return a formatted string with KB, MB, GiB suffix
+     * @return a formatted string with KiB, MiB, GiB suffix
      */
     public static String formatSize(long size) {
         String suffix = null;
 
         if (size >= 1024) {
-            suffix = "KB";
+            suffix = "KiB";
             size /= 1024;
             if (size >= 1024) {
-                suffix = "MB";
+                suffix = "MiB";
                 size /= 1024;
                 if (size >= 1024) {
                     suffix = "GiB";
@@ -105,9 +105,9 @@ public class MemoryUtil {
     public static long suffixedSize(long size, String suffix) {
 
         switch (suffix) {
-            case "KB":
+            case "KiB":
                 return (long) (size/Math.pow(1024, 3));
-            case "MB":
+            case "MiB":
                 return (long) (size/Math.pow(1024, 2));
             case "GiB":
                 return  size/104;
