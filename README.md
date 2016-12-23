@@ -15,7 +15,7 @@ and provides a clean and neat library to switch between storages.
 Preview
 -------------
 
-![SC Features](https://i.imgur.com/tM2wfqg.gif)
+![SC Features](http://i.imgur.com/nmqPJok.gif)
 
 ----------
 
