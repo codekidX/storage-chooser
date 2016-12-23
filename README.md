@@ -87,14 +87,11 @@ chooser.show();
 LICENSE
 -------------
 
-This project is licensed with a modified LGPL-3.0, section 4d and 4e are removed. The reason is that requiring a replaceable linked libraries within APKs while retaining functionality is hard to comply with.
+This project is licensed with the Mozilla Public License v2.
 
-In practice, you can use this library as-is, with a notification of it being used. If you make any changes, you are required to publish your changes under a copyleft license.
-
-Read more about this in wiki and why these changes were made.
-
+In practice, you can use this library as-is, with a notification of it being used. If you make any changes, you are required to publish your changes under a compatible license.
 
 
 ### Support Storage Chooser
 
-This is a community based project so help fixing bugs by adding your fixes to it by clicking **Create pull request**
+This is a community based project so help fixing bugs by adding your fixes to it by clicking [Create pull request](https://github.com/codekidX/storage-chooser/pull/new/master)
