@@ -21,14 +21,14 @@ There is also some really nice features that I thought would come in handy:
 - Implement memory thresholding - a restriction or a toast that it shows when user's memory is less than your defined memory for operations.
 - File picker - storage - **chooser** I think file picker is necessary now.
 
-----------
+
 
 Preview
 -------------
 
 ![SC Features](http://i.imgur.com/nmqPJok.gif)
 
-----------
+
 
 Installation
 -------------
@@ -45,7 +45,7 @@ Add this to your app level build.gradle as dependency:
 
     com.github.codekidX:storage-chooser:1.0.20
 
-----------
+
 Notes
 -------------
 
@@ -57,7 +57,6 @@ Before you implement this library here are some notes that you can follow to avo
 > - Permissions with "READ_EXTERNAL_STORAGE" and "WRITE_EXTERNAL_STORAGE" is enough for this library to work.
 > - This library follows same color scheme as that of the parent app to maintain the aesthetic of the parent app. _See the color scheme section below_
 
-----------
 
  Implementation
 -------------
