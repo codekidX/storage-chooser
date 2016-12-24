@@ -44,6 +44,7 @@ public class ChooserDialogFragment extends DialogFragment {
 
     private List<Storages> storagesList;
     private List<String> customStoragesList;
+    private String TAG = "StorageChooser";
 
 
     @Nullable
@@ -93,10 +94,18 @@ public class ChooserDialogFragment extends DialogFragment {
                     String dirPath = evaluatePath(i);
                     if(StorageChooser.sConfig.isActionSave()) {
                         String preDef = StorageChooser.sConfig.getPredefinedPath();
+
                         if(preDef != null) {
+                            // if dev forgot or did not add '/' at start add it to avoid errors
+                            if(!preDef.startsWith("/")) {
+                                preDef = "/" + preDef;
+                            }
                             dirPath = dirPath + preDef;
+                            DiskUtil.saveChooserPathPreference(StorageChooser.sConfig.getPreference(), dirPath);
+                        } else {
+                            Log.w(TAG, "Predefined path is null set it by .withPredefinedPath() to builder. Saving root directory");
+                            DiskUtil.saveChooserPathPreference(StorageChooser.sConfig.getPreference(), dirPath);
                         }
-                        DiskUtil.saveChooserPathPreference(StorageChooser.sConfig.getPreference(), dirPath);
                     } else {
                         Log.d("StorageChooser", "Chosen path: " + dirPath);
                     }

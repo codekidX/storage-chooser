@@ -3,6 +3,7 @@ package com.codekidlabs.storagechooser.fragments;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Animatable;
 import android.hardware.input.InputManager;
@@ -140,6 +141,7 @@ public class CustomChooserFragment extends DialogFragment {
         }
     };
     private boolean keyboardToggle;
+    private String TAG = "StorageChooser";
 
     private void showAddFolderView() {
         mNewFolderView.setVisibility(View.VISIBLE);
@@ -316,17 +318,13 @@ public class CustomChooserFragment extends DialogFragment {
      * @param i position in list
      * @return String with the required path for developers
      */
-    private String evaluatePath(int i) {
+    private void evaluateAction(int i) {
         String preDefPath = StorageChooser.sConfig.getPredefinedPath();
+        boolean isCustom = StorageChooser.sConfig.isAllowCustomPath();
         if(preDefPath == null) {
-            Log.e("StorageChooser", "Cannot return a path, set withPredefinedPath() in your builder.");
-            return null;
-        } else {
-            if(i == 0) {
-                return Environment.getExternalStorageDirectory().getAbsolutePath() + preDefPath;
-            } else {
-                return "/storage/" + customStoragesList.get(i);
-            }
+            Log.w(TAG, "No predefined path set");
+        } else if(isCustom) {
+            populateList("/" + customStoragesList.get(i));
         }
     }
 
