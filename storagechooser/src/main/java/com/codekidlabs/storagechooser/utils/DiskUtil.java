@@ -8,7 +8,8 @@ import com.codekidlabs.storagechooser.ExternalStoragePathFinder;
 
 public class DiskUtil {
 
-    public static final String IN_MB = "MB";
+    public static final String IN_KB = "KiB";
+    public static final String IN_MB = "MiB";
     public static final String IN_GB = "GiB";
     public static final String SC_PREFERENCE_KEY = "storage_chooser_path";
 

@@ -120,7 +120,7 @@ public class StorageChooserListAdapter extends BaseAdapter {
     }
 
     /**
-     * remove MB. GiB text that we got from MemoryUtil.getAvailableMemorySize() &
+     * remove KiB,MiB,GiB text that we got from MemoryUtil.getAvailableMemorySize() &
      * MemoryUtil.getTotalMemorySize()
      * @param size String in the format of user readable string, with MB, GiB .. suffix
      * @return integer value of the percentage with amount of storage used
@@ -128,12 +128,12 @@ public class StorageChooserListAdapter extends BaseAdapter {
     private long getMemoryFromString(String size) {
         long mem = 0;
 
-        if(size.contains("MB")) {
-            mem = Integer.parseInt(size.replace(",","").replace("MB",""));
+        if(size.contains("MiB")) {
+            mem = Integer.parseInt(size.replace(",","").replace("MiB",""));
         } else if (size.contains("GiB")){
             mem = Integer.parseInt(size.replace(",","").replace("GiB",""));
         } else {
-            mem = Integer.parseInt(size.replace(",","").replace("KB",""));
+            mem = Integer.parseInt(size.replace(",","").replace("KiB",""));
         }
 
 
