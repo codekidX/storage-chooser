@@ -142,7 +142,7 @@ public class ChooserDialogFragment extends DialogFragment {
         storagesList = new ArrayList<Storages>();
 
         File storageDir = new File("/storage");
-        File internalStorageDir = Environment.getExternalStorageDirectory();
+        String internalStoragePath = Environment.getExternalStorageDirectory().getAbsolutePath();
 
         File[] volumeList = storageDir.listFiles();
 
@@ -154,9 +154,9 @@ public class ChooserDialogFragment extends DialogFragment {
         } else {
             storages.setStorageTitle(INTERNAL_STORAGE_TITLE);
         }
-        storages.setStoragePath(internalStorageDir.getAbsolutePath());
-        storages.setMemoryTotalSize(memoryUtil.getTotalMemorySize(internalStorageDir));
-        storages.setMemoryAvailableSize(memoryUtil.getAvailableMemorySize(internalStorageDir));
+        storages.setStoragePath(internalStoragePath);
+        storages.setMemoryTotalSize(memoryUtil.formatSize(memoryUtil.getTotalMemorySize(internalStoragePath)));
+        storages.setMemoryAvailableSize(memoryUtil.formatSize(memoryUtil.getAvailableMemorySize(internalStoragePath)));
         storagesList.add(storages);
 
 
@@ -166,10 +166,11 @@ public class ChooserDialogFragment extends DialogFragment {
                     && !f.getName().equals(MemoryUtil.EMULATED_DIR_NAME)
                     && !f.getName().equals(MemoryUtil.SDCARD0_DIR_NAME)) {
                 Storages sharedStorage = new Storages();
+                String fPath = f.getAbsolutePath();
                 sharedStorage.setStorageTitle(f.getName());
-                sharedStorage.setMemoryTotalSize(memoryUtil.getTotalMemorySize(f));
-                sharedStorage.setMemoryAvailableSize(memoryUtil.getAvailableMemorySize(f));
-                sharedStorage.setStoragePath(f.getAbsolutePath());
+                sharedStorage.setMemoryTotalSize(memoryUtil.formatSize(memoryUtil.getTotalMemorySize(fPath)));
+                sharedStorage.setMemoryAvailableSize(memoryUtil.formatSize(memoryUtil.getAvailableMemorySize(fPath)));
+                sharedStorage.setStoragePath(fPath);
                 storagesList.add(sharedStorage);
             }
         }
