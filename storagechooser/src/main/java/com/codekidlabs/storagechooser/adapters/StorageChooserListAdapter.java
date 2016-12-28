@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.codekidlabs.storagechooser.R;
+import com.codekidlabs.storagechooser.StorageChooserView;
 import com.codekidlabs.storagechooser.animators.MemorybarAnimation;
 import com.codekidlabs.storagechooser.models.Storages;
 import com.codekidlabs.storagechooser.utils.MemoryUtil;
@@ -69,8 +70,7 @@ public class StorageChooserListAdapter extends BaseAdapter {
         final SpannableStringBuilder str = new SpannableStringBuilder(storages.getStorageTitle() + " (" + storages.getMemoryTotalSize() + ")");
 
         str.setSpan(new android.text.style.StyleSpan(Typeface.ITALIC), getSpannableIndex(str), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        String availableText = storages.getMemoryAvailableSize() + " free";
-
+        String availableText = mContext.getString(R.string.text_freespace, storages.getMemoryAvailableSize());
         storageName.setText(str);
         memoryStatus.setText(availableText);
 

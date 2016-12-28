@@ -6,4 +6,5 @@
     <string name="external_storage">External storage</string>
     <!-- Usb storage descripton -->
     <string name="usb_storage">USB storage</string>
+    <string name="text_freespace">%1$s free</string>
 </resources>
