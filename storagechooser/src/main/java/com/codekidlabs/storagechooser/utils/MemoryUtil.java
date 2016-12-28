@@ -15,7 +15,7 @@ public class MemoryUtil {
     public static final String EMULATED_DIR_NAME = "emulated";
     public static final String SDCARD0_DIR_NAME = "sdcard0";
 
-    public static boolean isExternalStoragePresent() {
+    public boolean isExternalStoragePresent() {
         return getStorageListSize() != 0;
     }
 
@@ -23,7 +23,7 @@ public class MemoryUtil {
      * Returns an the number of the files inside '/storage' directory
      * @return
      */
-    public static int getStorageListSize() {
+    public int getStorageListSize() {
         File storageDir = new File("/storage");
         List<File> volumeList = new ArrayList<File>();
         Collections.addAll(volumeList, storageDir.listFiles());
@@ -49,14 +49,14 @@ public class MemoryUtil {
      * @param file File to use it with StatFs
      * @return string formatted using formatSize()
      */
-    public static String getAvailableMemorySize(File file) {
+    public String getAvailableMemorySize(File file) {
             StatFs stat = new StatFs(file.getPath());
             long blockSize = stat.getBlockSize();
             long availableBlocks = stat.getAvailableBlocks();
             return formatSize(availableBlocks * blockSize);
     }
 
-    public static long getAvailableMemorySize(String path) {
+    public long getAvailableMemorySize(String path) {
         File file = new File(path);
         StatFs stat = new StatFs(file.getPath());
         long blockSize = stat.getBlockSize();
@@ -69,14 +69,14 @@ public class MemoryUtil {
      * @param file File to use it with StatFs
      * @return
      */
-    public static String getTotalMemorySize(File file) {
+    public String getTotalMemorySize(File file) {
             StatFs stat = new StatFs(file.getPath());
             long blockSize = stat.getBlockSize();
             long totalBlocks = stat.getBlockCount();
             return formatSize(totalBlocks * blockSize);
     }
 
-    public static long getTotalMemorySize(String path) {
+    public long getTotalMemorySize(String path) {
         File file = new File(path);
         StatFs stat = new StatFs(file.getPath());
         long blockSize = stat.getBlockSize();
@@ -90,7 +90,7 @@ public class MemoryUtil {
      *             using StatFs
      * @return a formatted string with KiB, MiB, GiB suffix
      */
-    public static String formatSize(long size) {
+    public String formatSize(long size) {
         String suffix = null;
 
         if (size >= 1024) {

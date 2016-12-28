@@ -45,6 +45,7 @@ public class ChooserDialogFragment extends DialogFragment {
     private List<Storages> storagesList;
     private List<String> customStoragesList;
     private String TAG = "StorageChooser";
+    private MemoryUtil memoryUtil = new MemoryUtil();
 
 
     @Nullable
@@ -154,8 +155,8 @@ public class ChooserDialogFragment extends DialogFragment {
             storages.setStorageTitle(INTERNAL_STORAGE_TITLE);
         }
         storages.setStoragePath(internalStorageDir.getAbsolutePath());
-        storages.setMemoryTotalSize(MemoryUtil.getTotalMemorySize(internalStorageDir));
-        storages.setMemoryAvailableSize(MemoryUtil.getAvailableMemorySize(internalStorageDir));
+        storages.setMemoryTotalSize(memoryUtil.getTotalMemorySize(internalStorageDir));
+        storages.setMemoryAvailableSize(memoryUtil.getAvailableMemorySize(internalStorageDir));
         storagesList.add(storages);
 
 
@@ -166,8 +167,8 @@ public class ChooserDialogFragment extends DialogFragment {
                     && !f.getName().equals(MemoryUtil.SDCARD0_DIR_NAME)) {
                 Storages sharedStorage = new Storages();
                 sharedStorage.setStorageTitle(f.getName());
-                sharedStorage.setMemoryTotalSize(MemoryUtil.getTotalMemorySize(f));
-                sharedStorage.setMemoryAvailableSize(MemoryUtil.getAvailableMemorySize(f));
+                sharedStorage.setMemoryTotalSize(memoryUtil.getTotalMemorySize(f));
+                sharedStorage.setMemoryAvailableSize(memoryUtil.getAvailableMemorySize(f));
                 sharedStorage.setStoragePath(f.getAbsolutePath());
                 storagesList.add(sharedStorage);
             }

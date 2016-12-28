@@ -115,7 +115,8 @@ public class StorageChooserListAdapter extends BaseAdapter {
      * @return integer value of the percentage with amount of storage used
      */
     private int getPercentile(String path) {
-        int percent = (int) ((MemoryUtil.getAvailableMemorySize(path) * 100) / MemoryUtil.getTotalMemorySize(path));
+        MemoryUtil memoryUtil = new MemoryUtil();
+        int percent = (int) ((memoryUtil.getAvailableMemorySize(path) * 100) / memoryUtil.getTotalMemorySize(path));
         Log.d("TAG", "percentage: " + percent);
         return 100 - percent;
     }
