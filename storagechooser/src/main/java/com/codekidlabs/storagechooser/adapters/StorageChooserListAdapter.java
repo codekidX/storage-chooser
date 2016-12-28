@@ -16,7 +16,9 @@ import android.widget.TextView;
 import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.animators.MemorybarAnimation;
 import com.codekidlabs.storagechooser.models.Storages;
+import com.codekidlabs.storagechooser.utils.MemoryUtil;
 
+import java.io.File;
 import java.util.List;
 
 public class StorageChooserListAdapter extends BaseAdapter {
@@ -72,7 +74,7 @@ public class StorageChooserListAdapter extends BaseAdapter {
         storageName.setText(str);
         memoryStatus.setText(availableText);
 
-        memoryPercentile = getPercentile(storages.getMemoryAvailableSize(), storages.getMemoryTotalSize());
+        memoryPercentile = getPercentile(storages.getStoragePath());
         // THE ONE AND ONLY MEMORY BAR
         if(shouldShowMemoryBar) {
             memoryBar.setMax(100);
@@ -109,12 +111,11 @@ public class StorageChooserListAdapter extends BaseAdapter {
 
     /**
      * calculate percentage of memory left for memorybar
-     * @param memoryAvailableSize SpannableStringBuilder to apply typeface changes
-     * @param memoryTotalSize SpannableStringBuilder to apply typeface changes
+     * @param path use same statfs
      * @return integer value of the percentage with amount of storage used
      */
-    private int getPercentile(String memoryAvailableSize, String memoryTotalSize) {
-        int percent = (int) ((getMemoryFromString(memoryAvailableSize) * 100) / getMemoryFromString(memoryTotalSize));
+    private int getPercentile(String path) {
+        int percent = (int) ((MemoryUtil.getAvailableMemorySize(path) * 100) / MemoryUtil.getTotalMemorySize(path));
         Log.d("TAG", "percentage: " + percent);
         return 100 - percent;
     }

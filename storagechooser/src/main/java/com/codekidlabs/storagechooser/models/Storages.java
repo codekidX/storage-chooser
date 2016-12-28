@@ -6,6 +6,7 @@ package com.codekidlabs.storagechooser.models;
 public class Storages {
 
     String storageTitle;
+    String storagePath;
     String memoryTotalSize;
     String memoryAvailableSize;
 
@@ -16,6 +17,14 @@ public class Storages {
 
     public void setStorageTitle(String storageTitle) {
         this.storageTitle = storageTitle;
+    }
+
+    public String getStoragePath() {
+        return storagePath;
+    }
+
+    public void setStoragePath(String storagePath) {
+        this.storagePath = storagePath;
     }
 
     public String getMemoryTotalSize() {

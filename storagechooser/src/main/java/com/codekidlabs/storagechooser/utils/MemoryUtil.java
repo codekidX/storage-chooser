@@ -56,6 +56,14 @@ public class MemoryUtil {
             return formatSize(availableBlocks * blockSize);
     }
 
+    public static long getAvailableMemorySize(String path) {
+        File file = new File(path);
+        StatFs stat = new StatFs(file.getPath());
+        long blockSize = stat.getBlockSize();
+        long availableBlocks = stat.getAvailableBlocks();
+        return availableBlocks * blockSize;
+    }
+
     /**
      * calculate total size of any directory
      * @param file File to use it with StatFs
@@ -66,6 +74,14 @@ public class MemoryUtil {
             long blockSize = stat.getBlockSize();
             long totalBlocks = stat.getBlockCount();
             return formatSize(totalBlocks * blockSize);
+    }
+
+    public static long getTotalMemorySize(String path) {
+        File file = new File(path);
+        StatFs stat = new StatFs(file.getPath());
+        long blockSize = stat.getBlockSize();
+        long totalBlocks = stat.getBlockCount();
+        return totalBlocks * blockSize;
     }
 
     /**

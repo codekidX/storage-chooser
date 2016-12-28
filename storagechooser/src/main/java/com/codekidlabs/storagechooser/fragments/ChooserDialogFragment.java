@@ -153,7 +153,7 @@ public class ChooserDialogFragment extends DialogFragment {
         } else {
             storages.setStorageTitle(INTERNAL_STORAGE_TITLE);
         }
-
+        storages.setStoragePath(internalStorageDir.getAbsolutePath());
         storages.setMemoryTotalSize(MemoryUtil.getTotalMemorySize(internalStorageDir));
         storages.setMemoryAvailableSize(MemoryUtil.getAvailableMemorySize(internalStorageDir));
         storagesList.add(storages);
@@ -168,6 +168,7 @@ public class ChooserDialogFragment extends DialogFragment {
                 sharedStorage.setStorageTitle(f.getName());
                 sharedStorage.setMemoryTotalSize(MemoryUtil.getTotalMemorySize(f));
                 sharedStorage.setMemoryAvailableSize(MemoryUtil.getAvailableMemorySize(f));
+                sharedStorage.setStoragePath(f.getAbsolutePath());
                 storagesList.add(sharedStorage);
             }
         }
