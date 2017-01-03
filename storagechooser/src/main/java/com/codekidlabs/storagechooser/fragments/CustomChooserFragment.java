@@ -38,6 +38,7 @@ import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.StorageChooser;
 import com.codekidlabs.storagechooser.StorageChooserView;
 import com.codekidlabs.storagechooser.adapters.StorageChooserCustomListAdapter;
+import com.codekidlabs.storagechooser.models.Config;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
 import com.codekidlabs.storagechooser.utils.FileUtil;
 
@@ -86,12 +87,14 @@ public class CustomChooserFragment extends DialogFragment {
 
     private FileUtil fileUtil;
 
+    private Config mConfig;
+
 
     private View.OnClickListener mSelectButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(StorageChooser.sConfig.isActionSave()) {
-                DiskUtil.saveChooserPathPreference(StorageChooser.sConfig.getPreference(), theSelectedPath);
+            if(mConfig.isActionSave()) {
+                DiskUtil.saveChooserPathPreference(mConfig.getPreference(), theSelectedPath);
             } else {
                 Log.d("StorageChooser", "Chosen path: " + theSelectedPath);
             }
@@ -220,7 +223,7 @@ public class CustomChooserFragment extends DialogFragment {
         switch (flag) {
             case FLAG_DISSMISS_INIT_DIALOG:
                 ChooserDialogFragment c = new ChooserDialogFragment();
-                c.show(StorageChooser.sConfig.getFragmentManager(), "storagechooser_dialog");
+                c.show(mConfig.getFragmentManager(), "storagechooser_dialog");
                 this.dismiss();
                 break;
             case FLAG_DISSMISS_NORMAL:
@@ -241,8 +244,9 @@ public class CustomChooserFragment extends DialogFragment {
     }
 
     private View getLayout(LayoutInflater inflater, ViewGroup container) {
+        mConfig = StorageChooser.sConfig;
         mLayout = inflater.inflate(StorageChooserView.VIEW_SC, container, false);
-        initListView(getContext(), mLayout, StorageChooser.sConfig.isShowMemoryBar());
+        initListView(getContext(), mLayout, mConfig.isShowMemoryBar());
 
         mBackButton = (ImageButton) mLayout.findViewById(R.id.back_button);
         mSelectButton = (Button) mLayout.findViewById(R.id.select_button);
@@ -253,7 +257,13 @@ public class CustomChooserFragment extends DialogFragment {
             mNewFolderButton = (Button) mLayout.findViewById(R.id.new_folder_button);
             mNewFolderButton.setText(StorageChooserView.LABEL_NEW_FOLDER);
             mNewFolderButton.setOnClickListener(mNewFolderButtonClickListener);
-            mNewFolderButton.setTextColor(ContextCompat.getColor(getContext(), StorageChooserView.SC_SECONDARY_ACTION_COLOR));
+            if(mConfig.getMode() == StorageChooser.DAY_MODE) {
+                mNewFolderButton.setTextColor(ContextCompat.getColor(getContext(), StorageChooserView.SC_SECONDARY_ACTION_COLOR));
+            } else {
+                if(StorageChooserView.nightColors != null) {
+                    mNewFolderButton.setTextColor(ContextCompat.getColor(getContext(), StorageChooserView.nightColors[1]));
+                }
+            }
         }
         mCreateButton = (Button) mLayout.findViewById(R.id.create_folder_button);
         RelativeLayout mNewFolderButtonHolder = (RelativeLayout) mLayout.findViewById(R.id.new_folder_button_holder);
@@ -272,13 +282,21 @@ public class CustomChooserFragment extends DialogFragment {
         mNewFolderView.setVisibility(View.INVISIBLE);
         mInactiveGradient.setVisibility(View.INVISIBLE);
 
-        if(!StorageChooser.sConfig.isAllowAddFolder()) {
+        if(!mConfig.isAllowAddFolder()) {
             mNewFolderButtonHolder.setVisibility(View.GONE);
         }
 
         // set label of buttons [localization]
         mSelectButton.setText(StorageChooserView.LABEL_SELECT);
         mCreateButton.setText(StorageChooserView.LABEL_CREATE);
+
+        if(mConfig.getMode() == StorageChooser.DAY_MODE) {
+            mSelectButton.setTextColor(ContextCompat.getColor(getContext(), StorageChooserView.SC_SECONDARY_ACTION_COLOR));
+        } else {
+            if(StorageChooserView.nightColors != null) {
+                mSelectButton.setTextColor(ContextCompat.getColor(getContext(), StorageChooserView.nightColors[2]));
+            }
+        }
 
         mBackButton.setOnClickListener(mBackButtonClickListener);
         mSelectButton.setOnClickListener(mSelectButtonClickListener);
@@ -319,8 +337,8 @@ public class CustomChooserFragment extends DialogFragment {
      * @return String with the required path for developers
      */
     private void evaluateAction(int i) {
-        String preDefPath = StorageChooser.sConfig.getPredefinedPath();
-        boolean isCustom = StorageChooser.sConfig.isAllowCustomPath();
+        String preDefPath = mConfig.getPredefinedPath();
+        boolean isCustom = mConfig.isAllowCustomPath();
         if(preDefPath == null) {
             Log.w(TAG, "No predefined path set");
         } else if(isCustom) {

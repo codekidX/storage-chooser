@@ -2,6 +2,7 @@ package com.codekidlabs.storagechooser.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.codekidlabs.storagechooser.R;
+import com.codekidlabs.storagechooser.StorageChooser;
 import com.codekidlabs.storagechooser.StorageChooserView;
 import com.codekidlabs.storagechooser.animators.MemorybarAnimation;
 import com.codekidlabs.storagechooser.models.Storages;
@@ -73,6 +75,14 @@ public class StorageChooserListAdapter extends BaseAdapter {
         String availableText = mContext.getString(R.string.text_freespace, storages.getMemoryAvailableSize());
         storageName.setText(str);
         memoryStatus.setText(availableText);
+
+        if(StorageChooser.sConfig.getMode() == StorageChooser.NIGHT_MODE) {
+            if(StorageChooserView.nightColors != null) {
+                memoryStatus.setTextColor(ContextCompat.getColor(mContext, StorageChooserView.nightColors[0]));
+            } else {
+                Log.i("StorageChooser", "Storage Chooser view colors not set. Set it using StorageChooserView.setNightColors(colors[]);");
+            }
+        }
 
         memoryPercentile = getPercentile(storages.getStoragePath());
         // THE ONE AND ONLY MEMORY BAR

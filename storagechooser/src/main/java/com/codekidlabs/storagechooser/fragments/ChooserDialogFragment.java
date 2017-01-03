@@ -20,6 +20,7 @@ import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.StorageChooser;
 import com.codekidlabs.storagechooser.StorageChooserView;
 import com.codekidlabs.storagechooser.adapters.StorageChooserListAdapter;
+import com.codekidlabs.storagechooser.models.Config;
 import com.codekidlabs.storagechooser.models.Storages;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
 import com.codekidlabs.storagechooser.utils.MemoryUtil;
@@ -47,6 +48,11 @@ public class ChooserDialogFragment extends DialogFragment {
     private String TAG = "StorageChooser";
     private MemoryUtil memoryUtil = new MemoryUtil();
 
+    private Config mConfig;
+
+    // day night flag
+    private int mChooserMode;
+
 
     @Nullable
     @Override
@@ -60,8 +66,9 @@ public class ChooserDialogFragment extends DialogFragment {
     }
 
     private View getLayout(LayoutInflater inflater, ViewGroup container) {
+        mConfig = StorageChooser.sConfig;
         mLayout = inflater.inflate(R.layout.storage_list, container, false);
-        initListView(getContext(), mLayout, StorageChooser.sConfig.isShowMemoryBar());
+        initListView(getContext(), mLayout, mConfig.isShowMemoryBar());
 
         if(StorageChooserView.CHOOSER_HEADING !=null) {
             TextView dialogTitle = (TextView) mLayout.findViewById(R.id.dialog_title);
@@ -84,17 +91,17 @@ public class ChooserDialogFragment extends DialogFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                if(StorageChooser.sConfig.isAllowCustomPath()) {
+                if(mConfig.isAllowCustomPath()) {
                     String dirPath = evaluatePath(i);
                     CustomChooserFragment c = new CustomChooserFragment();
                     Bundle bundle = new Bundle();
                     bundle.putString(DiskUtil.SC_PREFERENCE_KEY, dirPath);
                     c.setArguments(bundle);
-                    c.show(StorageChooser.sConfig.getFragmentManager(), "custom_chooser");
+                    c.show(mConfig.getFragmentManager(), "custom_chooser");
                 } else {
                     String dirPath = evaluatePath(i);
-                    if(StorageChooser.sConfig.isActionSave()) {
-                        String preDef = StorageChooser.sConfig.getPredefinedPath();
+                    if(mConfig.isActionSave()) {
+                        String preDef = mConfig.getPredefinedPath();
 
                         if(preDef != null) {
                             // if dev forgot or did not add '/' at start add it to avoid errors
@@ -102,10 +109,10 @@ public class ChooserDialogFragment extends DialogFragment {
                                 preDef = "/" + preDef;
                             }
                             dirPath = dirPath + preDef;
-                            DiskUtil.saveChooserPathPreference(StorageChooser.sConfig.getPreference(), dirPath);
+                            DiskUtil.saveChooserPathPreference(mConfig.getPreference(), dirPath);
                         } else {
                             Log.w(TAG, "Predefined path is null set it by .withPredefinedPath() to builder. Saving root directory");
-                            DiskUtil.saveChooserPathPreference(StorageChooser.sConfig.getPreference(), dirPath);
+                            DiskUtil.saveChooserPathPreference(mConfig.getPreference(), dirPath);
                         }
                     } else {
                         Log.d("StorageChooser", "Chosen path: " + dirPath);

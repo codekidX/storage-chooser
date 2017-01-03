@@ -4,5 +4,9 @@
     <color name="colorPrimaryDark">#1976D2</color>
     <color name="colorAccent">#FBC02D</color>
 
+    <color name="memory_status_color">#de6565</color>
+    <color name="new_folder_color">#c14b84</color>
+    <color name="select_color">#6b3fa1</color>
+
     <color name="colorExplanationBox">#ececec</color>
 </resources>

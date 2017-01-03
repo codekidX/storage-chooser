@@ -20,6 +20,7 @@ public class Config {
     private String internalStorageText;
     private boolean allowCustomPath;
     private boolean allowAddFolder;
+    private int mode;
 
     public FragmentManager getFragmentManager() {
         return fragmentManager;
@@ -107,5 +108,13 @@ public class Config {
 
     public void setAllowAddFolder(boolean allowAddFolder) {
         this.allowAddFolder = allowAddFolder;
+    }
+
+    public int getMode() {
+        return mode;
+    }
+
+    public void setMode(int mode) {
+        this.mode = mode;
     }
 }

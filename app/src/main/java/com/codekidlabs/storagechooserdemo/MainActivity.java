@@ -92,7 +92,9 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 StorageChooserView.setViewSc(StorageChooserView.SC_LAYOUT_SHEET);
-
+                int[] nightModerColors = {R.color.memory_status_color, R.color.new_folder_color, R.color.select_color};
+                StorageChooserView.setNightColors(nightModerColors);
+                storageChooser.setMode(StorageChooser.NIGHT_MODE);
                 storageChooser.show();
             }
         });

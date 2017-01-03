@@ -28,6 +28,17 @@ public class StorageChooserView {
     public static int SC_SECONDARY_ACTION_COLOR = android.R.color.black;
     public static int SC_TEXTFIELD_HINT_COLOR = R.color.chevronBgColor;
 
+    // NIGHT COLORS
+    public static int[] nightColors;
+
+    public static int[] getNightColors() {
+        return nightColors;
+    }
+
+    public static void setNightColors(int[] nightColors) {
+        StorageChooserView.nightColors = nightColors;
+    }
+
     public static void setLabelSelect(String labelSelect) {
         LABEL_SELECT = labelSelect;
     }
