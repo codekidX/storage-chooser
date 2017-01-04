@@ -452,7 +452,7 @@ public class CustomChooserFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog d = StorageChooser.dialog;
-        d.setContentView(getLayout(LayoutInflater.from(mContext), mContainer));
+        d.setContentView(getLayout(LayoutInflater.from(getContext()), mContainer));
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(d.getWindow().getAttributes());
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
