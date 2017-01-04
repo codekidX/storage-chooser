@@ -291,7 +291,7 @@ public class CustomChooserFragment extends DialogFragment {
         mSelectButton.setText(StorageChooserView.LABEL_SELECT);
         mCreateButton.setText(StorageChooserView.LABEL_CREATE);
 
-        mSelectButton.setTextColor(mResourceUtil.getColor(StorageChooserView.SC_SECONDARY_ACTION_COLOR));
+        mSelectButton.setTextColor(mResourceUtil.getColor(R.color.select_color));
 
         mBackButton.setOnClickListener(mBackButtonClickListener);
         mSelectButton.setOnClickListener(mSelectButtonClickListener);
