@@ -161,7 +161,11 @@ public class CustomChooserFragment extends DialogFragment {
         } else {
             mNewFolderButton.setOnClickListener(mNewFolderButtonCloseListener);
             mNewFolderButton.setText(StorageChooserView.LABEL_CANCEL);
-//            mNewFolderButton.setTextColor(ContextCompat.getColor(getContext(), android.R.color.holo_red_light));
+            if(mConfig.getMode() == StorageChooser.NIGHT_MODE) {
+                if(StorageChooserView.nightColors != null) {
+                    mNewFolderButton.setTextColor(ContextCompat.getColor(getContext(), StorageChooserView.nightColors[4]));
+                }
+            }
         }
 //        mNewFolderButton.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.window_close));
 
@@ -183,7 +187,11 @@ public class CustomChooserFragment extends DialogFragment {
         } else {
             mNewFolderButton.setOnClickListener(mNewFolderButtonClickListener);
             mNewFolderButton.setText(StorageChooserView.LABEL_NEW_FOLDER);
-//            mNewFolderButton.setTextColor(ContextCompat.getColor(getContext(), StorageChooserView.SC_SECONDARY_ACTION_COLOR));
+            if(mConfig.getMode() == StorageChooser.NIGHT_MODE) {
+                if(StorageChooserView.nightColors != null) {
+                    mNewFolderButton.setTextColor(ContextCompat.getColor(getContext(), StorageChooserView.nightColors[2]));
+                }
+            }
         }
         //listview should be clickable
         StorageChooserCustomListAdapter.shouldEnable = true;
@@ -261,7 +269,7 @@ public class CustomChooserFragment extends DialogFragment {
                 mNewFolderButton.setTextColor(ContextCompat.getColor(getContext(), StorageChooserView.SC_SECONDARY_ACTION_COLOR));
             } else {
                 if(StorageChooserView.nightColors != null) {
-                    mNewFolderButton.setTextColor(ContextCompat.getColor(getContext(), StorageChooserView.nightColors[1]));
+                    mNewFolderButton.setTextColor(ContextCompat.getColor(getContext(), StorageChooserView.nightColors[2]));
                 }
             }
         }
@@ -294,7 +302,7 @@ public class CustomChooserFragment extends DialogFragment {
             mSelectButton.setTextColor(ContextCompat.getColor(getContext(), StorageChooserView.SC_SECONDARY_ACTION_COLOR));
         } else {
             if(StorageChooserView.nightColors != null) {
-                mSelectButton.setTextColor(ContextCompat.getColor(getContext(), StorageChooserView.nightColors[2]));
+                mSelectButton.setTextColor(ContextCompat.getColor(getContext(), StorageChooserView.nightColors[3]));
             }
         }
 

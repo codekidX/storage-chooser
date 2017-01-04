@@ -1,10 +1,17 @@
 package com.codekidlabs.storagechooser.adapters;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,7 +78,7 @@ public class StorageChooserListAdapter extends BaseAdapter {
         Storages storages = storagesList.get(i);
         final SpannableStringBuilder str = new SpannableStringBuilder(storages.getStorageTitle() + " (" + storages.getMemoryTotalSize() + ")");
 
-        str.setSpan(new android.text.style.StyleSpan(Typeface.ITALIC), getSpannableIndex(str), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        str.setSpan(new StyleSpan(Typeface.ITALIC), getSpannableIndex(str), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         String availableText = mContext.getString(R.string.text_freespace, storages.getMemoryAvailableSize());
         storageName.setText(str);
         memoryStatus.setText(availableText);
@@ -79,6 +86,8 @@ public class StorageChooserListAdapter extends BaseAdapter {
         if(StorageChooser.sConfig.getMode() == StorageChooser.NIGHT_MODE) {
             if(StorageChooserView.nightColors != null) {
                 memoryStatus.setTextColor(ContextCompat.getColor(mContext, StorageChooserView.nightColors[0]));
+                DrawableCompat.setTint(memoryBar.getProgressDrawable(), StorageChooserView.nightColors[1]);
+
             } else {
                 Log.i("StorageChooser", "Storage Chooser view colors not set. Set it using StorageChooserView.setNightColors(colors[]);");
             }
