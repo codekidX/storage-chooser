@@ -18,9 +18,6 @@ public class StorageChooser {
 
     public static OnSelectListener onSelectListener;
 
-    public static final int DAY_MODE = 0;
-    public static final int NIGHT_MODE = 1;
-
     /**
      * basic constructor of StorageChooser
      * @param config to use with dialog window addition
@@ -80,10 +77,6 @@ public class StorageChooser {
 
     private void setChooserActivity(Activity chooserActivity) {
         this.chooserActivity = chooserActivity;
-    }
-
-    public void setMode(int mode) {
-        sConfig.setMode(mode);
     }
 
     private static Dialog getStorageChooserDialog(Activity activity) {
@@ -170,7 +163,6 @@ public class StorageChooser {
 
 
         public StorageChooser build() {
-            devConfig.setMode(StorageChooser.DAY_MODE);
             devConfig.setActionSave(mActionSave);
             devConfig.setShowMemoryBar(mShowMemoryBar);
             devConfig.setAllowCustomPath(mAllowCustomPath);

@@ -83,15 +83,8 @@ public class StorageChooserListAdapter extends BaseAdapter {
         storageName.setText(str);
         memoryStatus.setText(availableText);
 
-        if(StorageChooser.sConfig.getMode() == StorageChooser.NIGHT_MODE) {
-            if(StorageChooserView.nightColors != null) {
-                memoryStatus.setTextColor(ContextCompat.getColor(mContext, StorageChooserView.nightColors[0]));
-                DrawableCompat.setTint(memoryBar.getProgressDrawable(), StorageChooserView.nightColors[1]);
-
-            } else {
-                Log.i("StorageChooser", "Storage Chooser view colors not set. Set it using StorageChooserView.setNightColors(colors[]);");
-            }
-        }
+        memoryStatus.setTextColor(ContextCompat.getColor(mContext, R.color.memory_status_color));
+        DrawableCompat.setTint(memoryBar.getProgressDrawable(), ContextCompat.getColor(mContext, R.color.memory_bar_color));
 
         memoryPercentile = getPercentile(storages.getStoragePath());
         // THE ONE AND ONLY MEMORY BAR
