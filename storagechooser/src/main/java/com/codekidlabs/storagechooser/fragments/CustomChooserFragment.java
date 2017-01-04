@@ -320,6 +320,8 @@ public class CustomChooserFragment extends DialogFragment {
         populateList(mBundlePath);
         customListAdapter =new StorageChooserCustomListAdapter(customStoragesList, context, shouldShowMemoryBar);
         listView.setAdapter(customListAdapter);
+        //listview should be clickable at first
+        StorageChooserCustomListAdapter.shouldEnable = true;
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
