@@ -20,6 +20,7 @@ public class Config {
     private String internalStorageText;
     private boolean allowCustomPath;
     private boolean allowAddFolder;
+    private boolean showHidden;
 
     public FragmentManager getFragmentManager() {
         return fragmentManager;
@@ -109,4 +110,11 @@ public class Config {
         this.allowAddFolder = allowAddFolder;
     }
 
+    public boolean isShowHidden() {
+        return showHidden;
+    }
+
+    public void setShowHidden(boolean showHidden) {
+        this.showHidden = showHidden;
+    }
 }

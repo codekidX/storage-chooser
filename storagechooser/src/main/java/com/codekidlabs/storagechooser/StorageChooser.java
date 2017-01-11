@@ -98,6 +98,7 @@ public class StorageChooser {
         private boolean mShowMemoryBar = false;
         private boolean mAllowCustomPath = false;
         private boolean mAllowAddFolder = false;
+        private boolean mShowHidden = false;
 
         Config devConfig;
 
@@ -161,12 +162,18 @@ public class StorageChooser {
             return this;
         }
 
+        public Builder showHidden(boolean showHiddenFolders) {
+            mShowHidden = showHiddenFolders;
+            return this;
+        }
+
 
         public StorageChooser build() {
             devConfig.setActionSave(mActionSave);
             devConfig.setShowMemoryBar(mShowMemoryBar);
             devConfig.setAllowCustomPath(mAllowCustomPath);
             devConfig.setAllowAddFolder(mAllowAddFolder);
+            devConfig.setShowHidden(mShowHidden);
             return new StorageChooser(mActivity, devConfig);
         }
     }

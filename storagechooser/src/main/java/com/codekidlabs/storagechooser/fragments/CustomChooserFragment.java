@@ -381,8 +381,12 @@ public class CustomChooserFragment extends DialogFragment {
         Log.e("SCLib", theSelectedPath);
         if(volumeList != null) {
             for (File f : volumeList) {
-                if(!f.getName().startsWith(".")) {
+                if(mConfig.isShowHidden()) {
                     customStoragesList.add(f.getName());
+                } else {
+                    if (!f.getName().startsWith(".")) {
+                        customStoragesList.add(f.getName());
+                    }
                 }
             }
 
