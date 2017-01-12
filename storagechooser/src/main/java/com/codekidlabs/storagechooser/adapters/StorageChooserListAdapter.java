@@ -25,6 +25,7 @@ import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.StorageChooser;
 import com.codekidlabs.storagechooser.StorageChooserView;
 import com.codekidlabs.storagechooser.animators.MemorybarAnimation;
+import com.codekidlabs.storagechooser.exceptions.MemoryNotAccessibleException;
 import com.codekidlabs.storagechooser.models.Storages;
 import com.codekidlabs.storagechooser.utils.MemoryUtil;
 
@@ -86,11 +87,17 @@ public class StorageChooserListAdapter extends BaseAdapter {
         memoryStatus.setTextColor(ContextCompat.getColor(mContext, R.color.memory_status_color));
         DrawableCompat.setTint(memoryBar.getProgressDrawable(), ContextCompat.getColor(mContext, R.color.memory_bar_color));
 
-        memoryPercentile = getPercentile(storages.getStoragePath());
+        try {
+            memoryPercentile = getPercentile(storages.getStoragePath());
+        } catch (MemoryNotAccessibleException e) {
+            e.printStackTrace();
+        }
         // THE ONE AND ONLY MEMORY BAR
         if(shouldShowMemoryBar) {
             memoryBar.setMax(100);
             memoryBar.setProgress(memoryPercentile);
+        } else if(memoryPercentile == 0) {
+            memoryBar.setVisibility(View.GONE);
         } else {
             memoryBar.setVisibility(View.GONE);
         }
@@ -126,11 +133,19 @@ public class StorageChooserListAdapter extends BaseAdapter {
      * @param path use same statfs
      * @return integer value of the percentage with amount of storage used
      */
-    private int getPercentile(String path) {
+    private int getPercentile(String path) throws MemoryNotAccessibleException {
         MemoryUtil memoryUtil = new MemoryUtil();
-        int percent = (int) ((memoryUtil.getAvailableMemorySize(path) * 100) / memoryUtil.getTotalMemorySize(path));
-        Log.d("TAG", "percentage: " + percent);
-        return 100 - percent;
+        int percent;
+
+        int availableMem = (int) memoryUtil.getAvailableMemorySize(path);
+        int totalMem = (int) memoryUtil.getTotalMemorySize(path);
+
+        if(totalMem > 0) {
+            percent = ((availableMem * 100) / totalMem);
+            return 100 - percent;
+        } else {
+            throw new MemoryNotAccessibleException("Cannot compute memory for " + path);
+        }
     }
 
     /**
