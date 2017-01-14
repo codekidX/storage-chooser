@@ -71,7 +71,6 @@ public class StorageChooserListAdapter extends BaseAdapter {
 
         //for animation set current position to provide animation delay
 
-
         TextView storageName = (TextView) rootView.findViewById(R.id.storage_name);
         TextView memoryStatus = (TextView) rootView.findViewById(R.id.memory_status);
         memoryBar = (ProgressBar) rootView.findViewById(R.id.memory_bar);
@@ -93,16 +92,14 @@ public class StorageChooserListAdapter extends BaseAdapter {
             e.printStackTrace();
         }
         // THE ONE AND ONLY MEMORY BAR
-        if(shouldShowMemoryBar) {
+        if(shouldShowMemoryBar && memoryPercentile != null) {
             memoryBar.setMax(100);
             memoryBar.setProgress(memoryPercentile);
-        } else if(memoryPercentile == 0) {
-            memoryBar.setVisibility(View.GONE);
+            runMemorybarAnimation(i);
         } else {
             memoryBar.setVisibility(View.GONE);
         }
-
-        runMemorybarAnimation(i);
+        
         return rootView;
 
     }
@@ -141,11 +138,12 @@ public class StorageChooserListAdapter extends BaseAdapter {
         int totalMem = (int) memoryUtil.getTotalMemorySize(path);
 
         if(totalMem > 0) {
-            percent = ((availableMem * 100) / totalMem);
-            return 100 - percent;
+            percent = 100 - ((availableMem * 100) / totalMem);
         } else {
             throw new MemoryNotAccessibleException("Cannot compute memory for " + path);
         }
+        
+        return percent;
     }
 
     /**
@@ -164,7 +162,6 @@ public class StorageChooserListAdapter extends BaseAdapter {
         } else {
             mem = Integer.parseInt(size.replace(",","").replace("KiB",""));
         }
-
 
         Log.d("TAG", "Memory:"+ mem);
         return mem;
