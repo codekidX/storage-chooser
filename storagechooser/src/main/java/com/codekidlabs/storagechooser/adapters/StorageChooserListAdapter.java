@@ -65,12 +65,11 @@ public class StorageChooserListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+        memoryPercentile = -1;
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         View rootView = inflater.inflate(R.layout.row_storage, viewGroup, false);
 
         //for animation set current position to provide animation delay
-
         TextView storageName = (TextView) rootView.findViewById(R.id.storage_name);
         TextView memoryStatus = (TextView) rootView.findViewById(R.id.memory_status);
         memoryBar = (ProgressBar) rootView.findViewById(R.id.memory_bar);
@@ -92,7 +91,7 @@ public class StorageChooserListAdapter extends BaseAdapter {
             e.printStackTrace();
         }
         // THE ONE AND ONLY MEMORY BAR
-        if(shouldShowMemoryBar && memoryPercentile != null) {
+        if(shouldShowMemoryBar && memoryPercentile == -1) {
             memoryBar.setMax(100);
             memoryBar.setProgress(memoryPercentile);
             runMemorybarAnimation(i);
