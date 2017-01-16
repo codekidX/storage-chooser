@@ -91,7 +91,7 @@ public class StorageChooserListAdapter extends BaseAdapter {
             e.printStackTrace();
         }
         // THE ONE AND ONLY MEMORY BAR
-        if(shouldShowMemoryBar && memoryPercentile == -1) {
+        if(shouldShowMemoryBar && memoryPercentile != -1) {
             memoryBar.setMax(100);
             memoryBar.setProgress(memoryPercentile);
             runMemorybarAnimation(i);
@@ -133,15 +133,15 @@ public class StorageChooserListAdapter extends BaseAdapter {
         MemoryUtil memoryUtil = new MemoryUtil();
         int percent;
 
-        int availableMem = (int) memoryUtil.getAvailableMemorySize(path);
-        int totalMem = (int) memoryUtil.getTotalMemorySize(path);
+        long availableMem =  memoryUtil.getAvailableMemorySize(path);
+        long totalMem =  memoryUtil.getTotalMemorySize(path);
 
         if(totalMem > 0) {
-            percent = 100 - ((availableMem * 100) / totalMem);
+            percent = (int) (100 - ((availableMem * 100) / totalMem));
         } else {
             throw new MemoryNotAccessibleException("Cannot compute memory for " + path);
         }
-        
+
         return percent;
     }
 
