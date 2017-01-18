@@ -2,15 +2,33 @@ Storage Chooser
 ===================
 
 
-A simple and carefully implemented library for users to switch their storage between *'Internal'* or *'External*' storage using STATIC path. You can just add it to your Settings Preference to let user switch between Internal/External storages. It takes care of all the heavy Environment changes like 
+A pretty and simple storage/directory chooser library for 4.4+ devices. This library was created to be included in [OpenGApps App](https://play.google.com/store/apps/details?id=org.opengapps.app). There are too many storage chooser out there but this one is too materially :stuck_out_tongue: . Easy to implement and does not take a lot of your valueable time in setting-up all the other necessary things that every developer seeks, like 
 
- - checking if External Storage is present or not
- - checking if STATIC path dir is present or not
- - **TODO** properly implement a memory threshold
+- saving path to sharedPreference
+- event when path is selected and act upon that path
+- and much more.
 
-and provides a clean and neat library to switch between storages.
+There is also some really nice features that I thought would come in handy:
 
-----------
+- You show a quick overview of the storages present and their memory available before choosing so that users know which storage to choose.
+- you can choose between _sheet and sleek_ layouts.
+- Inline create folder view _(not another dialog to handle)_
+- Full localization. I mean literally every strings can be localized to your desired language.
+- and more will be added soon.
+
+**TODO**:
+
+- Implement memory thresholding - a restriction or a toast that it shows when user's memory is less than your defined memory for operations.
+- File picker - storage - **chooser** I think file picker is necessary now.
+
+
+
+Preview
+-------------
+
+![SC Features](http://i.imgur.com/nmqPJok.gif)
+
+
 
 Installation
 -------------
@@ -25,9 +43,9 @@ Add this to your root build.gradle file under repositories:
 
 Add this to your app level build.gradle as dependency:
 
-    com.gitlab.codekidX:storage-chooser-library:b0.1
+    com.github.codekidX:storage-chooser:1.0.20
 
-----------
+
 Notes
 -------------
 
@@ -37,48 +55,97 @@ Before you implement this library here are some notes that you can follow to avo
 
 > - You have asked for **Runtime Permission** from the user in the past to avoid read errors.
 > - Permissions with "READ_EXTERNAL_STORAGE" and "WRITE_EXTERNAL_STORAGE" is enough for this library to work.
-> - This library follows same color scheme as that of the parent app to maintain the aesthetic of the parent app.
-> - Header color =>  @colorPrimary
-> - Memory Bar color => @colorAccent
-> - Memory available text => @colorPrimaryDark
+> - This library follows same color scheme as that of the parent app to maintain the aesthetic of the parent app. _See the color scheme section below_
 
-----------
 
-### Storage Chooser Implementation
+ Implementation
+-------------
 
-Nothing fancy to do here, it's straightforward and uses a simple Builder to make everything work smoothly.
+### Simple Type
+
+- Let's you toggle between inernal/external root directory.
 
 ```
-// a common path flow which does not change whether user chose internal or external storage
-private static final String STATIC_PATH = "/Downloads/CodekidLabs";
-private SharedPreference yourPreference;
-
-// ---------------------------------------------
+// ~
 
 // Initialize Builder
-StorageChooserBuilder.Builder builder = new StorageChooserBuilder.Builder()
+StorageChooser chooser = new StorageChooser.Builder()
 .withActivity(MainActivity.this)
 .withFragmentManager(getSupportFragmentManager())
-.withMemoryBar(true) // shows a nice visual representation of memory available 
-.actionSave(true) // saves the path of internal/external storage to yourPreference
-.withPreference(yourPreference) // needed if action save is true
-.withPredefinedPath(STATIC_PATH)
+.withMemoryBar(true) 
 .build();
 
 // Show dialog whenever you want by
-builder.show();
+chooser.show();
+
+// get path that the user has chosen
+chooser.setOnSelectListener(new StorageChooser.OnSelectListener() {
+    @Override
+    public void onSelect(String path) {
+        Log.e("SELECTED_PATH", path);
+    }
+});
 ```
 
+> OUTPUT: **/storage/emulated/0**
 
-> **What is STATIC_PATH ?:** 
+### Pre-defined Type
+
+- Let's you append a specific path to the root of internal or external directory.
+
+```
+// --- ADD --
+.withPredefinedPath(STATIC_PATH)
+```
+
 > 
-> In the above example of implementation STATIC_PATH is "/Downloads/CodekidLabs". Now when user selects Internal Storage from **StorageChooserDialog** the path will return "/storage/emulated/0/Downloads/CodekidLabs" which will be the directory of operations for your app.
+> A pre-defined path gets appended after the selection of internal/external root directory. 
+> OUTPUT: **/storage/emulated/0/Downloads/CodekidLabs**
 
-> Same goes if user chooses External Storage. [/storage/**Gibberish SDcard Name**/ + STATIC_PATH ]
+### Custom Type
+
+- Let's user choose their own directory of their liking
+
+```
+// --- ADD ---
+.allowCustomPath(true)
+```
+
+### Save directly to preference
+
+```
+// --- ADD ---
+.actionSave(true)
+.withPreference(sharedPreferences)
+```
+
+### Get path from preference
+
+```
+String path = sharedPreferences.getString(DiskUtil.SC_PREFERENCE_KEY,"");
+```
+
+## Localization
+
+A seperate localization wiki is posted [here](https://github.com/codekidX/storage-chooser/wiki/Localizing-your-Chooser)
 
 
+## Color Scheme
+
+> - Overview header color ->  @colorPrimary
+> - Memory bar color -> @colorAccent
+> - Memory available text -> @colorPrimaryDark
+> - Address bar background -> @colorPrimary
+> - Select button label color -> @colorPrimaryDark
+
+LICENSE
+-------------
+
+This project is licensed with the Mozilla Public License v2.
+
+In practice, you can use this library as-is, with a notification of it being used. If you make any changes, you are required to publish your changes under a compatible license.
 
 
 ### Support Storage Chooser
 
-This is a community based project so help fixing bugs by adding your fixes to it by clicking **Create pull request**
+This is a community based project so help fixing bugs by adding your fixes to it by clicking [Create pull request](https://github.com/codekidX/storage-chooser/pull/new/master)

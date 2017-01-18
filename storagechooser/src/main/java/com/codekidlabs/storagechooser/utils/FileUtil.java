@@ -33,4 +33,9 @@ public class FileUtil {
         }
         return dirList;
     }
+
+    public static boolean createDirectory(String name, String path) {
+        File dir = new File(path + "/" + name);
+        return dir.mkdirs();
+    }
 }

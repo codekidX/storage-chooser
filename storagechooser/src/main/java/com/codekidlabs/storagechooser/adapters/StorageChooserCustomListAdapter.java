@@ -26,6 +26,7 @@ public class StorageChooserCustomListAdapter extends BaseAdapter {
     private List<String> storagesList;
     private Context mContext;
     private boolean shouldShowMemoryBar;
+    public static boolean shouldEnable = true;
 
 
     public StorageChooserCustomListAdapter(List<String> storagesList, Context mContext, boolean shouldShowMemoryBar) {
@@ -77,5 +78,10 @@ public class StorageChooserCustomListAdapter extends BaseAdapter {
 
     private void appluFolderTint(ImageView im) {
         im.setColorFilter(ContextCompat.getColor(mContext, R.color.colorPrimary));
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        return shouldEnable;
     }
 }

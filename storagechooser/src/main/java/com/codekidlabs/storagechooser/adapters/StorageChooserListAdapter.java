@@ -1,9 +1,17 @@
 package com.codekidlabs.storagechooser.adapters;
 
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +22,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.codekidlabs.storagechooser.R;
+import com.codekidlabs.storagechooser.StorageChooser;
+import com.codekidlabs.storagechooser.StorageChooserView;
 import com.codekidlabs.storagechooser.animators.MemorybarAnimation;
+import com.codekidlabs.storagechooser.exceptions.MemoryNotAccessibleException;
 import com.codekidlabs.storagechooser.models.Storages;
+import com.codekidlabs.storagechooser.utils.MemoryUtil;
 
+import java.io.File;
 import java.util.List;
 
 public class StorageChooserListAdapter extends BaseAdapter {
@@ -52,13 +65,11 @@ public class StorageChooserListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
+        memoryPercentile = -1;
         LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
         View rootView = inflater.inflate(R.layout.row_storage, viewGroup, false);
 
         //for animation set current position to provide animation delay
-
-
         TextView storageName = (TextView) rootView.findViewById(R.id.storage_name);
         TextView memoryStatus = (TextView) rootView.findViewById(R.id.memory_status);
         memoryBar = (ProgressBar) rootView.findViewById(R.id.memory_bar);
@@ -66,29 +77,35 @@ public class StorageChooserListAdapter extends BaseAdapter {
         Storages storages = storagesList.get(i);
         final SpannableStringBuilder str = new SpannableStringBuilder(storages.getStorageTitle() + " (" + storages.getMemoryTotalSize() + ")");
 
-        str.setSpan(new android.text.style.StyleSpan(Typeface.ITALIC), getSpannableIndex(str), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        String availableText = storages.getMemoryAvailableSize() + " free";
-
+        str.setSpan(new StyleSpan(Typeface.ITALIC), getSpannableIndex(str), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        String availableText = mContext.getString(R.string.text_freespace, storages.getMemoryAvailableSize());
         storageName.setText(str);
         memoryStatus.setText(availableText);
 
-        memoryPercentile = getPercentile(storages.getMemoryAvailableSize(), storages.getMemoryTotalSize());
+        memoryStatus.setTextColor(ContextCompat.getColor(mContext, R.color.memory_status_color));
+        DrawableCompat.setTint(memoryBar.getProgressDrawable(), ContextCompat.getColor(mContext, R.color.memory_bar_color));
+
+        try {
+            memoryPercentile = getPercentile(storages.getStoragePath());
+        } catch (MemoryNotAccessibleException e) {
+            e.printStackTrace();
+        }
         // THE ONE AND ONLY MEMORY BAR
-        if(shouldShowMemoryBar) {
+        if(shouldShowMemoryBar && memoryPercentile != -1) {
             memoryBar.setMax(100);
             memoryBar.setProgress(memoryPercentile);
+            runMemorybarAnimation(i);
         } else {
             memoryBar.setVisibility(View.GONE);
         }
-
-        runMemorybarAnimation(i);
+        
         return rootView;
 
     }
 
     private void runMemorybarAnimation(int pos) {
         MemorybarAnimation animation = new MemorybarAnimation(memoryBar,0, memoryPercentile);
-        animation.setDuration(800);
+        animation.setDuration(500);
         animation.setInterpolator(new AccelerateDecelerateInterpolator());
 
         if(pos > 0) {
@@ -109,18 +126,27 @@ public class StorageChooserListAdapter extends BaseAdapter {
 
     /**
      * calculate percentage of memory left for memorybar
-     * @param memoryAvailableSize SpannableStringBuilder to apply typeface changes
-     * @param memoryTotalSize SpannableStringBuilder to apply typeface changes
+     * @param path use same statfs
      * @return integer value of the percentage with amount of storage used
      */
-    private int getPercentile(String memoryAvailableSize, String memoryTotalSize) {
-        int percent = (int) ((getMemoryFromString(memoryAvailableSize) * 100) / getMemoryFromString(memoryTotalSize));
-        Log.d("TAG", "percentage: " + percent);
-        return 100 - percent;
+    private int getPercentile(String path) throws MemoryNotAccessibleException {
+        MemoryUtil memoryUtil = new MemoryUtil();
+        int percent;
+
+        long availableMem =  memoryUtil.getAvailableMemorySize(path);
+        long totalMem =  memoryUtil.getTotalMemorySize(path);
+
+        if(totalMem > 0) {
+            percent = (int) (100 - ((availableMem * 100) / totalMem));
+        } else {
+            throw new MemoryNotAccessibleException("Cannot compute memory for " + path);
+        }
+
+        return percent;
     }
 
     /**
-     * remove MB. GiB text that we got from MemoryUtil.getAvailableMemorySize() &
+     * remove KiB,MiB,GiB text that we got from MemoryUtil.getAvailableMemorySize() &
      * MemoryUtil.getTotalMemorySize()
      * @param size String in the format of user readable string, with MB, GiB .. suffix
      * @return integer value of the percentage with amount of storage used
@@ -128,14 +154,13 @@ public class StorageChooserListAdapter extends BaseAdapter {
     private long getMemoryFromString(String size) {
         long mem = 0;
 
-        if(size.contains("MB")) {
-            mem = Integer.parseInt(size.replace(",","").replace("MB",""));
+        if(size.contains("MiB")) {
+            mem = Integer.parseInt(size.replace(",","").replace("MiB",""));
         } else if (size.contains("GiB")){
             mem = Integer.parseInt(size.replace(",","").replace("GiB",""));
         } else {
-            mem = Integer.parseInt(size.replace(",","").replace("KB",""));
+            mem = Integer.parseInt(size.replace(",","").replace("KiB",""));
         }
-
 
         Log.d("TAG", "Memory:"+ mem);
         return mem;
