@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:key="pref_overview"
+        android:title="Storage Chooser Overview"
+        android:summary="Shows the overview of the storages available like the memory"
+        />
+    <Preference
+        android:key="pref_custom"
+        android:title="Storage Chooser Custom"
+        android:summary="Helps the user to choose their own custom path"
+        />
+    <Preference
+        android:key="pref_file_picker"
+        android:title="File Picker"
+        android:summary="This is a file picker dialog"
+        />
+
+</PreferenceScreen>
