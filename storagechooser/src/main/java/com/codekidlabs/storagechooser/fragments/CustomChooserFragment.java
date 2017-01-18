@@ -258,7 +258,7 @@ public class CustomChooserFragment extends DialogFragment {
         mBackButton = (ImageButton) mLayout.findViewById(R.id.back_button);
         mSelectButton = (Button) mLayout.findViewById(R.id.select_button);
         if(isSleekView()) {
-            mNewFolderImageView = (ImageView) mLayout.findViewById(R.id.new_folder_button);
+            mNewFolderImageView = (ImageView) mLayout.findViewById(R.id.new_folder_iv);
             mNewFolderImageView.setOnClickListener(mNewFolderButtonClickListener);
         } else {
             mNewFolderButton = (Button) mLayout.findViewById(R.id.new_folder_button);
