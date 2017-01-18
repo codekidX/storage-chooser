@@ -42,7 +42,7 @@
                 android:layout_height="match_parent">
 
                 <ImageView
-                    android:id="@+id/new_folder_button"
+                    android:id="@+id/new_folder_iv"
                     android:src="@drawable/drawable_plus_to_close"
                     android:background="@android:color/transparent"
                     android:layout_centerInParent="true"
