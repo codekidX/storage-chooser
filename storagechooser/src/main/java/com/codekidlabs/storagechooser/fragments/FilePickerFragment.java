@@ -37,6 +37,7 @@ import android.widget.Toast;
 import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.StorageChooser;
 import com.codekidlabs.storagechooser.StorageChooserView;
+import com.codekidlabs.storagechooser.adapters.FilePickerAdapter;
 import com.codekidlabs.storagechooser.adapters.StorageChooserCustomListAdapter;
 import com.codekidlabs.storagechooser.models.Config;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
@@ -84,7 +85,7 @@ public class FilePickerFragment extends DialogFragment {
     private static String mAddressClippedPath = "";
 
     private List<String> customStoragesList;
-    private StorageChooserCustomListAdapter customListAdapter;
+    private FilePickerAdapter filePickerAdapter;
 
     private FileUtil fileUtil;
 
@@ -313,15 +314,21 @@ public class FilePickerFragment extends DialogFragment {
         mPathChosen = (TextView) view.findViewById(R.id.path_chosen);
         mBundlePath = this.getArguments().getString(DiskUtil.SC_PREFERENCE_KEY);
         populateList(mBundlePath);
-        customListAdapter =new StorageChooserCustomListAdapter(customStoragesList, context, shouldShowMemoryBar);
-        listView.setAdapter(customListAdapter);
+        filePickerAdapter =new FilePickerAdapter(customStoragesList, context, shouldShowMemoryBar, mBundlePath);
+        listView.setAdapter(filePickerAdapter);
         //listview should be clickable at first
         StorageChooserCustomListAdapter.shouldEnable = true;
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                populateList("/" + customStoragesList.get(i));
+                String jointPath = theSelectedPath + "/" + customStoragesList.get(i);
+                if(FileUtil.isDir(jointPath)) {
+                    populateList("/" + customStoragesList.get(i));
+                } else {
+                    StorageChooser.onSelectListener.onSelect(jointPath);
+                    dissmissDialog(FLAG_DISSMISS_NORMAL);
+                }
             }
         });
 
@@ -376,7 +383,7 @@ public class FilePickerFragment extends DialogFragment {
             mAddressClippedPath = theSelectedPath;
         }
 
-        File[] volumeList = fileUtil.listFilesForDir(theSelectedPath);
+        File[] volumeList = fileUtil.listFilesInDir(theSelectedPath);
 
         Log.e("SCLib", theSelectedPath);
         if(volumeList != null) {
@@ -401,8 +408,8 @@ public class FilePickerFragment extends DialogFragment {
         }
 
 
-        if(customListAdapter !=null) {
-            customListAdapter.notifyDataSetChanged();
+        if(filePickerAdapter !=null) {
+            filePickerAdapter.notifyDataSetChanged();
         }
 
         playTheAddressBarAnimation();
@@ -419,7 +426,7 @@ public class FilePickerFragment extends DialogFragment {
         } else {
             customStoragesList.clear();
         }
-        File[] volumeList = fileUtil.listFilesForDir(theSelectedPath);
+        File[] volumeList = fileUtil.listFilesInDir(theSelectedPath);
 
         Log.e("SCLib", theSelectedPath);
         if(volumeList != null) {
@@ -440,8 +447,8 @@ public class FilePickerFragment extends DialogFragment {
         }
 
 
-        if(customListAdapter !=null) {
-            customListAdapter.notifyDataSetChanged();
+        if(filePickerAdapter !=null) {
+            filePickerAdapter.notifyDataSetChanged();
         }
     }
 

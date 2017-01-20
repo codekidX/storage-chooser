@@ -93,11 +93,7 @@ public class ChooserDialogFragment extends DialogFragment {
 
                 if(mConfig.isAllowCustomPath()) {
                     String dirPath = evaluatePath(i);
-                    CustomChooserFragment c = new CustomChooserFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putString(DiskUtil.SC_PREFERENCE_KEY, dirPath);
-                    c.setArguments(bundle);
-                    c.show(mConfig.getFragmentManager(), "custom_chooser");
+                    showSecondaryChooser(dirPath);
                 } else {
                     String dirPath = evaluatePath(i);
                     if(mConfig.isActionSave()) {
@@ -122,6 +118,27 @@ public class ChooserDialogFragment extends DialogFragment {
             }
         });
 
+    }
+
+    private void showSecondaryChooser(String dirPath) {
+
+        Bundle bundle = new Bundle();
+        bundle.putString(DiskUtil.SC_PREFERENCE_KEY, dirPath);
+
+        switch (mConfig.getSecondaryAction()) {
+            case StorageChooser.NONE:
+                break;
+            case StorageChooser.DIRECTORY_CHOOSER:
+                CustomChooserFragment c = new CustomChooserFragment();
+                c.setArguments(bundle);
+                c.show(mConfig.getFragmentManager(), "custom_chooser");
+                break;
+            case StorageChooser.FILE_PICKER:
+                FilePickerFragment f = new FilePickerFragment();
+                f.setArguments(bundle);
+                f.show(mConfig.getFragmentManager(), "file_picker");
+                break;
+        }
     }
 
 

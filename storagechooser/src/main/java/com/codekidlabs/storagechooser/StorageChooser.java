@@ -18,6 +18,10 @@ public class StorageChooser {
 
     public static OnSelectListener onSelectListener;
 
+    public static final String NONE = "none";
+    public static final String DIRECTORY_CHOOSER = "dir";
+    public static final String FILE_PICKER = "file";
+
     /**
      * basic constructor of StorageChooser
      * @param config to use with dialog window addition
@@ -99,6 +103,7 @@ public class StorageChooser {
         private boolean mAllowCustomPath = false;
         private boolean mAllowAddFolder = false;
         private boolean mShowHidden = false;
+        private String type;
 
         Config devConfig;
 
@@ -167,6 +172,11 @@ public class StorageChooser {
             return this;
         }
 
+        public Builder setType(String action) {
+            type = action;
+            return this;
+        }
+
 
         public StorageChooser build() {
             devConfig.setActionSave(mActionSave);
@@ -174,6 +184,13 @@ public class StorageChooser {
             devConfig.setAllowCustomPath(mAllowCustomPath);
             devConfig.setAllowAddFolder(mAllowAddFolder);
             devConfig.setShowHidden(mShowHidden);
+
+            if(type == null) {
+                devConfig.setSecondaryAction(StorageChooser.NONE);
+            } else {
+                devConfig.setSecondaryAction(type);
+            }
+
             return new StorageChooser(mActivity, devConfig);
         }
     }

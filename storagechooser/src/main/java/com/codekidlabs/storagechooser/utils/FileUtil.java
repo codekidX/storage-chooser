@@ -12,13 +12,17 @@ import java.util.List;
 
 public class FileUtil {
 
-    public File[] listFilesForDir(String dirPath) {
+    public File[] listFilesAsDir(String dirPath) {
         return new File(dirPath).listFiles(new FileFilter() {
             @Override
             public boolean accept(File file) {
                 return file.isDirectory();
             }
         });
+    }
+
+    public File[] listFilesInDir(String dirPath) {
+        return new File(dirPath).listFiles();
     }
 
     public String[] arrangeAscending(String[] dirNames) {
@@ -37,5 +41,9 @@ public class FileUtil {
     public static boolean createDirectory(String name, String path) {
         File dir = new File(path + "/" + name);
         return dir.mkdirs();
+    }
+
+    public static boolean isDir(String path) {
+        return new File(path).isDirectory();
     }
 }

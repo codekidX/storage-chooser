@@ -22,6 +22,8 @@ public class Config {
     private boolean allowAddFolder;
     private boolean showHidden;
 
+    private String secondaryAction;
+
     public FragmentManager getFragmentManager() {
         return fragmentManager;
     }
@@ -116,5 +118,14 @@ public class Config {
 
     public void setShowHidden(boolean showHidden) {
         this.showHidden = showHidden;
+    }
+
+
+    public String getSecondaryAction() {
+        return secondaryAction;
+    }
+
+    public void setSecondaryAction(String secondaryAction) {
+        this.secondaryAction = secondaryAction;
     }
 }
