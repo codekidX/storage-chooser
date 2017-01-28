@@ -298,6 +298,10 @@ public class FilePickerFragment extends DialogFragment {
         mSelectButton.setOnClickListener(mSelectButtonClickListener);
         mCreateButton.setOnClickListener(mCreateButtonClickListener);
 
+        if(mConfig.getSecondaryAction() == StorageChooser.FILE_PICKER) {
+            mSelectButton.setVisibility(View.GONE);
+        }
+
         return mLayout;
     }
 
