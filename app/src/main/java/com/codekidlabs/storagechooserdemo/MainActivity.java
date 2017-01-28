@@ -1,27 +1,18 @@
 package com.codekidlabs.storagechooserdemo;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
-import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.codekidlabs.storagechooser.StorageChooser;
-import com.codekidlabs.storagechooser.StorageChooserView;
-import com.codekidlabs.storagechooserdemo.utils.TypefaceUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -58,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
             PreferenceScreen preferenceScreen = getPreferenceScreen();
             Preference overviewPref = preferenceScreen.findPreference("pref_overview");
-            Preference customPref = preferenceScreen.findPreference("pref_overview");
-            Preference filePickerPref = preferenceScreen.findPreference("pref_overview");
+            Preference customPref = preferenceScreen.findPreference("pref_custom");
+            Preference filePickerPref = preferenceScreen.findPreference("pref_file_picker");
 
             overviewPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
@@ -80,7 +71,9 @@ public class MainActivity extends AppCompatActivity {
                 public boolean onPreferenceClick(Preference preference) {
                     StorageChooser chooser = new StorageChooser.Builder()
                             .withActivity(getActivity())
+                            .allowCustomPath(true)
                             .withFragmentManager(fragmentManager)
+                            .setType(StorageChooser.DIRECTORY_CHOOSER)
                             .withMemoryBar(true)
                             .build();
 
@@ -96,8 +89,17 @@ public class MainActivity extends AppCompatActivity {
                     StorageChooser chooser = new StorageChooser.Builder()
                             .withActivity(getActivity())
                             .withFragmentManager(fragmentManager)
+                            .allowCustomPath(true)
+                            .setType(StorageChooser.FILE_PICKER)
                             .withMemoryBar(true)
                             .build();
+
+                    chooser.setOnSelectListener(new StorageChooser.OnSelectListener() {
+                        @Override
+                        public void onSelect(String path) {
+                            Log.e("File name", path);
+                        }
+                    });
 
                     chooser.show();
                     return true;
