@@ -30,6 +30,29 @@ public class FileUtil {
         return dirNames;
     }
 
+    /**
+     * Removes non-operationaal directories which are either used by only the system or
+     * not used by anyone
+     * @return
+     */
+    public void removeNonOperational(List<File> volumeList) {
+        // segregate the list
+        for(int i=0;i < volumeList.size(); i++) {
+            if(volumeList.get(i).getName().equals(MemoryUtil.SELF_DIR_NAME)) {
+                volumeList.remove(i);
+            }
+            if(volumeList.get(i).getName().equals(MemoryUtil.EMULATED_DIR_NAME)) {
+                volumeList.remove(i);
+            }
+            if(volumeList.get(i).getName().equals(MemoryUtil.EMULATED_DIR_KNOX)) {
+                volumeList.remove(i);
+            }
+            if(volumeList.get(i).getName().equals(MemoryUtil.SDCARD0_DIR_NAME)) {
+                volumeList.remove(i);
+            }
+        }
+    }
+
     public String[] fileListToStringArray(List<String> dirNames) {
         String[] dirList = new String[dirNames.size()];
         for(int i=0; i< dirNames.size(); i++) {
