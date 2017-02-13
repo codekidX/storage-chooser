@@ -37,17 +37,19 @@ public class FileUtil {
      */
     public void removeNonOperational(List<File> volumeList) {
         // segregate the list
+
         for(int i=0;i < volumeList.size(); i++) {
-            if(volumeList.get(i).getName().equals(MemoryUtil.SELF_DIR_NAME)) {
+            String volumeName = volumeList.get(i).getName();
+            if(volumeName.equals(MemoryUtil.SELF_DIR_NAME)) {
                 volumeList.remove(i);
             }
-            if(volumeList.get(i).getName().equals(MemoryUtil.EMULATED_DIR_NAME)) {
+            if(volumeName.equals(MemoryUtil.EMULATED_DIR_NAME)) {
                 volumeList.remove(i);
             }
-            if(volumeList.get(i).getName().equals(MemoryUtil.EMULATED_DIR_KNOX)) {
+            if(volumeName.equals(MemoryUtil.EMULATED_DIR_KNOX)) {
                 volumeList.remove(i);
             }
-            if(volumeList.get(i).getName().equals(MemoryUtil.SDCARD0_DIR_NAME)) {
+            if(volumeName.equals(MemoryUtil.SDCARD0_DIR_NAME)) {
                 volumeList.remove(i);
             }
         }
