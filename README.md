@@ -8,7 +8,7 @@ A pretty and simple storage/directory chooser library for 4.4+ devices. This lib
 - event when path is selected and act upon that path
 - and much more.
 
-There is also some really nice features that I thought would come in handy:
+There are also some really nice features that I thought would come in handy:
 
 - You show a quick overview of the storages present and their memory available before choosing so that users know which storage to choose.
 - you can choose between _sheet and sleek_ layouts.
@@ -43,7 +43,7 @@ Add this to your root build.gradle file under repositories:
 
 Add this to your app level build.gradle as dependency:
 
-    com.github.codekidX:storage-chooser:1.0.20
+    com.github.codekidX:storage-chooser:1.0.30
 
 
 Notes
@@ -58,7 +58,7 @@ Before you implement this library here are some notes that you can follow to avo
 > - This library follows same color scheme as that of the parent app to maintain the aesthetic of the parent app. _See the color scheme section below_
 
 
- Implementation
+Implementation
 -------------
 
 ### Simple Type
@@ -98,17 +98,28 @@ chooser.setOnSelectListener(new StorageChooser.OnSelectListener() {
 .withPredefinedPath(STATIC_PATH)
 ```
 
-> 
-> A pre-defined path gets appended after the selection of internal/external root directory. 
 > OUTPUT: **/storage/emulated/0/Downloads/CodekidLabs**
 
 ### Custom Type
 
-- Let's user choose their own directory of their liking
+- Let's your user choose custom directory/file. 
+
+#### Directory Chooser
 
 ```
 // --- ADD ---
 .allowCustomPath(true)
+.setType(StorageChooser.DIRECTORY_CHOOSER)
+```
+
+#### File Picker
+
+> **NOTE:** File Picker is still --> *WIP*
+
+```
+// --- ADD ---
+.allowCustomPath(true)
+.setType(StorageChooser.FILE_PICKER)
 ```
 
 ### Save directly to preference
@@ -137,6 +148,8 @@ A seperate localization wiki is posted [here](https://github.com/codekidX/storag
 > - Memory available text -> @colorPrimaryDark
 > - Address bar background -> @colorPrimary
 > - Select button label color -> @colorPrimaryDark
+
+For custom color scheme, read [Wiki](https://github.com/codekidX/storage-chooser/wiki/Custom-color-scheme)
 
 LICENSE
 -------------
