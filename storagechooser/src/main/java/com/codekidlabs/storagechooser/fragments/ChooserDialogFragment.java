@@ -87,14 +87,34 @@ public class ChooserDialogFragment extends DialogFragment {
      */
     private void initListView(Context context, View view, boolean shouldShowMemoryBar) {
         ListView listView = (ListView) view.findViewById(R.id.storage_list_view);
+
+        // we need to populate before to get the internal storage path in list
         populateList();
 
-        listView.setAdapter(new StorageChooserListAdapter(storagesList, context, shouldShowMemoryBar));
+        // if dev needs to skip overview and the primary path is not mentioned the directory
+        // chooser or file picker will default to internal storage
+        if(mConfig.isSkipOverview()) {
+            if(mConfig.getPrimaryPath() == null) {
+
+                // internal storage is always the first element (I took care of it :wink:)
+                String dirPath = evaluatePath(0);
+                showSecondaryChooser(dirPath);
+            } else {
+
+                // path provided by dev is the goto path for chooser
+                showSecondaryChooser(mConfig.getPrimaryPath());
+            }
+
+        } else {
+            listView.setAdapter(new StorageChooserListAdapter(storagesList, context, shouldShowMemoryBar));
+        }
+
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
+                // if allowCustomPath is called then directory chooser will be the default secondary dialog
                 if(mConfig.isAllowCustomPath()) {
                     String dirPath = evaluatePath(i);
                     showSecondaryChooser(dirPath);

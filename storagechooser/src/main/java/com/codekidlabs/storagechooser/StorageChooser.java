@@ -40,7 +40,7 @@ public class StorageChooser {
 
     public interface OnSelectListener {
 
-        public void onSelect(String path);
+        void onSelect(String path);
     }
 
     /**
@@ -60,7 +60,7 @@ public class StorageChooser {
     }
 
     public void setOnSelectListener(OnSelectListener onSelectListener) {
-        this.onSelectListener = onSelectListener;
+        StorageChooser.onSelectListener = onSelectListener;
     }
 
     public OnSelectListener getOnSelectListener() {
@@ -103,6 +103,7 @@ public class StorageChooser {
         private boolean mAllowCustomPath = false;
         private boolean mAllowAddFolder = false;
         private boolean mShowHidden = false;
+        private boolean mSkipOverview = false;
         private String type;
 
         Config devConfig;
@@ -177,6 +178,19 @@ public class StorageChooser {
             return this;
         }
 
+        public Builder skipOverview(boolean skip, String primaryPath) {
+            mSkipOverview = skip;
+            devConfig.setPrimaryPath(primaryPath);
+            return this;
+        }
+
+        public Builder skipOverview(boolean skip) {
+            mSkipOverview = skip;
+
+            return this;
+        }
+
+
 
         public StorageChooser build() {
             devConfig.setActionSave(mActionSave);
@@ -184,6 +198,7 @@ public class StorageChooser {
             devConfig.setAllowCustomPath(mAllowCustomPath);
             devConfig.setAllowAddFolder(mAllowAddFolder);
             devConfig.setShowHidden(mShowHidden);
+            devConfig.setSkipOverview(mSkipOverview);
 
             if(type == null) {
                 devConfig.setSecondaryAction(StorageChooser.NONE);

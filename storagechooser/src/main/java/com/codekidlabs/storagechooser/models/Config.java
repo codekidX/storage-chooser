@@ -21,6 +21,8 @@ public class Config {
     private boolean allowCustomPath;
     private boolean allowAddFolder;
     private boolean showHidden;
+    private boolean skipOverview;
+    private String primaryPath;
 
     private String secondaryAction;
 
@@ -127,5 +129,22 @@ public class Config {
 
     public void setSecondaryAction(String secondaryAction) {
         this.secondaryAction = secondaryAction;
+    }
+
+
+    public String getPrimaryPath() {
+        return primaryPath;
+    }
+
+    public void setPrimaryPath(String primaryPath) {
+        this.primaryPath = primaryPath;
+    }
+
+    public boolean isSkipOverview() {
+        return skipOverview;
+    }
+
+    public void setSkipOverview(boolean skipOverview) {
+        this.skipOverview = skipOverview;
     }
 }
