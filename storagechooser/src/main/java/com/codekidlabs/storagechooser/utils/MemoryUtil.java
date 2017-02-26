@@ -17,7 +17,7 @@ public class MemoryUtil {
     public static final String SDCARD0_DIR_NAME = "sdcard0";
 
     public boolean isExternalStoragePresent() {
-        return getStorageListSize() != 0;
+        return getStorageListSize() != 1;
     }
 
     /**
