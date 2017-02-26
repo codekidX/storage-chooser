@@ -74,6 +74,9 @@ public class StorageChooserListAdapter extends BaseAdapter {
         TextView memoryStatus = (TextView) rootView.findViewById(R.id.memory_status);
         memoryBar = (ProgressBar) rootView.findViewById(R.id.memory_bar);
 
+        // new scaled memorybar - following the new google play update!
+        memoryBar.setScaleY(2f);
+
         Storages storages = storagesList.get(i);
         final SpannableStringBuilder str = new SpannableStringBuilder(storages.getStorageTitle() + " (" + storages.getMemoryTotalSize() + ")");
 
