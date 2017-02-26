@@ -1,8 +1,11 @@
 Storage Chooser
 ===================
 
+[![](https://img.shields.io/badge/release-1.0.30-green.svg?style=flat-square)](https://jitpack.io/#codekidX/storage-chooser)  [![](https://img.shields.io/badge/last--stable-da21db4-yellow.svg?style=flat-square)](https://github.com/codekidX/storage-chooser/commit/da21db4e5c46e0c3a8b513112ff093448a23754b)  ![GitHub issues](https://img.shields.io/github/issues/codekidX/storage-chooser.svg?style=flat-square)  [![demo](https://img.shields.io/badge/download-demo-blue.svg?style=flat-square)](https://raw.githubusercontent.com/android-arsenal/apk22/master/5336/app.apk)
 
-A pretty and simple storage/directory chooser library for 4.4+ devices. This library was created to be included in [OpenGApps App](https://play.google.com/store/apps/details?id=org.opengapps.app). There are too many storage chooser out there but this one is too materially :stuck_out_tongue: . Easy to implement and does not take a lot of your valueable time in setting-up all the other necessary things that every developer seeks, like 
+
+
+A pretty and simple directory chooser and file picker library for 4.4+ devices. This library was created to be included in [OpenGApps App](https://play.google.com/store/apps/details?id=org.opengapps.app). There are too many storage chooser out there but this one is too materially :stuck_out_tongue: . Easy to implement and does not take a lot of your valueable time in setting-up all the other necessary things that every developer seeks, like 
 
 - saving path to sharedPreference
 - event when path is selected and act upon that path
@@ -19,7 +22,6 @@ There are also some really nice features that I thought would come in handy:
 **TODO**:
 
 - Implement memory thresholding - a restriction or a toast that it shows when user's memory is less than your defined memory for operations.
-- File picker - storage - **chooser** I think file picker is necessary now.
 
 
 
