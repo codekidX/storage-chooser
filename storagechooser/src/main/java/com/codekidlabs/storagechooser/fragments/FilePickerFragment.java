@@ -256,37 +256,46 @@ public class FilePickerFragment extends DialogFragment {
         mLayout = inflater.inflate(StorageChooserView.VIEW_SC, container, false);
         initListView(mContext, mLayout, mConfig.isShowMemoryBar());
 
+        initUI();
+        initNewFolderView();
+        updateUI();
+
+        return mLayout;
+    }
+
+    private boolean isSleekView() {
+        return StorageChooserView.VIEW_SC == StorageChooserView.SC_LAYOUT_SLEEK;
+    }
+
+    private void initUI()  {
+
         mBackButton = (ImageButton) mLayout.findViewById(R.id.back_button);
         mSelectButton = (Button) mLayout.findViewById(R.id.select_button);
-        if(isSleekView()) {
-            mNewFolderImageView = (ImageView) mLayout.findViewById(R.id.new_folder_iv);
-            mNewFolderImageView.setOnClickListener(mNewFolderButtonClickListener);
-        } else {
-            mNewFolderButton = (Button) mLayout.findViewById(R.id.new_folder_button);
-            mNewFolderButton.setText(StorageChooserView.LABEL_NEW_FOLDER);
-            mNewFolderButton.setOnClickListener(mNewFolderButtonClickListener);
-            mNewFolderButton.setTextColor(mResourceUtil.getColor(R.color.new_folder_color));
-        }
+
         mCreateButton = (Button) mLayout.findViewById(R.id.create_folder_button);
-        RelativeLayout mNewFolderButtonHolder = (RelativeLayout) mLayout.findViewById(R.id.new_folder_button_holder);
+
         mNewFolderView = (RelativeLayout) mLayout.findViewById(R.id.new_folder_view);
         mFolderNameEditText = (EditText) mLayout.findViewById(R.id.et_folder_name);
         mFolderNameETLayout = (TextInputLayout) mLayout.findViewById(R.id.et_folder_name_layout);
+
+        mInactiveGradient = mLayout.findViewById(R.id.inactive_gradient);
+
+
+    }
+
+    private void updateUI() {
+
+        //at start dont show the new folder view unless user clicks on the add/plus button
+        mNewFolderView.setVisibility(View.INVISIBLE);
+        mInactiveGradient.setVisibility(View.INVISIBLE);
+
+
         mFolderNameETLayout.setHint(StorageChooserView.TEXTFIELD_HINT);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mFolderNameEditText.setHintTextColor(mResourceUtil.getColor(StorageChooserView.SC_TEXTFIELD_HINT_COLOR));
         }
 
-        mInactiveGradient = mLayout.findViewById(R.id.inactive_gradient);
-
-        //at start dont show the new folder view unless user clicks on the add/plus button
-        mNewFolderView.setVisibility(View.INVISIBLE);
-        mInactiveGradient.setVisibility(View.INVISIBLE);
-
-        if(!mConfig.isAllowAddFolder()) {
-            mNewFolderButtonHolder.setVisibility(View.GONE);
-        }
 
         // set label of buttons [localization]
         mSelectButton.setText(StorageChooserView.LABEL_SELECT);
@@ -302,11 +311,26 @@ public class FilePickerFragment extends DialogFragment {
             mSelectButton.setVisibility(View.GONE);
         }
 
-        return mLayout;
     }
 
-    private boolean isSleekView() {
-        return StorageChooserView.VIEW_SC == StorageChooserView.SC_LAYOUT_SLEEK;
+    private void initNewFolderView() {
+
+        RelativeLayout mNewFolderButtonHolder = (RelativeLayout) mLayout.findViewById(R.id.new_folder_button_holder);
+
+        if(isSleekView()) {
+            mNewFolderImageView = (ImageView) mLayout.findViewById(R.id.new_folder_iv);
+            mNewFolderImageView.setOnClickListener(mNewFolderButtonClickListener);
+        } else {
+            mNewFolderButton = (Button) mLayout.findViewById(R.id.new_folder_button);
+            mNewFolderButton.setText(StorageChooserView.LABEL_NEW_FOLDER);
+            mNewFolderButton.setOnClickListener(mNewFolderButtonClickListener);
+            mNewFolderButton.setTextColor(mResourceUtil.getColor(R.color.new_folder_color));
+        }
+
+        if(!mConfig.isAllowAddFolder()) {
+            mNewFolderButtonHolder.setVisibility(View.GONE);
+        }
+
     }
 
 
