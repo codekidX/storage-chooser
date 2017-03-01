@@ -1,8 +1,7 @@
 Storage Chooser
 ===================
 
-[![](https://img.shields.io/badge/release-1.0.30-green.svg?style=flat-square)](https://jitpack.io/#codekidX/storage-chooser)  [![](https://img.shields.io/badge/last--stable-da21db4-yellow.svg?style=flat-square)](https://github.com/codekidX/storage-chooser/commit/da21db4e5c46e0c3a8b513112ff093448a23754b)  ![GitHub issues](https://img.shields.io/github/issues/codekidX/storage-chooser.svg?style=flat-square)  [![demo](https://img.shields.io/badge/download-demo-blue.svg?style=flat-square)](https://raw.githubusercontent.com/android-arsenal/apk22/master/5336/app.apk)
-
+[![](https://jitpack.io/v/codekidX/storage-chooser.svg)](https://jitpack.io/#codekidX/storage-chooser)  [![](https://img.shields.io/badge/last--stable-da21db4-yellow.svg?style=flat-square)](https://github.com/codekidX/storage-chooser/commit/da21db4e5c46e0c3a8b513112ff093448a23754b)  ![GitHub issues](https://img.shields.io/github/issues/codekidX/storage-chooser.svg?style=flat-square)  [![demo](https://img.shields.io/badge/download-demo-blue.svg?style=flat-square)](https://raw.githubusercontent.com/android-arsenal/apk22/master/5336/app.apk)  [![javadoc](https://img.shields.io/badge/Jitpack-javadoc-blue.svg?style=flat-square)](https://jitpack.io/com/github/codekidX/storage-chooser/1.0.31/javadoc/)
 
 
 A pretty and simple directory chooser and file picker library for 4.4+ devices. This library was created to be included in [OpenGApps App](https://play.google.com/store/apps/details?id=org.opengapps.app). There are too many storage chooser out there but this one is too materially :stuck_out_tongue: . Easy to implement and does not take a lot of your valueable time in setting-up all the other necessary things that every developer seeks, like 
@@ -17,11 +16,8 @@ There are also some really nice features that I thought would come in handy:
 - you can choose between _sheet and sleek_ layouts.
 - Inline create folder view _(not another dialog to handle)_
 - Full localization. I mean literally every strings can be localized to your desired language.
+- Memory thresholding - a restriction or a toast that it shows when user's memory is less than your defined memory for operations.
 - and more will be added soon.
-
-**TODO**:
-
-- Implement memory thresholding - a restriction or a toast that it shows when user's memory is less than your defined memory for operations.
 
 
 
@@ -45,7 +41,7 @@ Add this to your root build.gradle file under repositories:
 
 Add this to your app level build.gradle as dependency:
 
-    com.github.codekidX:storage-chooser:1.0.30
+    com.github.codekidX:storage-chooser:1.0.31
 
 
 Notes
