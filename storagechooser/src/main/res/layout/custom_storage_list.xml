@@ -43,7 +43,7 @@
 
                 <ImageView
                     android:id="@+id/new_folder_iv"
-                    android:src="@drawable/drawable_plus_to_close"
+                    android:src="@drawable/plus"
                     android:background="@android:color/transparent"
                     android:layout_centerInParent="true"
                     android:layout_width="wrap_content"

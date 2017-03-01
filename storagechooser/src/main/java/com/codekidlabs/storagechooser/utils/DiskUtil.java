@@ -25,4 +25,8 @@ public class DiskUtil {
             Log.e("StorageChooser", "No sharedPreference was supplied. Supply sharedPreferencesObject via withPreference() or disable saving with actionSave(false)");
         }
     }
+
+    public static boolean isLollipopAndAbove() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
+    }
 }

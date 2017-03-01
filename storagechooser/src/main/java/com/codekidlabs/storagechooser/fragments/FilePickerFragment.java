@@ -157,10 +157,12 @@ public class FilePickerFragment extends DialogFragment {
         mInactiveGradient.startAnimation(anim);
 
         if(isSleekView()) {
-            mNewFolderImageView.setImageDrawable(ContextCompat.getDrawable(mContext,R.drawable.drawable_plus_to_close));
-            // image button animation
-            Animatable animatable = (Animatable) mNewFolderImageView.getDrawable();
-            animatable.start();
+           if (DiskUtil.isLollipopAndAbove()) {
+               mNewFolderImageView.setImageDrawable(ContextCompat.getDrawable(mContext,R.drawable.drawable_plus_to_close));
+               // image button animation
+               Animatable animatable = (Animatable) mNewFolderImageView.getDrawable();
+               animatable.start();
+           }
             mNewFolderImageView.setOnClickListener(mNewFolderButtonCloseListener);
         } else {
             mNewFolderButton.setOnClickListener(mNewFolderButtonCloseListener);
@@ -180,10 +182,12 @@ public class FilePickerFragment extends DialogFragment {
         mNewFolderView.setVisibility(View.INVISIBLE);
 
         if(isSleekView()) {
-            mNewFolderImageView.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.drawable_close_to_plus));
-            // image button animation
-            Animatable animatable = (Animatable) mNewFolderImageView.getDrawable();
-            animatable.start();
+            if (DiskUtil.isLollipopAndAbove()) {
+                mNewFolderImageView.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.drawable_close_to_plus));
+                // image button animation
+                Animatable animatable = (Animatable) mNewFolderImageView.getDrawable();
+                animatable.start();
+            }
             mNewFolderImageView.setOnClickListener(mNewFolderButtonClickListener);
         } else {
             mNewFolderButton.setOnClickListener(mNewFolderButtonClickListener);
