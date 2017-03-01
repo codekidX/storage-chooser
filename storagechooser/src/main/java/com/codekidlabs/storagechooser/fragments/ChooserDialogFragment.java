@@ -15,6 +15,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.StorageChooser;
@@ -116,8 +117,10 @@ public class ChooserDialogFragment extends DialogFragment {
 
                 // if allowCustomPath is called then directory chooser will be the default secondary dialog
                 if(mConfig.isAllowCustomPath()) {
-                    String dirPath = evaluatePath(i);
-                    showSecondaryChooser(dirPath);
+                    // if developer wants to apply threshold
+                    if(mConfig.isApplyThreshold()) {
+                        startThresholdTest(i);
+                    }
                 } else {
                     String dirPath = evaluatePath(i);
                     if(mConfig.isActionSave()) {
@@ -136,6 +139,7 @@ public class ChooserDialogFragment extends DialogFragment {
                         }
                     } else {
                         Log.d("StorageChooser", "Chosen path: " + dirPath);
+                        startThresholdTest(i);
                     }
                 }
                 ChooserDialogFragment.this.dismiss();
@@ -143,6 +147,41 @@ public class ChooserDialogFragment extends DialogFragment {
         });
 
     }
+
+    /**
+     * initiate to take threshold test
+     * @param position list click index
+     */
+
+    private void startThresholdTest(int position) {
+        String thresholdSuffix= mConfig.getThresholdSuffix();
+
+        // if threshold suffix is null then memory threshold is also null
+        if(thresholdSuffix != null) {
+            long availableMem = memoryUtil.getAvailableMemorySize(evaluatePath(position));
+
+
+            if (doesPassThresholdTest((long) mConfig.getMemoryThreshold(), thresholdSuffix, availableMem)) {
+                String dirPath = evaluatePath(position);
+                showSecondaryChooser(dirPath);
+            } else {
+                String suffixedAvailableMem = String.valueOf(memoryUtil.suffixedSize(availableMem, thresholdSuffix)) + " " + thresholdSuffix;
+                Toast.makeText(getContext(), getString(R.string.toast_threshold_breached, suffixedAvailableMem), Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            // THROW: error in log
+            Log.e(TAG, "add .withThreshold(int size, String suffix) to your StorageChooser.Builder instance");
+        }
+    }
+
+    /**
+     * secondary choosers are dialogs apart from overview (CustomChooserFragment and FilePickerFragment)
+     * Configs :-
+     *     setType()
+     *     allowCustomPath()
+     *
+     * @param dirPath root path(starting-point) for the secondary choosers
+     */
 
     private void showSecondaryChooser(String dirPath) {
 
@@ -179,8 +218,16 @@ public class ChooserDialogFragment extends DialogFragment {
         }
     }
 
-    private boolean doesPassMemoryThreshold(long threshold, String memorySuffix, long availableSpace) {
-        return true;
+    /**
+     * checks if available space in user's device is greater than the developer defined threshold
+     *
+     * @param threshold defined by the developer using Config.withThreshold()
+     * @param memorySuffix also defined in Config.withThreshold() - check in GB, MB, KB ?
+     * @param availableSpace statfs available mem in bytes (long)
+     * @return if available memory is more than threshold
+     */
+    private boolean doesPassThresholdTest(long threshold, String memorySuffix, long availableSpace) {
+        return memoryUtil.suffixedSize(availableSpace, memorySuffix) > threshold;
     }
 
     /**

@@ -22,6 +22,7 @@ public class Config {
     private boolean allowAddFolder;
     private boolean showHidden;
     private boolean skipOverview;
+    private boolean applyThreshold;
     private String primaryPath;
 
     private String secondaryAction;
@@ -146,5 +147,13 @@ public class Config {
 
     public void setSkipOverview(boolean skipOverview) {
         this.skipOverview = skipOverview;
+    }
+
+    public boolean isApplyThreshold() {
+        return applyThreshold;
+    }
+
+    public void setApplyThreshold(boolean applyThreshold) {
+        this.applyThreshold = applyThreshold;
     }
 }

@@ -108,15 +108,15 @@ public class MemoryUtil {
         return resultBuffer.toString();
     }
 
-    public static long suffixedSize(long size, String suffix) {
+    public long suffixedSize(long size, String suffix) {
 
         switch (suffix) {
             case "KiB":
-                return (long) (size/Math.pow(1024, 3));
+                return size/1024;
             case "MiB":
                 return (long) (size/Math.pow(1024, 2));
             case "GiB":
-                return  size/104;
+                return (long) (size/Math.pow(1024, 3));
             default:
                 return 0;
         }

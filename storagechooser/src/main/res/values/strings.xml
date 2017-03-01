@@ -7,4 +7,5 @@
     <!-- Usb storage descripton -->
     <string name="usb_storage">USB storage</string>
     <string name="text_freespace">%1$s free</string>
+    <string name="toast_threshold_breached">%1$s is not sufficient for current operation. Please clear out some space.</string>
 </resources>

@@ -104,6 +104,7 @@ public class StorageChooser {
         private boolean mAllowAddFolder = false;
         private boolean mShowHidden = false;
         private boolean mSkipOverview = false;
+        private boolean mApplyMemoryThreshold = false;
         private String type;
 
         Config devConfig;
@@ -132,7 +133,12 @@ public class StorageChooser {
             return this;
         }
 
-        public Builder withMemoryThreshold(int size, String suffix) {
+        public Builder applyMemoryThreshold(boolean applyThreshold) {
+            mApplyMemoryThreshold = applyThreshold;
+            return this;
+        }
+
+        public Builder withThreshold(int size, String suffix) {
             devConfig.setMemoryThreshold(size);
             devConfig.setThresholdSuffix(suffix);
             return this;
@@ -199,6 +205,7 @@ public class StorageChooser {
             devConfig.setAllowAddFolder(mAllowAddFolder);
             devConfig.setShowHidden(mShowHidden);
             devConfig.setSkipOverview(mSkipOverview);
+            devConfig.setApplyThreshold(mApplyMemoryThreshold);
 
             if(type == null) {
                 devConfig.setSecondaryAction(StorageChooser.NONE);
