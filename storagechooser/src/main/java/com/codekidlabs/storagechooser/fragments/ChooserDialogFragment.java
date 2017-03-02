@@ -120,6 +120,9 @@ public class ChooserDialogFragment extends DialogFragment {
                     // if developer wants to apply threshold
                     if(mConfig.isApplyThreshold()) {
                         startThresholdTest(i);
+                    } else {
+                        String dirPath = evaluatePath(i);
+                        showSecondaryChooser(dirPath);
                     }
                 } else {
                     String dirPath = evaluatePath(i);
