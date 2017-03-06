@@ -141,8 +141,14 @@ public class ChooserDialogFragment extends DialogFragment {
                             DiskUtil.saveChooserPathPreference(mConfig.getPreference(), dirPath);
                         }
                     } else {
-                        Log.d("StorageChooser", "Chosen path: " + dirPath);
-                        startThresholdTest(i);
+                        //Log.d("StorageChooser", "Chosen path: " + dirPath);
+                        if(mConfig.isApplyThreshold()) {
+                            startThresholdTest(i);
+                        } else {
+                            if (StorageChooser.onSelectListener != null) {
+                                StorageChooser.onSelectListener.onSelect(dirPath);
+                            }
+                        }
                     }
                 }
                 ChooserDialogFragment.this.dismiss();
