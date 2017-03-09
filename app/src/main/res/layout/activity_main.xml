@@ -2,9 +2,9 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coord"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context="com.codekidlabs.storagechooserdemo.MainActivity">
 
     <android.support.design.widget.AppBarLayout
@@ -16,34 +16,95 @@
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="160dp"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
-            <TextView
-                android:id="@+id/sc_title"
-                android:text="@string/app_name"
-                android:gravity="center_vertical"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
 
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+
+    <android.support.v7.widget.CardView
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="120dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_margin="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <CheckBox
+                    android:id="@+id/checkbox_membar"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="withMemoryBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <CheckBox
+                    android:id="@+id/checkbox_add_folder"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="allowAddFolder"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <CheckBox
+                    android:id="@+id/checkbox_hidden"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="showHidden"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <CheckBox
+                    android:id="@+id/checkbox_dir"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="StorageChooser.DIRECTORY_CHOOSER"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <CheckBox
+                    android:id="@+id/checkbox_file"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="StorageChooser.FILE_PICKER"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <CheckBox
+                    android:id="@+id/checkbox_skip"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="skipOverview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <CheckBox
+                    android:id="@+id/checkbox_threshold"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="applyMemoryThreshold (1GB)"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </ScrollView>
+    </android.support.v7.widget.CardView>
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
+        android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
         android:tint="@android:color/white"
-        app:srcCompat="@drawable/git" />
+        app:srcCompat="@drawable/open_in_new" />
 
 </android.support.design.widget.CoordinatorLayout>
