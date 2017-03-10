@@ -84,7 +84,7 @@ public class StorageChooser {
     }
 
     private static Dialog getStorageChooserDialog(Activity activity) {
-        return new Dialog(activity);
+        return new Dialog(activity, R.style.DialogTheme);
     }
     /**
      * @class Builder
