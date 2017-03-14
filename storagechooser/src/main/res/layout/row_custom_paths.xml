@@ -5,22 +5,25 @@
 
     <ImageView
         android:id="@+id/path_folder_icon"
-        android:src="@drawable/ic_folder_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_centerVertical="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:layout_width="40dp"
-        android:layout_height="40dp" />
+        android:src="@drawable/ic_folder_icon" />
 
     <TextView
         android:id="@+id/storage_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="6dp"
-        android:textSize="16sp"
         android:layout_toEndOf="@id/path_folder_icon"
-        android:layout_centerVertical="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_toRightOf="@id/path_folder_icon"
+        android:textSize="16sp" />
 
 </RelativeLayout>
