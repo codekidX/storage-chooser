@@ -419,7 +419,7 @@ public class FilePickerFragment extends DialogFragment {
             mAddressClippedPath = theSelectedPath;
         }
 
-        File[] volumeList = fileUtil.sortFolderFirst(fileUtil.listFilesInDir(theSelectedPath));
+        File[] volumeList = fileUtil.listFilesInDir(theSelectedPath);
 
         Log.e("SCLib", theSelectedPath);
         if(volumeList != null) {
