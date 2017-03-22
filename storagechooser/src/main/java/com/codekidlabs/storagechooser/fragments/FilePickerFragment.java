@@ -93,7 +93,6 @@ public class FilePickerFragment extends DialogFragment {
     private Context mContext;
     private ResourceUtil mResourceUtil;
 
-
     private View.OnClickListener mSelectButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -346,7 +345,9 @@ public class FilePickerFragment extends DialogFragment {
         mPathChosen = (TextView) view.findViewById(R.id.path_chosen);
         mBundlePath = this.getArguments().getString(DiskUtil.SC_PREFERENCE_KEY);
         populateList(mBundlePath);
-        filePickerAdapter =new FilePickerAdapter(customStoragesList, context, shouldShowMemoryBar, mBundlePath);
+        filePickerAdapter =new FilePickerAdapter(customStoragesList, context, shouldShowMemoryBar);
+        filePickerAdapter.setPrefixPath(theSelectedPath);
+
         listView.setAdapter(filePickerAdapter);
         //listview should be clickable at first
         StorageChooserCustomListAdapter.shouldEnable = true;
@@ -399,6 +400,9 @@ public class FilePickerFragment extends DialogFragment {
 
         fileUtil = new FileUtil();
         theSelectedPath = theSelectedPath +  path;
+        if(filePickerAdapter !=null && filePickerAdapter.getPrefixPath() !=null) {
+            filePickerAdapter.setPrefixPath(theSelectedPath);
+        }
 
         //if the path length is greater than that of the addressbar length
         // we need to clip the starting part so that it fits the length and makes some room
@@ -415,7 +419,7 @@ public class FilePickerFragment extends DialogFragment {
             mAddressClippedPath = theSelectedPath;
         }
 
-        File[] volumeList = fileUtil.listFilesInDir(theSelectedPath);
+        File[] volumeList = fileUtil.sortFolderFirst(fileUtil.listFilesInDir(theSelectedPath));
 
         Log.e("SCLib", theSelectedPath);
         if(volumeList != null) {
@@ -480,6 +484,7 @@ public class FilePickerFragment extends DialogFragment {
 
 
         if(filePickerAdapter !=null) {
+            filePickerAdapter.setPrefixPath(s);
             filePickerAdapter.notifyDataSetChanged();
         }
     }

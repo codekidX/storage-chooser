@@ -29,15 +29,15 @@ public class FilePickerAdapter extends BaseAdapter {
     private List<String> storagesList;
     private Context mContext;
     private boolean shouldShowMemoryBar;
-    private String selectedPath;
     public static boolean shouldEnable = true;
 
+    public String prefixPath;
 
-    public FilePickerAdapter(List<String> storagesList, Context mContext, boolean shouldShowMemoryBar, String selectedPath) {
+
+    public FilePickerAdapter(List<String> storagesList, Context mContext, boolean shouldShowMemoryBar) {
         this.storagesList = storagesList;
         this.mContext = mContext;
         this.shouldShowMemoryBar = shouldShowMemoryBar;
-        this.selectedPath = selectedPath;
     }
 
     @Override
@@ -62,8 +62,8 @@ public class FilePickerAdapter extends BaseAdapter {
         View rootView = inflater.inflate(R.layout.row_custom_paths, viewGroup, false);
 
         ImageView pathFolderIcon = (ImageView) rootView.findViewById(R.id.path_folder_icon);
-        if(FileUtil.isDir(selectedPath + "/" + storagesList.get(i))) {
-            appluFolderTint(pathFolderIcon);
+        if(FileUtil.isDir(prefixPath + "/" + storagesList.get(i))) {
+            applyFolderTint(pathFolderIcon);
         }
 
         ThumbnailUtil thumbnailUtil = new ThumbnailUtil(mContext);
@@ -71,6 +71,8 @@ public class FilePickerAdapter extends BaseAdapter {
 
         TextView storageName = (TextView) rootView.findViewById(R.id.storage_name);
         storageName.setText(storagesList.get(i));
+
+        Log.e("SC_FA", prefixPath + "/" + storagesList.get(i));
 
         return rootView;
 
@@ -86,7 +88,15 @@ public class FilePickerAdapter extends BaseAdapter {
         return str.toString().indexOf("(") + 1;
     }
 
-    private void appluFolderTint(ImageView im) {
+    public void setPrefixPath(String path) {
+        this.prefixPath = path;
+    }
+
+    public String getPrefixPath() {
+        return prefixPath;
+    }
+
+    private void applyFolderTint(ImageView im) {
         im.setColorFilter(ContextCompat.getColor(mContext, R.color.colorPrimary));
     }
 
