@@ -14,6 +14,7 @@ public class ThumbnailUtil {
     // Constant extensions
     private static final String TEXT_FILE = "txt";
     private static final String CSV_FILE = "csv";
+    private static final String PROP_FILE = "prop";
 
     // video files
     private static final String VIDEO_FILE = "mp4";
@@ -26,16 +27,32 @@ public class ThumbnailUtil {
     private static final String JPEG_FILE = "jpeg";
     private static final String JPG_FILE = "jpg";
     private static final String PNG_FILE = "png";
+    private static final String GIF_FILE = "gif";
     //archive files
     private static final String APK_FILE = "apk";
     private static final String ZIP_FILE = "zip";
     private static final String RAR_FILE = "rar";
+    private static final String TAR_GZ_FILE = "gz";
+    private static final String TAR_FILE = "tar";
 
     // office files
     private static final String DOC_FILE = "doc";
     private static final String PPT_FILE = "ppt";
     private static final String EXCEL_FILE = "xls";
     private static final String PDF_FILE = "pdf";
+
+    // font files
+    private static final String TTF_FILE = "ttf";
+    private static final String OTF_FILE = "otf";
+
+    // torrent files
+    private static final String TORRENtT_FILE = "torrent";
+
+    //web files
+    private static final String HTML_FILE = "html";
+    private static final String PHP_FILE = "php";
+    private static final String CSS_FILE = "css";
+    private static final String CR_DL_FILE = "crdownload";
 
     public ThumbnailUtil(Context mContext) {
         this.mContext = mContext;
@@ -53,6 +70,7 @@ public class ThumbnailUtil {
             case TEXT_FILE:
             case CSV_FILE:
             case DOC_FILE:
+            case PROP_FILE:
                 imageView.setImageDrawable(getDrawableFromRes(R.drawable.doc));
                 break;
             case VIDEO_FILE:
@@ -69,12 +87,28 @@ public class ThumbnailUtil {
                 break;
             case ZIP_FILE:
             case RAR_FILE:
+            case TAR_FILE:
+            case TAR_GZ_FILE:
                 imageView.setImageDrawable(getDrawableFromRes(R.drawable.zip));
                 break;
             case JPEG_FILE:
             case JPG_FILE:
             case PNG_FILE:
+            case GIF_FILE:
                 imageView.setImageDrawable(getDrawableFromRes(R.drawable.pic));
+                break;
+            case TTF_FILE:
+            case OTF_FILE:
+                imageView.setImageDrawable(getDrawableFromRes(R.drawable.font));
+                break;
+            case HTML_FILE:
+            case PHP_FILE:
+            case CSS_FILE:
+            case CR_DL_FILE:
+                imageView.setImageDrawable(getDrawableFromRes(R.drawable.web));
+                break;
+            case TORRENtT_FILE:
+                imageView.setImageDrawable(getDrawableFromRes(R.drawable.torrent));
                 break;
             case PDF_FILE:
                 imageView.setImageDrawable(getDrawableFromRes(R.drawable.pdf));
