@@ -32,12 +32,16 @@ public class FilePickerAdapter extends BaseAdapter {
     public static boolean shouldEnable = true;
 
     public String prefixPath;
+    private ThumbnailUtil thumbnailUtil;
 
 
     public FilePickerAdapter(List<String> storagesList, Context mContext, boolean shouldShowMemoryBar) {
         this.storagesList = storagesList;
         this.mContext = mContext;
         this.shouldShowMemoryBar = shouldShowMemoryBar;
+
+        // create instance once
+        thumbnailUtil = new ThumbnailUtil(mContext);
     }
 
     @Override
@@ -66,13 +70,10 @@ public class FilePickerAdapter extends BaseAdapter {
             applyFolderTint(pathFolderIcon);
         }
 
-        ThumbnailUtil thumbnailUtil = new ThumbnailUtil(mContext);
         thumbnailUtil.init(pathFolderIcon, storagesList.get(i));
 
         TextView storageName = (TextView) rootView.findViewById(R.id.storage_name);
         storageName.setText(storagesList.get(i));
-
-        Log.e("SC_FA", prefixPath + "/" + storagesList.get(i));
 
         return rootView;
 
