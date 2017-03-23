@@ -18,21 +18,30 @@ import android.widget.TextView;
 import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.animators.MemorybarAnimation;
 import com.codekidlabs.storagechooser.models.Storages;
+import com.codekidlabs.storagechooser.utils.FileUtil;
+import com.codekidlabs.storagechooser.utils.ThumbnailUtil;
 
+import java.io.File;
 import java.util.List;
 
-public class StorageChooserCustomListAdapter extends BaseAdapter {
+public class SecondaryChooserAdapter extends BaseAdapter {
 
     private List<String> storagesList;
     private Context mContext;
     private boolean shouldShowMemoryBar;
     public static boolean shouldEnable = true;
 
+    public String prefixPath;
+    private ThumbnailUtil thumbnailUtil;
 
-    public StorageChooserCustomListAdapter(List<String> storagesList, Context mContext, boolean shouldShowMemoryBar) {
+
+    public SecondaryChooserAdapter(List<String> storagesList, Context mContext, boolean shouldShowMemoryBar) {
         this.storagesList = storagesList;
         this.mContext = mContext;
         this.shouldShowMemoryBar = shouldShowMemoryBar;
+
+        // create instance once
+        thumbnailUtil = new ThumbnailUtil(mContext);
     }
 
     @Override
@@ -57,7 +66,11 @@ public class StorageChooserCustomListAdapter extends BaseAdapter {
         View rootView = inflater.inflate(R.layout.row_custom_paths, viewGroup, false);
 
         ImageView pathFolderIcon = (ImageView) rootView.findViewById(R.id.path_folder_icon);
-        appluFolderTint(pathFolderIcon);
+        if(FileUtil.isDir(prefixPath + "/" + storagesList.get(i))) {
+            applyFolderTint(pathFolderIcon);
+        }
+
+        thumbnailUtil.init(pathFolderIcon, storagesList.get(i));
 
         TextView storageName = (TextView) rootView.findViewById(R.id.storage_name);
         storageName.setText(storagesList.get(i));
@@ -73,10 +86,18 @@ public class StorageChooserCustomListAdapter extends BaseAdapter {
      * @return index of '('
      */
     private int getSpannableIndex(SpannableStringBuilder str) {
-            return str.toString().indexOf("(") + 1;
+        return str.toString().indexOf("(") + 1;
     }
 
-    private void appluFolderTint(ImageView im) {
+    public void setPrefixPath(String path) {
+        this.prefixPath = path;
+    }
+
+    public String getPrefixPath() {
+        return prefixPath;
+    }
+
+    private void applyFolderTint(ImageView im) {
         im.setColorFilter(ContextCompat.getColor(mContext, R.color.colorPrimary));
     }
 

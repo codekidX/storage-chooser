@@ -11,6 +11,7 @@ public class DiskUtil {
     public static final String IN_MB = "MiB";
     public static final String IN_GB = "GiB";
     public static final String SC_PREFERENCE_KEY = "storage_chooser_path";
+    public static java.lang.String SC_CHOOSER_FLAG = "storage_chooser_type";
 
     public static int getSdkVersion() {
         return Build.VERSION.SDK_INT;

@@ -3,26 +3,22 @@ package com.codekidlabs.storagechooser.fragments;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.graphics.drawable.Animatable;
-import android.hardware.input.InputManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.inputmethod.InputMethod;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -37,7 +33,7 @@ import android.widget.Toast;
 import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.StorageChooser;
 import com.codekidlabs.storagechooser.StorageChooserView;
-import com.codekidlabs.storagechooser.adapters.StorageChooserCustomListAdapter;
+import com.codekidlabs.storagechooser.adapters.SecondaryChooserAdapter;
 import com.codekidlabs.storagechooser.models.Config;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
 import com.codekidlabs.storagechooser.utils.FileUtil;
@@ -50,7 +46,7 @@ import java.util.Comparator;
 import java.util.List;
 
 
-public class CustomChooserFragment extends DialogFragment {
+public class SecondaryChooserFragment extends DialogFragment {
 
     private View mLayout;
     private View mInactiveGradient;
@@ -61,7 +57,6 @@ public class CustomChooserFragment extends DialogFragment {
     private Button mSelectButton;
     private Button mCreateButton;
     private ImageView mNewFolderImageView;
-    private Button mNewFolderButton;
     private EditText mFolderNameEditText;
     private TextInputLayout mFolderNameETLayout;
 
@@ -84,14 +79,13 @@ public class CustomChooserFragment extends DialogFragment {
     private static String mAddressClippedPath = "";
 
     private List<String> customStoragesList;
-    private StorageChooserCustomListAdapter customListAdapter;
+    private SecondaryChooserAdapter secondaryChooserAdapter;
 
     private FileUtil fileUtil;
 
     private Config mConfig;
     private Context mContext;
     private ResourceUtil mResourceUtil;
-
 
     private View.OnClickListener mSelectButtonClickListener = new View.OnClickListener() {
         @Override
@@ -114,7 +108,7 @@ public class CustomChooserFragment extends DialogFragment {
             performBackAction();
         }
     };
-    
+
     private View.OnClickListener mNewFolderButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -148,6 +142,7 @@ public class CustomChooserFragment extends DialogFragment {
     };
     private boolean keyboardToggle;
     private String TAG = "StorageChooser";
+    private boolean isFilePicker;
 
     private void showAddFolderView() {
         mNewFolderView.setVisibility(View.VISIBLE);
@@ -155,7 +150,7 @@ public class CustomChooserFragment extends DialogFragment {
         mNewFolderView.startAnimation(anim);
         mInactiveGradient.startAnimation(anim);
 
-        if(isSleekView()) {
+
             if (DiskUtil.isLollipopAndAbove()) {
                 mNewFolderImageView.setImageDrawable(ContextCompat.getDrawable(mContext,R.drawable.drawable_plus_to_close));
                 // image button animation
@@ -163,16 +158,11 @@ public class CustomChooserFragment extends DialogFragment {
                 animatable.start();
             }
             mNewFolderImageView.setOnClickListener(mNewFolderButtonCloseListener);
-        } else {
-            mNewFolderButton.setOnClickListener(mNewFolderButtonCloseListener);
-            mNewFolderButton.setText(StorageChooserView.LABEL_CANCEL);
-            mNewFolderButton.setTextColor(mResourceUtil.getColor(R.color.cancel_color));
 
-        }
 //        mNewFolderButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.window_close));
 
         //listview should not be clickable
-        StorageChooserCustomListAdapter.shouldEnable = false;
+        SecondaryChooserAdapter.shouldEnable = false;
     }
 
     private void hideAddFolderView() {
@@ -180,7 +170,6 @@ public class CustomChooserFragment extends DialogFragment {
         mNewFolderView.startAnimation(anim);
         mNewFolderView.setVisibility(View.INVISIBLE);
 
-        if(isSleekView()) {
             if (DiskUtil.isLollipopAndAbove()) {
                 mNewFolderImageView.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.drawable_close_to_plus));
                 // image button animation
@@ -188,14 +177,9 @@ public class CustomChooserFragment extends DialogFragment {
                 animatable.start();
             }
             mNewFolderImageView.setOnClickListener(mNewFolderButtonClickListener);
-        } else {
-            mNewFolderButton.setOnClickListener(mNewFolderButtonClickListener);
-            mNewFolderButton.setText(StorageChooserView.LABEL_NEW_FOLDER);
-            mNewFolderButton.setTextColor(mResourceUtil.getColor(R.color.new_folder_color));
 
-        }
         //listview should be clickable
-        StorageChooserCustomListAdapter.shouldEnable = true;
+        SecondaryChooserAdapter.shouldEnable = true;
 
         mInactiveGradient.startAnimation(anim);
         mInactiveGradient.setVisibility(View.INVISIBLE);
@@ -221,7 +205,7 @@ public class CustomChooserFragment extends DialogFragment {
         } else {
             theSelectedPath = theSelectedPath.substring(0, slashIndex);
             Log.e("SCLib", "Performing back action: " + theSelectedPath);
-                populateList("");
+            populateList("");
         }
     }
 
@@ -266,52 +250,35 @@ public class CustomChooserFragment extends DialogFragment {
         return mLayout;
     }
 
-    private void initUI() {
+
+    private void initUI()  {
 
         mBackButton = (ImageButton) mLayout.findViewById(R.id.back_button);
         mSelectButton = (Button) mLayout.findViewById(R.id.select_button);
 
         mCreateButton = (Button) mLayout.findViewById(R.id.create_folder_button);
+
         mNewFolderView = (RelativeLayout) mLayout.findViewById(R.id.new_folder_view);
         mFolderNameEditText = (EditText) mLayout.findViewById(R.id.et_folder_name);
         mFolderNameETLayout = (TextInputLayout) mLayout.findViewById(R.id.et_folder_name_layout);
 
-    }
+        mInactiveGradient = mLayout.findViewById(R.id.inactive_gradient);
 
-    private void initNewFolderView() {
-
-        RelativeLayout mNewFolderButtonHolder = (RelativeLayout) mLayout.findViewById(R.id.new_folder_button_holder);
-
-        if(isSleekView()) {
-            mNewFolderImageView = (ImageView) mLayout.findViewById(R.id.new_folder_iv);
-            mNewFolderImageView.setOnClickListener(mNewFolderButtonClickListener);
-        } else {
-            mNewFolderButton = (Button) mLayout.findViewById(R.id.new_folder_button);
-            mNewFolderButton.setText(StorageChooserView.LABEL_NEW_FOLDER);
-            mNewFolderButton.setOnClickListener(mNewFolderButtonClickListener);
-            mNewFolderButton.setTextColor(mResourceUtil.getColor(R.color.new_folder_color));
-        }
-
-        if(!mConfig.isAllowAddFolder()) {
-            mNewFolderButtonHolder.setVisibility(View.GONE);
-        }
 
     }
 
     private void updateUI() {
+
+        //at start dont show the new folder view unless user clicks on the add/plus button
+        mNewFolderView.setVisibility(View.INVISIBLE);
+        mInactiveGradient.setVisibility(View.INVISIBLE);
+
 
         mFolderNameETLayout.setHint(StorageChooserView.TEXTFIELD_HINT);
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mFolderNameEditText.setHintTextColor(mResourceUtil.getColor(StorageChooserView.SC_TEXTFIELD_HINT_COLOR));
         }
-
-        mInactiveGradient = mLayout.findViewById(R.id.inactive_gradient);
-
-        //at start dont show the new folder view unless user clicks on the add/plus button
-        mNewFolderView.setVisibility(View.INVISIBLE);
-        mInactiveGradient.setVisibility(View.INVISIBLE);
-
 
 
         // set label of buttons [localization]
@@ -324,10 +291,31 @@ public class CustomChooserFragment extends DialogFragment {
         mSelectButton.setOnClickListener(mSelectButtonClickListener);
         mCreateButton.setOnClickListener(mCreateButtonClickListener);
 
+        if(mConfig.getSecondaryAction() == StorageChooser.FILE_PICKER) {
+            mSelectButton.setVisibility(View.GONE);
+            setBottomNewFolderView();
+        }
+
     }
 
-    private boolean isSleekView() {
-        return StorageChooserView.VIEW_SC == StorageChooserView.SC_LAYOUT_SLEEK;
+    private void setBottomNewFolderView() {
+        int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80, getResources().getDisplayMetrics());
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, height);
+        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        mNewFolderView.setLayoutParams(lp);
+    }
+
+    private void initNewFolderView() {
+
+        RelativeLayout mNewFolderButtonHolder = (RelativeLayout) mLayout.findViewById(R.id.new_folder_button_holder);
+
+        mNewFolderImageView = (ImageView) mLayout.findViewById(R.id.new_folder_iv);
+        mNewFolderImageView.setOnClickListener(mNewFolderButtonClickListener);
+
+        if(!mConfig.isAllowAddFolder()) {
+            mNewFolderButtonHolder.setVisibility(View.GONE);
+        }
+
     }
 
 
@@ -338,16 +326,25 @@ public class CustomChooserFragment extends DialogFragment {
         listView = (ListView) view.findViewById(R.id.storage_list_view);
         mPathChosen = (TextView) view.findViewById(R.id.path_chosen);
         mBundlePath = this.getArguments().getString(DiskUtil.SC_PREFERENCE_KEY);
+        isFilePicker = this.getArguments().getBoolean(DiskUtil.SC_CHOOSER_FLAG, false);
         populateList(mBundlePath);
-        customListAdapter =new StorageChooserCustomListAdapter(customStoragesList, context, shouldShowMemoryBar);
-        listView.setAdapter(customListAdapter);
+        secondaryChooserAdapter =new SecondaryChooserAdapter(customStoragesList, context, shouldShowMemoryBar);
+        secondaryChooserAdapter.setPrefixPath(theSelectedPath);
+
+        listView.setAdapter(secondaryChooserAdapter);
         //listview should be clickable at first
-        StorageChooserCustomListAdapter.shouldEnable = true;
+        SecondaryChooserAdapter.shouldEnable = true;
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                populateList("/" + customStoragesList.get(i));
+                String jointPath = theSelectedPath + "/" + customStoragesList.get(i);
+                if(FileUtil.isDir(jointPath)) {
+                    populateList("/" + customStoragesList.get(i));
+                } else {
+                    StorageChooser.onSelectListener.onSelect(jointPath);
+                    dissmissDialog(FLAG_DISSMISS_NORMAL);
+                }
             }
         });
 
@@ -386,6 +383,9 @@ public class CustomChooserFragment extends DialogFragment {
 
         fileUtil = new FileUtil();
         theSelectedPath = theSelectedPath +  path;
+        if(secondaryChooserAdapter !=null && secondaryChooserAdapter.getPrefixPath() !=null) {
+            secondaryChooserAdapter.setPrefixPath(theSelectedPath);
+        }
 
         //if the path length is greater than that of the addressbar length
         // we need to clip the starting part so that it fits the length and makes some room
@@ -402,7 +402,13 @@ public class CustomChooserFragment extends DialogFragment {
             mAddressClippedPath = theSelectedPath;
         }
 
-        File[] volumeList = fileUtil.listFilesAsDir(theSelectedPath);
+        File[] volumeList;
+
+        if(isFilePicker) {
+            volumeList = fileUtil.listFilesInDir(theSelectedPath);
+        } else {
+            volumeList = fileUtil.listFilesAsDir(theSelectedPath);
+        }
 
         Log.e("SCLib", theSelectedPath);
         if(volumeList != null) {
@@ -427,8 +433,8 @@ public class CustomChooserFragment extends DialogFragment {
         }
 
 
-        if(customListAdapter !=null) {
-            customListAdapter.notifyDataSetChanged();
+        if(secondaryChooserAdapter !=null) {
+            secondaryChooserAdapter.notifyDataSetChanged();
         }
 
         playTheAddressBarAnimation();
@@ -445,7 +451,7 @@ public class CustomChooserFragment extends DialogFragment {
         } else {
             customStoragesList.clear();
         }
-        File[] volumeList = fileUtil.listFilesAsDir(theSelectedPath);
+        File[] volumeList = fileUtil.listFilesInDir(theSelectedPath);
 
         Log.e("SCLib", theSelectedPath);
         if(volumeList != null) {
@@ -466,8 +472,9 @@ public class CustomChooserFragment extends DialogFragment {
         }
 
 
-        if(customListAdapter !=null) {
-            customListAdapter.notifyDataSetChanged();
+        if(secondaryChooserAdapter !=null) {
+            secondaryChooserAdapter.setPrefixPath(s);
+            secondaryChooserAdapter.notifyDataSetChanged();
         }
     }
 

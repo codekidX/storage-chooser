@@ -201,12 +201,14 @@ public class ChooserDialogFragment extends DialogFragment {
             case StorageChooser.NONE:
                 break;
             case StorageChooser.DIRECTORY_CHOOSER:
-                CustomChooserFragment c = new CustomChooserFragment();
+                bundle.putBoolean(DiskUtil.SC_CHOOSER_FLAG, false);
+                SecondaryChooserFragment c = new SecondaryChooserFragment();
                 c.setArguments(bundle);
                 c.show(mConfig.getFragmentManager(), "custom_chooser");
                 break;
             case StorageChooser.FILE_PICKER:
-                FilePickerFragment f = new FilePickerFragment();
+                bundle.putBoolean(DiskUtil.SC_CHOOSER_FLAG, true);
+                SecondaryChooserFragment f = new SecondaryChooserFragment();
                 f.setArguments(bundle);
                 f.show(mConfig.getFragmentManager(), "file_picker");
                 break;

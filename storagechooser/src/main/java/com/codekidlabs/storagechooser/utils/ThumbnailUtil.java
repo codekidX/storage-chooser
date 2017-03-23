@@ -9,7 +9,7 @@ import com.codekidlabs.storagechooser.R;
 
 public class ThumbnailUtil {
 
-    Context mContext;
+    private Context mContext;
 
     // Constant extensions
     private static final String TEXT_FILE = "txt";

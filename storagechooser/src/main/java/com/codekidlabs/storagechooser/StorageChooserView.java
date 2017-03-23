@@ -22,7 +22,6 @@ public class StorageChooserView {
 
     // layout choices
     public static int SC_LAYOUT_SLEEK = R.layout.custom_storage_list;
-    public static int SC_LAYOUT_SHEET = R.layout.sheet_storage_list;
 
     // COLORS
     public static int SC_SECONDARY_ACTION_COLOR = android.R.color.black;
@@ -81,10 +80,6 @@ public class StorageChooserView {
 
     public static void setTextfieldError(String textfieldError) {
         TEXTFIELD_ERROR = textfieldError;
-    }
-
-    public static void setViewSc(int viewSc) {
-        VIEW_SC = viewSc;
     }
 
     public static void setScSecondaryActionColor(int scSecondaryActionColor) {

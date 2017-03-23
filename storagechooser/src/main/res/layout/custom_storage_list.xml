@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/custom_path_header"
@@ -36,6 +39,8 @@
 
             </RelativeLayout>
 
+
+            <!-- address bar -->
             <RelativeLayout
                 android:id="@+id/new_folder_button_holder"
                 android:layout_width="50dp"
@@ -85,14 +90,15 @@
         android:layout_below="@id/custom_path_header"
         android:divider="@null" />
 
+
+
+
+        <!-- create folder view -->
     <RelativeLayout
         android:id="@+id/new_folder_view"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_above="@id/select_button"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:background="@color/colorPrimary">
 
         <android.support.design.widget.TextInputLayout
@@ -134,6 +140,8 @@
 
     </RelativeLayout>
 
+
+        <!-- gradient view -->
     <View
         android:id="@+id/inactive_gradient"
         android:layout_width="match_parent"
@@ -142,4 +150,6 @@
         android:layout_below="@id/custom_path_header"
         android:background="@color/inactiveGradientColor" />
 
-</RelativeLayout>
+    </RelativeLayout>
+
+</FrameLayout>
