@@ -12,8 +12,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import com.codekidlabs.storagechooser.StorageChooser;
+import com.codekidlabs.storagechooser.StorageChooserView;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
 
 public class MainActivity extends AppCompatActivity {
@@ -105,6 +107,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 chooser = builder.build();
+                chooser.setOnSelectListener(new StorageChooser.OnSelectListener() {
+                    @Override
+                    public void onSelect(String path) {
+                        Toast.makeText(getApplicationContext(), path, Toast.LENGTH_SHORT).show();
+                    }
+                });
                 chooser.show();
             }
         });
