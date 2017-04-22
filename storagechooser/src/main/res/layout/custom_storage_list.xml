@@ -112,7 +112,7 @@
             android:layout_toLeftOf="@+id/create_folder_button"
             android:layout_toStartOf="@+id/create_folder_button"
             android:textColorHint="@color/chevronBgColor"
-            app:theme="@style/EditTextHint">
+            app:hintTextAppearance="@style/EditTextHint">
 
             <EditText
                 android:id="@+id/et_folder_name"
