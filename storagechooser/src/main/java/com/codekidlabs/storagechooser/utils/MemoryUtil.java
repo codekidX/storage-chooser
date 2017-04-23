@@ -22,11 +22,11 @@ public class MemoryUtil {
 
     /**
      * Returns an the number of the files inside '/storage' directory
-     * @return
+     * @return int - number of storages present except the redundant once
      */
     public int getStorageListSize() {
         File storageDir = new File("/storage");
-        List<File> volumeList = new ArrayList<File>();
+        List<File> volumeList = new ArrayList<>();
         Collections.addAll(volumeList, storageDir.listFiles());
         // segregate the list
         for(int i=0;i < volumeList.size(); i++) {

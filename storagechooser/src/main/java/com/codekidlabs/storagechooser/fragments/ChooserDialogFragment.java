@@ -29,8 +29,6 @@ import com.codekidlabs.storagechooser.utils.MemoryUtil;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 
@@ -243,7 +241,7 @@ public class ChooserDialogFragment extends DialogFragment {
      * populate storageList with necessary storages with filter applied
      */
     private void populateList() {
-        storagesList = new ArrayList<Storages>();
+        storagesList = new ArrayList<>();
 
         File storageDir = new File("/storage");
         String internalStoragePath = Environment.getExternalStorageDirectory().getAbsolutePath();

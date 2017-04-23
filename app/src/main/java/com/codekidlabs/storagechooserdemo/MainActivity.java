@@ -15,7 +15,6 @@ import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import com.codekidlabs.storagechooser.StorageChooser;
-import com.codekidlabs.storagechooser.StorageChooserView;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
 
 public class MainActivity extends AppCompatActivity {

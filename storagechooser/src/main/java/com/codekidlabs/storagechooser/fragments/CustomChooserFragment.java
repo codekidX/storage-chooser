@@ -357,7 +357,6 @@ public class CustomChooserFragment extends DialogFragment {
     /**
      * evaluates path with respect to the list click position
      * @param i position in list
-     * @return String with the required path for developers
      */
     private void evaluateAction(int i) {
         String preDefPath = mConfig.getPredefinedPath();
@@ -379,7 +378,7 @@ public class CustomChooserFragment extends DialogFragment {
      */
     private void populateList(String path) {
         if(customStoragesList == null) {
-            customStoragesList = new ArrayList<String>();
+            customStoragesList = new ArrayList<>();
         } else {
             customStoragesList.clear();
         }
@@ -441,7 +440,7 @@ public class CustomChooserFragment extends DialogFragment {
      * */
     private void trimPopulate(String s) {
         if(customStoragesList == null) {
-            customStoragesList = new ArrayList<String>();
+            customStoragesList = new ArrayList<>();
         } else {
             customStoragesList.clear();
         }
