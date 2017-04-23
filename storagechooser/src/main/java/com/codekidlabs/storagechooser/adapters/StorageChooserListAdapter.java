@@ -1,12 +1,7 @@
 package com.codekidlabs.storagechooser.adapters;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.Spannable;
@@ -22,14 +17,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.codekidlabs.storagechooser.R;
-import com.codekidlabs.storagechooser.StorageChooser;
-import com.codekidlabs.storagechooser.StorageChooserView;
 import com.codekidlabs.storagechooser.animators.MemorybarAnimation;
 import com.codekidlabs.storagechooser.exceptions.MemoryNotAccessibleException;
 import com.codekidlabs.storagechooser.models.Storages;
 import com.codekidlabs.storagechooser.utils.MemoryUtil;
 
-import java.io.File;
 import java.util.List;
 
 public class StorageChooserListAdapter extends BaseAdapter {
@@ -155,7 +147,7 @@ public class StorageChooserListAdapter extends BaseAdapter {
      * @return integer value of the percentage with amount of storage used
      */
     private long getMemoryFromString(String size) {
-        long mem = 0;
+        long mem;
 
         if(size.contains("MiB")) {
             mem = Integer.parseInt(size.replace(",","").replace("MiB",""));

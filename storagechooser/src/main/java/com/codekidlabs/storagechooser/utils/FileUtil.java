@@ -3,7 +3,6 @@ package com.codekidlabs.storagechooser.utils;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -33,7 +32,6 @@ public class FileUtil {
     /**
      * Removes non-operationaal directories which are either used by only the system or
      * not used by anyone
-     * @return
      */
     public void removeNonOperational(List<File> volumeList) {
         // segregate the list

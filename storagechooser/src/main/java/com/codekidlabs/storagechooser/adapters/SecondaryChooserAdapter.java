@@ -1,27 +1,19 @@
 package com.codekidlabs.storagechooser.adapters;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
-import android.text.Spannable;
 import android.text.SpannableStringBuilder;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.codekidlabs.storagechooser.R;
-import com.codekidlabs.storagechooser.animators.MemorybarAnimation;
-import com.codekidlabs.storagechooser.models.Storages;
 import com.codekidlabs.storagechooser.utils.FileUtil;
 import com.codekidlabs.storagechooser.utils.ThumbnailUtil;
 
-import java.io.File;
 import java.util.List;
 
 public class SecondaryChooserAdapter extends BaseAdapter {

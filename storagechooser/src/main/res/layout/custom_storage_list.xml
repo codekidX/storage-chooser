@@ -34,7 +34,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:background="@android:color/transparent"
-                    android:src="@drawable/chevron_left"
+                    app:srcCompat="@drawable/chevron_left"
                     android:tint="@android:color/white" />
 
             </RelativeLayout>

@@ -1,7 +1,5 @@
 package com.codekidlabs.storagechooser.animators;
 
-import android.content.Context;
-import android.util.AttributeSet;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.ProgressBar;
