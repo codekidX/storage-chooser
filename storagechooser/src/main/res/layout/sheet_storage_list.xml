@@ -92,8 +92,7 @@
         android:id="@+id/new_folder_view"
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        android:layout_above="@id/select_button"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/select_button"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:background="@color/colorPrimary">
