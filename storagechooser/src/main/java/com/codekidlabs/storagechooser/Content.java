@@ -1,7 +1,7 @@
 package com.codekidlabs.storagechooser;
 
 /**
- * StorageChooserView class handles changes to views
+ * Content class handles changes to dialog's view and whatever is in it
  */
 
 public class Content {

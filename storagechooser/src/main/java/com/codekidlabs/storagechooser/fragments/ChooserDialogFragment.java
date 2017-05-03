@@ -40,11 +40,6 @@ public class ChooserDialogFragment extends DialogFragment {
 
     private TextView mPathChosen;
 
-    private static final String INTERNAL_STORAGE_TITLE = "Internal Storage";
-    private static final String EXTERNAL_STORAGE_TITLE = "External Storage";
-
-    private static final String EXTERNAL_STORAGE_PATH_KITKAT = "/storage/extSdCard";
-
     private List<Storages> storagesList;
     private List<String> customStoragesList;
     private String TAG = "StorageChooser";
@@ -261,11 +256,8 @@ public class ChooserDialogFragment extends DialogFragment {
         Storages storages = new Storages();
 
         // just add the internal storage and avoid adding emulated henceforth
-        if(mContent.getInternalStorageText() !=null) {
-            storages.setStorageTitle(mContent.getInternalStorageText());
-        } else {
-            storages.setStorageTitle(INTERNAL_STORAGE_TITLE);
-        }
+        storages.setStorageTitle(mContent.getInternalStorageText());
+
         storages.setStoragePath(internalStoragePath);
         storages.setMemoryTotalSize(memoryUtil.formatSize(memoryUtil.getTotalMemorySize(internalStoragePath)));
         storages.setMemoryAvailableSize(memoryUtil.formatSize(memoryUtil.getAvailableMemorySize(internalStoragePath)));
