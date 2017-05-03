@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.graphics.drawable.Animatable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -86,6 +87,7 @@ public class SecondaryChooserFragment extends DialogFragment {
     private Config mConfig;
     private Content mContent;
     private Context mContext;
+    private Handler mHandler;
     private ResourceUtil mResourceUtil;
 
     private View.OnClickListener mSelectButtonClickListener = new View.OnClickListener() {
@@ -239,6 +241,7 @@ public class SecondaryChooserFragment extends DialogFragment {
 
     private View getLayout(LayoutInflater inflater, ViewGroup container) {
         mConfig = StorageChooser.sConfig;
+        mHandler = new Handler();
 
         // init storage-chooser content [localization]
         if(mConfig.getContent() == null) {
@@ -346,14 +349,19 @@ public class SecondaryChooserFragment extends DialogFragment {
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String jointPath = theSelectedPath + "/" + customStoragesList.get(i);
-                if(FileUtil.isDir(jointPath)) {
-                    populateList("/" + customStoragesList.get(i));
-                } else {
-                    StorageChooser.onSelectListener.onSelect(jointPath);
-                    dissmissDialog(FLAG_DISSMISS_NORMAL);
-                }
+            public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        String jointPath = theSelectedPath + "/" + customStoragesList.get(i);
+                        if(FileUtil.isDir(jointPath)) {
+                            populateList("/" + customStoragesList.get(i));
+                        } else {
+                            StorageChooser.onSelectListener.onSelect(jointPath);
+                            dissmissDialog(FLAG_DISSMISS_NORMAL);
+                        }
+                    }
+                }, 300);
             }
         });
 
