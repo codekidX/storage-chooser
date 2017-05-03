@@ -3,6 +3,8 @@ package com.codekidlabs.storagechooser.models;
 import android.content.SharedPreferences;
 import android.support.v4.app.FragmentManager;
 
+import com.codekidlabs.storagechooser.Content;
+
 /**
  * Model to save configs passed to the Builder without passing too many things to the constructor
  * of its super class.
@@ -26,6 +28,8 @@ public class Config {
     private String primaryPath;
 
     private String secondaryAction;
+
+    private Content content;
 
     public FragmentManager getFragmentManager() {
         return fragmentManager;
@@ -155,5 +159,14 @@ public class Config {
 
     public void setApplyThreshold(boolean applyThreshold) {
         this.applyThreshold = applyThreshold;
+    }
+
+
+    public Content getContent() {
+        return content;
+    }
+
+    public void setContent(Content content) {
+        this.content = content;
     }
 }

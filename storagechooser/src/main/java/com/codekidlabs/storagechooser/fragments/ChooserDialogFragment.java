@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.StorageChooser;
-import com.codekidlabs.storagechooser.StorageChooserView;
+import com.codekidlabs.storagechooser.Content;
 import com.codekidlabs.storagechooser.adapters.StorageChooserListAdapter;
 import com.codekidlabs.storagechooser.models.Config;
 import com.codekidlabs.storagechooser.models.Storages;
@@ -52,6 +52,7 @@ public class ChooserDialogFragment extends DialogFragment {
     private FileUtil fileUtil = new FileUtil();
 
     private Config mConfig;
+    private Content mContent;
 
     // day night flag
     private int mChooserMode;
@@ -70,12 +71,19 @@ public class ChooserDialogFragment extends DialogFragment {
 
     private View getLayout(LayoutInflater inflater, ViewGroup container) {
         mConfig = StorageChooser.sConfig;
+
+        // init storage-chooser content [localization]
+        if(mConfig.getContent() == null) {
+            mContent = new Content();
+        } else {
+            mContent = mConfig.getContent();
+        }
         mLayout = inflater.inflate(R.layout.storage_list, container, false);
         initListView(getContext(), mLayout, mConfig.isShowMemoryBar());
 
-        if(StorageChooserView.CHOOSER_HEADING !=null) {
+        if(mContent.getOverviewHeading() !=null) {
             TextView dialogTitle = (TextView) mLayout.findViewById(R.id.dialog_title);
-            dialogTitle.setText(StorageChooserView.CHOOSER_HEADING);
+            dialogTitle.setText(mContent.getOverviewHeading());
         }
 
         return mLayout;
@@ -253,8 +261,8 @@ public class ChooserDialogFragment extends DialogFragment {
         Storages storages = new Storages();
 
         // just add the internal storage and avoid adding emulated henceforth
-        if(StorageChooserView.INTERNAL_STORAGE_TEXT !=null) {
-            storages.setStorageTitle(StorageChooserView.INTERNAL_STORAGE_TEXT);
+        if(mContent.getInternalStorageText() !=null) {
+            storages.setStorageTitle(mContent.getInternalStorageText());
         } else {
             storages.setStorageTitle(INTERNAL_STORAGE_TITLE);
         }

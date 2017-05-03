@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.support.v4.app.FragmentManager;
 
+
 import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
 import com.codekidlabs.storagechooser.models.Config;
 
@@ -106,6 +107,7 @@ public class StorageChooser {
         private boolean mSkipOverview = false;
         private boolean mApplyMemoryThreshold = false;
         private String type;
+        private Content content;
 
         Config devConfig;
 
@@ -192,7 +194,11 @@ public class StorageChooser {
 
         public Builder skipOverview(boolean skip) {
             mSkipOverview = skip;
+            return this;
+        }
 
+        public Builder withContent(Content content) {
+            this.content = content;
             return this;
         }
 
@@ -206,6 +212,7 @@ public class StorageChooser {
             devConfig.setShowHidden(mShowHidden);
             devConfig.setSkipOverview(mSkipOverview);
             devConfig.setApplyThreshold(mApplyMemoryThreshold);
+            devConfig.setContent(content);
 
             if(type == null) {
                 devConfig.setSecondaryAction(StorageChooser.NONE);

@@ -32,7 +32,7 @@ import android.widget.Toast;
 
 import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.StorageChooser;
-import com.codekidlabs.storagechooser.StorageChooserView;
+import com.codekidlabs.storagechooser.Content;
 import com.codekidlabs.storagechooser.adapters.SecondaryChooserAdapter;
 import com.codekidlabs.storagechooser.models.Config;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
@@ -84,6 +84,7 @@ public class SecondaryChooserFragment extends DialogFragment {
     private FileUtil fileUtil;
 
     private Config mConfig;
+    private Content mContent;
     private Context mContext;
     private ResourceUtil mResourceUtil;
 
@@ -130,12 +131,12 @@ public class SecondaryChooserFragment extends DialogFragment {
             if(validateFolderName()) {
                 boolean success = FileUtil.createDirectory(mFolderNameEditText.getText().toString().trim(), theSelectedPath);
                 if(success) {
-                    Toast.makeText(mContext, StorageChooserView.TOAST_FOLDER_CREATED, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, mContent.getFolderCreatedToastText(), Toast.LENGTH_SHORT).show();
                     trimPopulate(theSelectedPath);
                     hideKeyboard();
                     hideAddFolderView();
                 } else {
-                    Toast.makeText(mContext, StorageChooserView.TOAST_FOLDER_ERROR, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, mContent.getFolderErrorToastText(), Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -238,9 +239,17 @@ public class SecondaryChooserFragment extends DialogFragment {
 
     private View getLayout(LayoutInflater inflater, ViewGroup container) {
         mConfig = StorageChooser.sConfig;
+
+        // init storage-chooser content [localization]
+        if(mConfig.getContent() == null) {
+            mContent = new Content();
+        } else {
+            mContent = mConfig.getContent();
+        }
+
         mContext = getContext();
         mResourceUtil = new ResourceUtil(mContext);
-        mLayout = inflater.inflate(StorageChooserView.VIEW_SC, container, false);
+        mLayout = inflater.inflate(R.layout.custom_storage_list, container, false);
         initListView(mContext, mLayout, mConfig.isShowMemoryBar());
 
         initUI();
@@ -274,16 +283,16 @@ public class SecondaryChooserFragment extends DialogFragment {
         mInactiveGradient.setVisibility(View.INVISIBLE);
 
 
-        mFolderNameETLayout.setHint(StorageChooserView.TEXTFIELD_HINT);
+        mFolderNameETLayout.setHint(mContent.getTextfieldHintText());
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mFolderNameEditText.setHintTextColor(mResourceUtil.getColor(StorageChooserView.SC_TEXTFIELD_HINT_COLOR));
+            mFolderNameEditText.setHintTextColor(mResourceUtil.getColor(mContent.getTextfieldHintColor()));
         }
 
 
         // set label of buttons [localization]
-        mSelectButton.setText(StorageChooserView.LABEL_SELECT);
-        mCreateButton.setText(StorageChooserView.LABEL_CREATE);
+        mSelectButton.setText(mContent.getSelectLabel());
+        mCreateButton.setText(mContent.getCreateLabel());
 
         mSelectButton.setTextColor(mResourceUtil.getColor(R.color.select_color));
 
@@ -521,7 +530,7 @@ public class SecondaryChooserFragment extends DialogFragment {
      */
     private boolean validateFolderName() {
         if (mFolderNameEditText.getText().toString().trim().isEmpty()) {
-            mFolderNameEditText.setError(StorageChooserView.TEXTFIELD_ERROR);
+            mFolderNameEditText.setError(mContent.getTextfieldErrorText());
             return false;
         } else {
             mFolderNameETLayout.setErrorEnabled(false);
