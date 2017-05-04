@@ -3,11 +3,13 @@ package com.codekidlabs.storagechooser;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.SharedPreferences;
+import android.os.Environment;
 import android.support.v4.app.FragmentManager;
 
 
 import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
 import com.codekidlabs.storagechooser.models.Config;
+import com.codekidlabs.storagechooser.utils.DiskUtil;
 
 
 public class StorageChooser {
@@ -56,8 +58,25 @@ public class StorageChooser {
      */
     private void init() {
         dialog = getStorageChooserDialog(getChooserActivity());
-        ChooserDialogFragment chooserDialogFragment = new ChooserDialogFragment();
-        chooserDialogFragment.show(sConfig.getFragmentManager(),"storagechooser_dialog");
+
+        // if dev needs to skip overview and the primary path is not mentioned the directory
+        // chooser or file picker will default to internal storage
+        if(sConfig.isSkipOverview()) {
+            if(sConfig.getPrimaryPath() == null) {
+
+                // internal storage is always the first element (I took care of it :wink:)
+                String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+                DiskUtil.showSecondaryChooser(dirPath, sConfig);
+            } else {
+
+                // path provided by dev is the goto path for chooser
+                DiskUtil.showSecondaryChooser(sConfig.getPrimaryPath(), sConfig);
+            }
+
+        } else {
+            ChooserDialogFragment chooserDialogFragment = new ChooserDialogFragment();
+            chooserDialogFragment.show(sConfig.getFragmentManager(),"storagechooser_dialog");
+        }
     }
 
     public void setOnSelectListener(OnSelectListener onSelectListener) {

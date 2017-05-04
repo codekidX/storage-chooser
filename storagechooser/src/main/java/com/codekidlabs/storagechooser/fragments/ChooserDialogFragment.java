@@ -93,23 +93,7 @@ public class ChooserDialogFragment extends DialogFragment {
         // we need to populate before to get the internal storage path in list
         populateList();
 
-        // if dev needs to skip overview and the primary path is not mentioned the directory
-        // chooser or file picker will default to internal storage
-        if(mConfig.isSkipOverview()) {
-            if(mConfig.getPrimaryPath() == null) {
-
-                // internal storage is always the first element (I took care of it :wink:)
-                String dirPath = evaluatePath(0);
-                showSecondaryChooser(dirPath);
-            } else {
-
-                // path provided by dev is the goto path for chooser
-                showSecondaryChooser(mConfig.getPrimaryPath());
-            }
-
-        } else {
-            listView.setAdapter(new StorageChooserListAdapter(storagesList, context, shouldShowMemoryBar));
-        }
+        listView.setAdapter(new StorageChooserListAdapter(storagesList, context, shouldShowMemoryBar));
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -123,7 +107,7 @@ public class ChooserDialogFragment extends DialogFragment {
                         startThresholdTest(i);
                     } else {
                         String dirPath = evaluatePath(i);
-                        showSecondaryChooser(dirPath);
+                        DiskUtil.showSecondaryChooser(dirPath, mConfig);
                     }
                 } else {
                     String dirPath = evaluatePath(i);
@@ -173,7 +157,7 @@ public class ChooserDialogFragment extends DialogFragment {
 
             if (doesPassThresholdTest((long) mConfig.getMemoryThreshold(), thresholdSuffix, availableMem)) {
                 String dirPath = evaluatePath(position);
-                showSecondaryChooser(dirPath);
+                DiskUtil.showSecondaryChooser(dirPath, mConfig);
             } else {
                 String suffixedAvailableMem = String.valueOf(memoryUtil.suffixedSize(availableMem, thresholdSuffix)) + " " + thresholdSuffix;
                 Toast.makeText(getContext(), getString(R.string.toast_threshold_breached, suffixedAvailableMem), Toast.LENGTH_SHORT).show();
@@ -181,38 +165,6 @@ public class ChooserDialogFragment extends DialogFragment {
         } else {
             // THROW: error in log
             Log.e(TAG, "add .withThreshold(int size, String suffix) to your StorageChooser.Builder instance");
-        }
-    }
-
-    /**
-     * secondary choosers are dialogs apart from overview (CustomChooserFragment and FilePickerFragment)
-     * Configs :-
-     *     setType()
-     *     allowCustomPath()
-     *
-     * @param dirPath root path(starting-point) for the secondary choosers
-     */
-
-    private void showSecondaryChooser(String dirPath) {
-
-        Bundle bundle = new Bundle();
-        bundle.putString(DiskUtil.SC_PREFERENCE_KEY, dirPath);
-
-        switch (mConfig.getSecondaryAction()) {
-            case StorageChooser.NONE:
-                break;
-            case StorageChooser.DIRECTORY_CHOOSER:
-                bundle.putBoolean(DiskUtil.SC_CHOOSER_FLAG, false);
-                SecondaryChooserFragment c = new SecondaryChooserFragment();
-                c.setArguments(bundle);
-                c.show(mConfig.getFragmentManager(), "custom_chooser");
-                break;
-            case StorageChooser.FILE_PICKER:
-                bundle.putBoolean(DiskUtil.SC_CHOOSER_FLAG, true);
-                SecondaryChooserFragment f = new SecondaryChooserFragment();
-                f.setArguments(bundle);
-                f.show(mConfig.getFragmentManager(), "file_picker");
-                break;
         }
     }
 

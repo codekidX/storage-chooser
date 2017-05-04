@@ -203,12 +203,16 @@ public class SecondaryChooserFragment extends DialogFragment {
     private void performBackAction() {
         int slashIndex = theSelectedPath.lastIndexOf("/");
 
-        if(theSelectedPath.equals(mBundlePath)) {
-            dissmissDialog(FLAG_DISSMISS_INIT_DIALOG);
+        if(!mConfig.isSkipOverview()) {
+            if(theSelectedPath.equals(mBundlePath)) {
+                dissmissDialog(FLAG_DISSMISS_INIT_DIALOG);
+            } else {
+                theSelectedPath = theSelectedPath.substring(0, slashIndex);
+                Log.e("SCLib", "Performing back action: " + theSelectedPath);
+                populateList("");
+            }
         } else {
-            theSelectedPath = theSelectedPath.substring(0, slashIndex);
-            Log.e("SCLib", "Performing back action: " + theSelectedPath);
-            populateList("");
+            dissmissDialog(FLAG_DISSMISS_NORMAL);
         }
     }
 
