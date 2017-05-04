@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -52,6 +53,9 @@ public class ChooserDialogFragment extends DialogFragment {
     // day night flag
     private int mChooserMode;
 
+    // delaying secondary chooser
+    private Handler mHandler;
+
 
     @Nullable
     @Override
@@ -66,7 +70,7 @@ public class ChooserDialogFragment extends DialogFragment {
 
     private View getLayout(LayoutInflater inflater, ViewGroup container) {
         mConfig = StorageChooser.sConfig;
-
+        mHandler = new Handler();
         // init storage-chooser content [localization]
         if(mConfig.getContent() == null) {
             mContent = new Content();
@@ -106,8 +110,14 @@ public class ChooserDialogFragment extends DialogFragment {
                     if(mConfig.isApplyThreshold()) {
                         startThresholdTest(i);
                     } else {
-                        String dirPath = evaluatePath(i);
-                        DiskUtil.showSecondaryChooser(dirPath, mConfig);
+                        final String dirPath = evaluatePath(i);
+
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                DiskUtil.showSecondaryChooser(dirPath, mConfig);
+                            }
+                        }, 250);
                     }
                 } else {
                     String dirPath = evaluatePath(i);

@@ -205,7 +205,15 @@ public class SecondaryChooserFragment extends DialogFragment {
 
         if(!mConfig.isSkipOverview()) {
             if(theSelectedPath.equals(mBundlePath)) {
-                dissmissDialog(FLAG_DISSMISS_INIT_DIALOG);
+                SecondaryChooserFragment.this.dismiss();
+
+                //delay until close animation ends
+               mHandler.postDelayed(new Runnable() {
+                   @Override
+                   public void run() {
+                       dissmissDialog(FLAG_DISSMISS_INIT_DIALOG);
+                   }
+               }, 200);
             } else {
                 theSelectedPath = theSelectedPath.substring(0, slashIndex);
                 Log.e("SCLib", "Performing back action: " + theSelectedPath);
@@ -224,7 +232,6 @@ public class SecondaryChooserFragment extends DialogFragment {
             case FLAG_DISSMISS_INIT_DIALOG:
                 ChooserDialogFragment c = new ChooserDialogFragment();
                 c.show(mConfig.getFragmentManager(), "storagechooser_dialog");
-                this.dismiss();
                 break;
             case FLAG_DISSMISS_NORMAL:
                 this.dismiss();
