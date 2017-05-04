@@ -14,6 +14,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import com.codekidlabs.storagechooser.Content;
 import com.codekidlabs.storagechooser.StorageChooser;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
 
@@ -99,8 +100,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+        // ----------------- Localization -------------------
+        Content c = new Content();
+        c.setCreateLabel("Create");
+        c.setInternalStorageText("My Storage");
+        c.setCancelLabel("Cancel");
+        c.setSelectLabel("Select");
+        c.setOverviewHeading("Choose Drive");
+
         builder.withActivity(this)
-                .withFragmentManager(getSupportFragmentManager());
+                .withFragmentManager(getSupportFragmentManager())
+                .withContent(c);
+
 
         findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             @Override
