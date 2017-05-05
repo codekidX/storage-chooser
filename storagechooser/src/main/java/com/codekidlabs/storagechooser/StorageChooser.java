@@ -242,4 +242,8 @@ public class StorageChooser {
             return new StorageChooser(mActivity, devConfig);
         }
     }
+
+    public enum FileType {
+        MP3, MP4, TXT, TTF
+    }
 }
