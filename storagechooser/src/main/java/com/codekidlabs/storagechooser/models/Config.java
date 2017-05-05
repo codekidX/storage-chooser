@@ -4,6 +4,9 @@ import android.content.SharedPreferences;
 import android.support.v4.app.FragmentManager;
 
 import com.codekidlabs.storagechooser.Content;
+import com.codekidlabs.storagechooser.StorageChooser;
+
+import java.util.ArrayList;
 
 /**
  * Model to save configs passed to the Builder without passing too many things to the constructor
@@ -30,6 +33,8 @@ public class Config {
     private String secondaryAction;
 
     private Content content;
+    private StorageChooser.FileType singleFilter;
+    private ArrayList<StorageChooser.FileType> multipleFilter;
 
     public FragmentManager getFragmentManager() {
         return fragmentManager;
@@ -168,5 +173,22 @@ public class Config {
 
     public void setContent(Content content) {
         this.content = content;
+    }
+
+
+    public StorageChooser.FileType getSingleFilter() {
+        return singleFilter;
+    }
+
+    public void setSingleFilter(StorageChooser.FileType singleFilter) {
+        this.singleFilter = singleFilter;
+    }
+
+    public ArrayList<StorageChooser.FileType> getMultipleFilter() {
+        return multipleFilter;
+    }
+
+    public void setMultipleFilter(ArrayList<StorageChooser.FileType> multipleFilter) {
+        this.multipleFilter = multipleFilter;
     }
 }

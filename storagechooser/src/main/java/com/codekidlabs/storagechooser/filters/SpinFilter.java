@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public class SpinFilter {
 
     String rootFolder;
-    String singleFilter;
+    StorageChooser.FileType singleFilter;
 
     ArrayList<StorageChooser.FileType> multipleFilter;
 
@@ -16,7 +16,7 @@ public class SpinFilter {
         this.rootFolder = rootFolder;
     }
 
-    public SpinFilter(String rootFolder, String singleFilter) {
+    public SpinFilter(String rootFolder, StorageChooser.FileType singleFilter) {
         this.rootFolder = rootFolder;
         this.singleFilter = singleFilter;
     }
@@ -28,5 +28,25 @@ public class SpinFilter {
 
     public File[] filter() {
         return null;
+    }
+
+
+    /**
+     *  converts FileType enum to understandable extension string
+     * @param fileType
+     * @return fileType in String
+     */
+    private String enumToExtension(StorageChooser.FileType fileType) {
+        switch (fileType){
+            case MP3:
+                return "mp3";
+            case MP4:
+                return "mp4";
+            case TTF:
+                return "ttf";
+            default:
+                return "";
+
+        }
     }
 }

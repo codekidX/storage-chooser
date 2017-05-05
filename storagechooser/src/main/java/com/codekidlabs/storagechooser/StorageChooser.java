@@ -11,6 +11,8 @@ import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
 import com.codekidlabs.storagechooser.models.Config;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
 
+import java.util.ArrayList;
+
 
 public class StorageChooser {
 
@@ -128,6 +130,9 @@ public class StorageChooser {
         private String type;
         private Content content;
 
+        private StorageChooser.FileType filter;
+        private ArrayList<StorageChooser.FileType> multipleFilter;
+
         Config devConfig;
 
         public Builder() {
@@ -221,6 +226,16 @@ public class StorageChooser {
             return this;
         }
 
+        public Builder withSingleFilter(StorageChooser.FileType filter) {
+            this.filter = filter;
+            return this;
+        }
+
+        public Builder withMultipleFilter(ArrayList<StorageChooser.FileType> multipleFilter) {
+            this.multipleFilter = multipleFilter;
+            return this;
+        }
+
 
 
         public StorageChooser build() {
@@ -232,6 +247,8 @@ public class StorageChooser {
             devConfig.setSkipOverview(mSkipOverview);
             devConfig.setApplyThreshold(mApplyMemoryThreshold);
             devConfig.setContent(content);
+            devConfig.setSingleFilter(filter);
+            devConfig.setMultipleFilter(multipleFilter);
 
             if(type == null) {
                 devConfig.setSecondaryAction(StorageChooser.NONE);
