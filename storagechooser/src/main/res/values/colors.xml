@@ -17,4 +17,6 @@
     <color name="new_folder_color">#c14b84</color>
     <color name="select_color">#6b3fa1</color>
     <color name="cancel_color">#3fa19f</color>
+
+    <color name="primaryText">@android:color/black</color>
 </resources>

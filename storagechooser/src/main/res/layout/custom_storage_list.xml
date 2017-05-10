@@ -74,7 +74,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:background="@android:color/transparent"
-        android:textColor="@color/colorPrimaryDark"
+        android:textColor="@color/select_color"
         android:textStyle="bold" />
 
     <ListView

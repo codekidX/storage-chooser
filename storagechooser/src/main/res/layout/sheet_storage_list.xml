@@ -63,6 +63,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="16dp"
+        android:textColor="@color/new_folder_color"
         android:background="@android:color/transparent" />
 
     <Button
@@ -76,7 +77,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:background="@android:color/transparent"
-        android:textColor="@color/colorPrimaryDark" />
+        android:textColor="@color/select_color" />
 
     <ListView
         android:id="@+id/storage_list_view"
