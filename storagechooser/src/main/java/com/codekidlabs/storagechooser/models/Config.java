@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public class Config {
 
-    private FragmentManager fragmentManager;
+    private android.app.FragmentManager fragmentManager;
     private String predefinedPath;
     private boolean showMemoryBar;
     private boolean actionSave;
@@ -36,11 +36,11 @@ public class Config {
     private StorageChooser.FileType singleFilter;
     private ArrayList<StorageChooser.FileType> multipleFilter;
 
-    public FragmentManager getFragmentManager() {
+    public android.app.FragmentManager getFragmentManager() {
         return fragmentManager;
     }
 
-    public void setFragmentManager(FragmentManager fragmentManager) {
+    public void setFragmentManager(android.app.FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
     }
 

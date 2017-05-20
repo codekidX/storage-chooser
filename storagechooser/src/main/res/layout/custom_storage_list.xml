@@ -34,8 +34,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:background="@android:color/transparent"
-                    app:srcCompat="@drawable/chevron_left"
-                    android:tint="@android:color/white" />
+                    android:src="@drawable/ic_chevron_left_white_24dp" />
 
             </RelativeLayout>
 
@@ -101,28 +100,20 @@
         android:layout_above="@id/select_button"
         android:background="@color/colorPrimary">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/et_folder_name_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_centerVertical="true"
-            android:layout_margin="16dp"
-            android:layout_toLeftOf="@+id/create_folder_button"
-            android:layout_toStartOf="@+id/create_folder_button"
-            android:textColorHint="@color/chevronBgColor"
-            app:hintTextAppearance="@style/EditTextHint">
-
             <EditText
                 android:id="@+id/et_folder_name"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="16dp"
+                android:layout_toLeftOf="@+id/create_folder_button"
+                android:layout_toStartOf="@+id/create_folder_button"
+                android:textColorHint="@color/chevronBgColor"
                 android:backgroundTint="@color/pathLayoutBgColor"
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
-
-        </android.support.design.widget.TextInputLayout>
 
         <Button
             android:id="@+id/create_folder_button"

@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.os.Environment;
-import android.support.v4.app.FragmentManager;
-
 
 import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
 import com.codekidlabs.storagechooser.models.Config;
@@ -31,7 +29,7 @@ public class StorageChooser {
      * basic constructor of StorageChooser
      * @param config to use with dialog window addition
      */
-    public StorageChooser(Activity activity, Config config) {
+    StorageChooser(Activity activity, Config config) {
         setsConfig(config);
         setChooserActivity(activity);
     }
@@ -144,7 +142,7 @@ public class StorageChooser {
             return this;
         }
 
-        public Builder withFragmentManager(FragmentManager fragmentManager) {
+        public Builder withFragmentManager(android.app.FragmentManager fragmentManager) {
             devConfig.setFragmentManager(fragmentManager);
             return this;
         }

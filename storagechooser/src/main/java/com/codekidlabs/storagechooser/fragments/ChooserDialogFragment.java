@@ -34,7 +34,7 @@ import java.util.List;
 
 
 
-public class ChooserDialogFragment extends DialogFragment {
+public class ChooserDialogFragment extends android.app.DialogFragment {
 
     private View mLayout;
     private ViewGroup mContainer;
@@ -78,7 +78,7 @@ public class ChooserDialogFragment extends DialogFragment {
             mContent = mConfig.getContent();
         }
         mLayout = inflater.inflate(R.layout.storage_list, container, false);
-        initListView(getContext(), mLayout, mConfig.isShowMemoryBar());
+        initListView(getActivity().getApplicationContext(), mLayout, mConfig.isShowMemoryBar());
 
         if(mContent.getOverviewHeading() !=null) {
             TextView dialogTitle = (TextView) mLayout.findViewById(R.id.dialog_title);
@@ -170,7 +170,7 @@ public class ChooserDialogFragment extends DialogFragment {
                 DiskUtil.showSecondaryChooser(dirPath, mConfig);
             } else {
                 String suffixedAvailableMem = String.valueOf(memoryUtil.suffixedSize(availableMem, thresholdSuffix)) + " " + thresholdSuffix;
-                Toast.makeText(getContext(), getString(R.string.toast_threshold_breached, suffixedAvailableMem), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), getString(R.string.toast_threshold_breached, suffixedAvailableMem), Toast.LENGTH_SHORT).show();
             }
         } else {
             // THROW: error in log
@@ -247,7 +247,7 @@ public class ChooserDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog d = StorageChooser.dialog;
-        d.setContentView(getLayout(LayoutInflater.from(getContext()), mContainer));
+        d.setContentView(getLayout(LayoutInflater.from(getActivity().getApplicationContext()), mContainer));
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(d.getWindow().getAttributes());
         lp.width = WindowManager.LayoutParams.WRAP_CONTENT;

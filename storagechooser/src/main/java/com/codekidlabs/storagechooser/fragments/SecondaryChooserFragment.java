@@ -47,7 +47,7 @@ import java.util.Comparator;
 import java.util.List;
 
 
-public class SecondaryChooserFragment extends DialogFragment {
+public class SecondaryChooserFragment extends android.app.DialogFragment {
 
     private View mLayout;
     private View mInactiveGradient;
@@ -59,7 +59,6 @@ public class SecondaryChooserFragment extends DialogFragment {
     private Button mCreateButton;
     private ImageView mNewFolderImageView;
     private EditText mFolderNameEditText;
-    private TextInputLayout mFolderNameETLayout;
 
     private RelativeLayout mNewFolderView;
 
@@ -261,7 +260,7 @@ public class SecondaryChooserFragment extends DialogFragment {
             mContent = mConfig.getContent();
         }
 
-        mContext = getContext();
+        mContext = getActivity().getApplicationContext();
         mResourceUtil = new ResourceUtil(mContext);
         mLayout = inflater.inflate(R.layout.custom_storage_list, container, false);
         initListView(mContext, mLayout, mConfig.isShowMemoryBar());
@@ -283,7 +282,6 @@ public class SecondaryChooserFragment extends DialogFragment {
 
         mNewFolderView = (RelativeLayout) mLayout.findViewById(R.id.new_folder_view);
         mFolderNameEditText = (EditText) mLayout.findViewById(R.id.et_folder_name);
-        mFolderNameETLayout = (TextInputLayout) mLayout.findViewById(R.id.et_folder_name_layout);
 
         mInactiveGradient = mLayout.findViewById(R.id.inactive_gradient);
 
@@ -297,7 +295,7 @@ public class SecondaryChooserFragment extends DialogFragment {
         mInactiveGradient.setVisibility(View.INVISIBLE);
 
 
-        mFolderNameETLayout.setHint(mContent.getTextfieldHintText());
+        mFolderNameEditText.setHint(mContent.getTextfieldHintText());
 
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mFolderNameEditText.setHintTextColor(mResourceUtil.getColor(mContent.getTextfieldHintColor()));
@@ -516,7 +514,7 @@ public class SecondaryChooserFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog d = StorageChooser.dialog;
-        d.setContentView(getLayout(LayoutInflater.from(getContext()), mContainer));
+        d.setContentView(getLayout(LayoutInflater.from(getActivity().getApplicationContext()), mContainer));
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(d.getWindow().getAttributes());
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -551,8 +549,6 @@ public class SecondaryChooserFragment extends DialogFragment {
         if (mFolderNameEditText.getText().toString().trim().isEmpty()) {
             mFolderNameEditText.setError(mContent.getTextfieldErrorText());
             return false;
-        } else {
-            mFolderNameETLayout.setErrorEnabled(false);
         }
         return true;
     }
