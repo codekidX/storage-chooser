@@ -41,7 +41,7 @@ Add this to your root build.gradle file under repositories:
 
 Add this to your app level build.gradle as dependency:
 
-    com.github.codekidX:storage-chooser:1.0.34
+    com.github.codekidX:storage-chooser:1.0.35
 
 
 Notes
@@ -69,7 +69,7 @@ Implementation
 // Initialize Builder
 StorageChooser chooser = new StorageChooser.Builder()
 .withActivity(MainActivity.this)
-.withFragmentManager(getSupportFragmentManager())
+.withFragmentManager(getFragmentManager())
 .withMemoryBar(true) 
 .build();
 
