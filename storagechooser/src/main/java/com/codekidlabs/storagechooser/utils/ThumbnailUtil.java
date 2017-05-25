@@ -13,6 +13,7 @@ public class ThumbnailUtil {
 
     // Constant extensions
     private static final String TEXT_FILE = "txt";
+    private static final String LOG_FILE = "log";
     private static final String CSV_FILE = "csv";
     private static final String PROP_FILE = "prop";
 
@@ -71,7 +72,8 @@ public class ThumbnailUtil {
             case CSV_FILE:
             case DOC_FILE:
             case PROP_FILE:
-                imageView.setImageDrawable(getDrawableFromRes(R.drawable.doc));
+            case LOG_FILE:
+                    imageView.setImageDrawable(getDrawableFromRes(R.drawable.doc));
                 break;
             case VIDEO_FILE:
             case VIDEO_AVI_FILE:
