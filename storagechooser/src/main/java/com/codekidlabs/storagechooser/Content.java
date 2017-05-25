@@ -1,5 +1,8 @@
 package com.codekidlabs.storagechooser;
 
+import android.graphics.Color;
+import android.support.annotation.ColorInt;
+
 /**
  * Content class handles changes to dialog's view and whatever is in it
  */
@@ -21,6 +24,8 @@ public class Content {
     // COLORS
     private int secondaryActionColor = android.R.color.black;
     private int textfieldHintColor = R.color.chevronBgColor;
+
+    private int listTextColor = Color.BLACK;
 
 
     public String getSelectLabel() {
@@ -118,4 +123,14 @@ public class Content {
     public void setTextfieldHintColor(int textfieldHintColor) {
         this.textfieldHintColor = textfieldHintColor;
     }
+
+    public int getListTextColor() {
+        return listTextColor;
+    }
+
+    public void setListTextColor(@ColorInt int listTextColor) {
+        this.listTextColor = listTextColor;
+    }
+
+
 }

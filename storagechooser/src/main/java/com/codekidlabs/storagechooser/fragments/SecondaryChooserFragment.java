@@ -349,7 +349,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         mBundlePath = this.getArguments().getString(DiskUtil.SC_PREFERENCE_KEY);
         isFilePicker = this.getArguments().getBoolean(DiskUtil.SC_CHOOSER_FLAG, false);
         populateList(mBundlePath);
-        secondaryChooserAdapter =new SecondaryChooserAdapter(customStoragesList, context, shouldShowMemoryBar);
+        secondaryChooserAdapter =new SecondaryChooserAdapter(customStoragesList, context, mContent.getListTextColor());
         secondaryChooserAdapter.setPrefixPath(theSelectedPath);
 
         listView.setAdapter(secondaryChooserAdapter);

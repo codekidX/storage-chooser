@@ -33,11 +33,14 @@ public class StorageChooserListAdapter extends BaseAdapter {
     private ProgressBar memoryBar;
     private static int memoryPercentile;
 
+    private int storageNameTextColor;
 
-    public StorageChooserListAdapter(List<Storages> storagesList, Context mContext, boolean shouldShowMemoryBar) {
+
+    public StorageChooserListAdapter(List<Storages> storagesList, Context mContext, boolean shouldShowMemoryBar, int storageNameTextColor) {
         this.storagesList = storagesList;
         this.mContext = mContext;
         this.shouldShowMemoryBar = shouldShowMemoryBar;
+        this.storageNameTextColor = storageNameTextColor;
     }
 
     @Override
@@ -75,6 +78,10 @@ public class StorageChooserListAdapter extends BaseAdapter {
         str.setSpan(new StyleSpan(Typeface.ITALIC), getSpannableIndex(str), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         String availableText = mContext.getString(R.string.text_freespace, storages.getMemoryAvailableSize());
         storageName.setText(str);
+
+        if(storageNameTextColor != -1) {
+            storageName.setTextColor(storageNameTextColor);
+        }
         memoryStatus.setText(availableText);
 
         memoryStatus.setTextColor(ContextCompat.getColor(mContext, R.color.memory_status_color));

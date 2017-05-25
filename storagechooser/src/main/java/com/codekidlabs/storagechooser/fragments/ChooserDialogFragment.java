@@ -97,7 +97,7 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
         // we need to populate before to get the internal storage path in list
         populateList();
 
-        listView.setAdapter(new StorageChooserListAdapter(storagesList, context, shouldShowMemoryBar));
+        listView.setAdapter(new StorageChooserListAdapter(storagesList, context, shouldShowMemoryBar, mContent.getListTextColor()));
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

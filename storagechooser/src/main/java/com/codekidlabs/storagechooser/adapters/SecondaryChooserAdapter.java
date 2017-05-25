@@ -20,17 +20,17 @@ public class SecondaryChooserAdapter extends BaseAdapter {
 
     private List<String> storagesList;
     private Context mContext;
-    private boolean shouldShowMemoryBar;
+    private int storageNameTextColor;
     public static boolean shouldEnable = true;
 
     public String prefixPath;
     private ThumbnailUtil thumbnailUtil;
 
 
-    public SecondaryChooserAdapter(List<String> storagesList, Context mContext, boolean shouldShowMemoryBar) {
+    public SecondaryChooserAdapter(List<String> storagesList, Context mContext, int storageNameTextColor) {
         this.storagesList = storagesList;
         this.mContext = mContext;
-        this.shouldShowMemoryBar = shouldShowMemoryBar;
+        this.storageNameTextColor = storageNameTextColor;
 
         // create instance once
         thumbnailUtil = new ThumbnailUtil(mContext);
@@ -66,6 +66,10 @@ public class SecondaryChooserAdapter extends BaseAdapter {
 
         TextView storageName = (TextView) rootView.findViewById(R.id.storage_name);
         storageName.setText(storagesList.get(i));
+
+        if(storageNameTextColor != -1) {
+            storageName.setTextColor(storageNameTextColor);
+        }
 
         return rootView;
 
