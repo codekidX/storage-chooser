@@ -136,7 +136,7 @@ String path = sharedPreferences.getString(DiskUtil.SC_PREFERENCE_KEY,"");
 
 ## Localization
 
-A seperate localization wiki is posted [here](https://github.com/codekidX/storage-chooser/wiki/Localizing-your-Chooser)
+A seperate localization wiki is posted [here](https://github.com/codekidX/storage-chooser/wiki/Localizing-your-chooser-using-Content)
 
 
 ## Color Scheme
