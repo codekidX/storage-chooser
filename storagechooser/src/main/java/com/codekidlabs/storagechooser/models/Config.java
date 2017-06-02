@@ -29,6 +29,8 @@ public class Config {
     private boolean skipOverview;
     private boolean applyThreshold;
     private String primaryPath;
+    private boolean isGridView;
+    private boolean resumeSession;
 
     private String secondaryAction;
 
@@ -190,5 +192,21 @@ public class Config {
 
     public void setMultipleFilter(ArrayList<StorageChooser.FileType> multipleFilter) {
         this.multipleFilter = multipleFilter;
+    }
+
+    public boolean isGridView() {
+        return isGridView;
+    }
+
+    public void setGridView(boolean gridView) {
+        isGridView = gridView;
+    }
+
+    public boolean isResumeSession() {
+        return resumeSession;
+    }
+
+    public void setResumeSession(boolean resumeSession) {
+        this.resumeSession = resumeSession;
     }
 }

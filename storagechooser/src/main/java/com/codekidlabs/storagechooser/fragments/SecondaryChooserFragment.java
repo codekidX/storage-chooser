@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.graphics.drawable.Animatable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -216,6 +217,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
             } else {
                 theSelectedPath = theSelectedPath.substring(0, slashIndex);
                 Log.e("SCLib", "Performing back action: " + theSelectedPath);
+                StorageChooser.LAST_SESSION_PATH = theSelectedPath;
                 populateList("");
             }
         } else {
@@ -224,8 +226,6 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     }
 
     private void dissmissDialog(int flag) {
-        theSelectedPath = "";
-        mAddressClippedPath = "";
 
         switch (flag) {
             case FLAG_DISSMISS_INIT_DIALOG:
@@ -233,6 +233,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
                 c.show(mConfig.getFragmentManager(), "storagechooser_dialog");
                 break;
             case FLAG_DISSMISS_NORMAL:
+                StorageChooser.LAST_SESSION_PATH = theSelectedPath;
                 this.dismiss();
                 break;
         }
@@ -463,6 +464,15 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         }
 
         playTheAddressBarAnimation();
+
+        if(mConfig.isResumeSession() && StorageChooser.LAST_SESSION_PATH !=null) {
+            if(StorageChooser.LAST_SESSION_PATH.startsWith(Environment.getExternalStorageDirectory().getAbsolutePath())) {
+                mBundlePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+            } else {
+                Log.e("Bundle_Path_Length", StorageChooser.LAST_SESSION_PATH);
+                mBundlePath = StorageChooser.LAST_SESSION_PATH.substring(StorageChooser.LAST_SESSION_PATH.indexOf("/", 16), StorageChooser.LAST_SESSION_PATH.length());
+            }
+        }
     }
 
     /**
@@ -524,10 +534,20 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     }
 
     @Override
-    public void onCancel(DialogInterface dialog) {
-        super.onCancel(dialog);
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
         theSelectedPath = "";
         mAddressClippedPath = "";
+    }
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        super.onCancel(dialog);
+        StorageChooser.LAST_SESSION_PATH = theSelectedPath;
+        theSelectedPath = "";
+        mAddressClippedPath = "";
+
+        StorageChooser.onCancelListener.onCancel();
     }
 
     private int getSlashCount(String path) {

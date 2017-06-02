@@ -69,23 +69,28 @@ public class StorageChooser {
     private void init() {
         dialog = getStorageChooserDialog(getChooserActivity());
 
-        // if dev needs to skip overview and the primary path is not mentioned the directory
-        // chooser or file picker will default to internal storage
-        if(sConfig.isSkipOverview()) {
-            if(sConfig.getPrimaryPath() == null) {
-
-                // internal storage is always the first element (I took care of it :wink:)
-                String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-                DiskUtil.showSecondaryChooser(dirPath, sConfig);
-            } else {
-
-                // path provided by dev is the goto path for chooser
-                DiskUtil.showSecondaryChooser(sConfig.getPrimaryPath(), sConfig);
-            }
-
+        if(sConfig.isResumeSession() && StorageChooser.LAST_SESSION_PATH !=null) {
+            DiskUtil.showSecondaryChooser(StorageChooser.LAST_SESSION_PATH, sConfig);
         } else {
-            ChooserDialogFragment chooserDialogFragment = new ChooserDialogFragment();
-            chooserDialogFragment.show(sConfig.getFragmentManager(),"storagechooser_dialog");
+
+            // if dev needs to skip overview and the primary path is not mentioned the directory
+            // chooser or file picker will default to internal storage
+            if (sConfig.isSkipOverview()) {
+                if (sConfig.getPrimaryPath() == null) {
+
+                    // internal storage is always the first element (I took care of it :wink:)
+                    String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+                    DiskUtil.showSecondaryChooser(dirPath, sConfig);
+                } else {
+
+                    // path provided by dev is the goto path for chooser
+                    DiskUtil.showSecondaryChooser(sConfig.getPrimaryPath(), sConfig);
+                }
+
+            } else {
+                ChooserDialogFragment chooserDialogFragment = new ChooserDialogFragment();
+                chooserDialogFragment.show(sConfig.getFragmentManager(), "storagechooser_dialog");
+            }
         }
     }
 
@@ -136,6 +141,8 @@ public class StorageChooser {
         private boolean mShowHidden = false;
         private boolean mSkipOverview = false;
         private boolean mApplyMemoryThreshold = false;
+        private boolean mShowInGrid = false;
+        private boolean mResumeSession = false;
         private String type;
         private Content content;
 
@@ -245,6 +252,16 @@ public class StorageChooser {
             return this;
         }
 
+        public Builder showFoldersInGrid(boolean showInGrid) {
+            devConfig.setGridView(showInGrid);
+            return this;
+        }
+
+        public Builder shouldResumeSession(boolean resumeSession) {
+            this.mResumeSession = resumeSession;
+            return this;
+        }
+
 
 
         public StorageChooser build() {
@@ -255,6 +272,8 @@ public class StorageChooser {
             devConfig.setShowHidden(mShowHidden);
             devConfig.setSkipOverview(mSkipOverview);
             devConfig.setApplyThreshold(mApplyMemoryThreshold);
+            devConfig.setResumeSession(mResumeSession);
+            devConfig.setGridView(mShowInGrid);
             devConfig.setContent(content);
             devConfig.setSingleFilter(filter);
             devConfig.setMultipleFilter(multipleFilter);
