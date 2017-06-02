@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.SharedPreferences;
 import android.os.Environment;
+import android.util.Log;
 
 import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
+import com.codekidlabs.storagechooser.fragments.SecondaryChooserFragment;
 import com.codekidlabs.storagechooser.models.Config;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
 
@@ -20,10 +22,13 @@ public class StorageChooser {
     private Activity chooserActivity;
 
     public static OnSelectListener onSelectListener;
+    public static OnCancelListener onCancelListener;
 
     public static final String NONE = "none";
     public static final String DIRECTORY_CHOOSER = "dir";
     public static final String FILE_PICKER = "file";
+
+    public static String LAST_SESSION_PATH = null;
 
     /**
      * basic constructor of StorageChooser
@@ -44,6 +49,11 @@ public class StorageChooser {
     public interface OnSelectListener {
 
         void onSelect(String path);
+    }
+
+    public interface OnCancelListener {
+
+        void onCancel();
     }
 
     /**
@@ -83,8 +93,9 @@ public class StorageChooser {
         StorageChooser.onSelectListener = onSelectListener;
     }
 
-    public OnSelectListener getOnSelectListener() {
-        return onSelectListener;
+
+    public void setOnCancelListener(OnCancelListener onCancelListener) {
+        StorageChooser.onCancelListener = onCancelListener;
     }
 
     public static Config getsConfig() {
