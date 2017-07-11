@@ -24,6 +24,7 @@ public class Content {
     // COLORS
     private int secondaryActionColor = android.R.color.black;
     private int textfieldHintColor = R.color.chevronBgColor;
+    private int addressTextColor = Color.WHITE;
 
     private int listTextColor = Color.BLACK;
 
@@ -132,5 +133,11 @@ public class Content {
         this.listTextColor = listTextColor;
     }
 
+    public int getAddressTextColor() {
+        return addressTextColor;
+    }
 
+    public void setAddressTextColor(int addressTextColor) {
+        this.addressTextColor = addressTextColor;
+    }
 }

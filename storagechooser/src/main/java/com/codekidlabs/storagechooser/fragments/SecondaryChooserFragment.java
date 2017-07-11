@@ -3,6 +3,7 @@ package com.codekidlabs.storagechooser.fragments;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
 import android.graphics.drawable.Animatable;
 import android.os.Build;
 import android.os.Bundle;
@@ -298,7 +299,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
         mFolderNameEditText.setHint(mContent.getTextfieldHintText());
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mFolderNameEditText.setHintTextColor(mResourceUtil.getColor(mContent.getTextfieldHintColor()));
         }
 
@@ -307,7 +308,13 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         mSelectButton.setText(mContent.getSelectLabel());
         mCreateButton.setText(mContent.getCreateLabel());
 
+        // set colors
         mSelectButton.setTextColor(mResourceUtil.getColor(R.color.select_color));
+        mPathChosen.setTextColor(mContent.getAddressTextColor());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mNewFolderImageView.setImageTintList(ColorStateList.valueOf(mContent.getAddressTextColor()));
+            mBackButton.setImageTintList(ColorStateList.valueOf(mContent.getAddressTextColor()));
+        }
 
         mBackButton.setOnClickListener(mBackButtonClickListener);
         mSelectButton.setOnClickListener(mSelectButtonClickListener);
