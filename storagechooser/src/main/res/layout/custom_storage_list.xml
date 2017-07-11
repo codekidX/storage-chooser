@@ -113,6 +113,9 @@
                 android:textColorHint="@color/chevronBgColor"
                 android:backgroundTint="@color/pathLayoutBgColor"
                 android:textColor="@android:color/white"
+                android:singleLine="true"
+                android:maxLength="50"
+                android:maxLines="1"
                 android:textSize="16sp" />
 
         <Button
