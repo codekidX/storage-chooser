@@ -84,6 +84,14 @@
                     android:layout_marginTop="8dp"
                     android:text="applyMemoryThreshold (1GB)" />
 
+                <CheckBox
+                    android:id="@+id/checkbox_session"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="shouldResumeSession" />
+
             </LinearLayout>
 
         </ScrollView>

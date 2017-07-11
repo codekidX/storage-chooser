@@ -1,6 +1,7 @@
 package com.codekidlabs.storagechooserdemo;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -77,6 +78,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        ((CheckBox) findViewById(R.id.checkbox_session)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                builder.shouldResumeSession(isChecked);
+            }
+        });
+
         fileCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -108,9 +116,10 @@ public class MainActivity extends AppCompatActivity {
         c.setCancelLabel("Cancel");
         c.setSelectLabel("Select");
         c.setOverviewHeading("Choose Drive");
+        c.setAddressTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
 
         builder.withActivity(this)
-                .withFragmentManager(getSupportFragmentManager())
+                .withFragmentManager(getFragmentManager())
                 .withContent(c);
 
 
@@ -122,6 +131,13 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSelect(String path) {
                         Toast.makeText(getApplicationContext(), path, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                chooser.setOnCancelListener(new StorageChooser.OnCancelListener() {
+                    @Override
+                    public void onCancel() {
+                        Toast.makeText(getApplicationContext(), "Storage Chooser Cancelled.", Toast.LENGTH_SHORT).show();
                     }
                 });
                 chooser.show();
