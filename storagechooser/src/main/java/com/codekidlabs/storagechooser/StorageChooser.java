@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 public class StorageChooser {
 
+    private final String TAG = this.getClass().getName();
     public static Dialog dialog;
 
     public static Config sConfig;
@@ -69,6 +70,14 @@ public class StorageChooser {
     private void init() {
         dialog = getStorageChooserDialog(getChooserActivity());
 
+        // check if listeners are set to avoid crash
+        if(onSelectListener == null) {
+            onSelectListener = getDefaultOnSelectListener();
+        }
+        if(onCancelListener == null) {
+            onCancelListener = getDefaultOnCancelListener();
+        }
+
         if(sConfig.isResumeSession() && StorageChooser.LAST_SESSION_PATH !=null) {
             DiskUtil.showSecondaryChooser(StorageChooser.LAST_SESSION_PATH, sConfig);
         } else {
@@ -117,6 +126,24 @@ public class StorageChooser {
 
     private void setChooserActivity(Activity chooserActivity) {
         this.chooserActivity = chooserActivity;
+    }
+
+    private OnSelectListener getDefaultOnSelectListener() {
+        return new OnSelectListener() {
+            @Override
+            public void onSelect(String path) {
+                Log.e(TAG, "You need to setup OnSelectListener from your side. OUTPUT: " + path);
+            }
+        };
+    }
+
+    private OnCancelListener getDefaultOnCancelListener() {
+        return new OnCancelListener() {
+            @Override
+            public void onCancel() {
+                Log.e(TAG, "You need to setup OnCancelListener from your side. This is default OnCancelListener fired.");
+            }
+        };
     }
 
     private static Dialog getStorageChooserDialog(Activity activity) {
