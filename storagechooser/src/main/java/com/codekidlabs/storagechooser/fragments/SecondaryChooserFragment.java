@@ -486,7 +486,13 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         } else {
             customStoragesList.clear();
         }
-        File[] volumeList = fileUtil.listFilesInDir(theSelectedPath);
+        File[] volumeList;
+
+        if(isFilePicker) {
+            volumeList = fileUtil.listFilesInDir(theSelectedPath);
+        } else {
+            volumeList = fileUtil.listFilesAsDir(theSelectedPath);
+        }
 
         Log.e("SCLib", theSelectedPath);
         if(volumeList != null) {
