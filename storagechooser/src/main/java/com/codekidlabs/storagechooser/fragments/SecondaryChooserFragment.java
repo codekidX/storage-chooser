@@ -196,7 +196,13 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         @Override
         public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-            handleListMultipleAction(i, view);
+            String jointPath = theSelectedPath + "/" + customStoragesList.get(i);
+
+            if(!FileUtil.isDir(jointPath)) {
+                handleListMultipleAction(i, view);
+            } else {
+                populateList("/" + customStoragesList.get(i));
+            }
 
             return true;
         }
@@ -443,7 +449,9 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         SecondaryChooserAdapter.shouldEnable = true;
         listView.setOnItemClickListener(mSingleModeClickListener);
 
-        listView.setOnItemLongClickListener(mLongClickListener);
+        if(isFilePicker) {
+            listView.setOnItemLongClickListener(mLongClickListener);
+        }
 
     }
 
@@ -454,28 +462,21 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
      * */
     private void handleListMultipleAction(int i, View view) {
         String jointPath = theSelectedPath + "/" + customStoragesList.get(i);
-        if(!FileUtil.isDir(jointPath)) {
 
             // if this list path item is not selected before
-            if(!SecondaryChooserAdapter.selectedPaths.contains(i)) {
-                MODE_MULTIPLE = true;
-                listView.setOnItemClickListener(mMultipleModeClickListener);
+        if(!SecondaryChooserAdapter.selectedPaths.contains(i)) {
+            MODE_MULTIPLE = true;
+            listView.setOnItemClickListener(mMultipleModeClickListener);
 
-                view.setBackgroundColor(mResourceUtil.getPrimaryColorWithAlpha());
+            view.setBackgroundColor(mResourceUtil.getPrimaryColorWithAlpha());
 
-                SecondaryChooserAdapter.selectedPaths.add(i);
-                mMultipleModeList.add(jointPath);
+            SecondaryChooserAdapter.selectedPaths.add(i);
+            mMultipleModeList.add(jointPath);
 
-            } else {
-                //this item is selected before
-                SecondaryChooserAdapter.selectedPaths.remove(i);
-                mMultipleModeList.remove(theSelectedPath);
-            }
         } else {
-           bringBackSingleMode();
-            // go to directory path
-            populateList("/" + customStoragesList.get(i));
-
+            //this item is selected before
+            SecondaryChooserAdapter.selectedPaths.remove(i);
+            mMultipleModeList.remove(theSelectedPath);
         }
 
         if(mMultipleOnSelectButton.getVisibility() != View.VISIBLE && MODE_MULTIPLE)
