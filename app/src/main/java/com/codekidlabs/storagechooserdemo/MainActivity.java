@@ -10,6 +10,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -19,6 +20,8 @@ import com.codekidlabs.storagechooser.Content;
 import com.codekidlabs.storagechooser.StorageChooser;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private CoordinatorLayout coordinatorLayout;
@@ -26,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     private StorageChooser.Builder builder = new StorageChooser.Builder();
     private StorageChooser chooser;
+    private String TAG = getClass().getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,8 +144,19 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Storage Chooser Cancelled.", Toast.LENGTH_SHORT).show();
                     }
                 });
+
+                chooser.setOnMultipleSelectListener(new StorageChooser.OnMultipleSelectListener() {
+                    @Override
+                    public void onDone(ArrayList<String> selectedFilePaths) {
+                        for(String s: selectedFilePaths) {
+                            Log.e(TAG, s);
+                        }
+                    }
+                });
+
                 chooser.show();
             }
+
         });
     }
 
