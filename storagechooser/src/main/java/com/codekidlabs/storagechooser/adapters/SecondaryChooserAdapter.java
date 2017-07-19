@@ -12,8 +12,10 @@ import android.widget.TextView;
 
 import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.utils.FileUtil;
+import com.codekidlabs.storagechooser.utils.ResourceUtil;
 import com.codekidlabs.storagechooser.utils.ThumbnailUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SecondaryChooserAdapter extends BaseAdapter {
@@ -22,9 +24,11 @@ public class SecondaryChooserAdapter extends BaseAdapter {
     private Context mContext;
     private int storageNameTextColor;
     public static boolean shouldEnable = true;
+    public static ArrayList<Integer> selectedPaths = new ArrayList<>();
 
     public String prefixPath;
     private ThumbnailUtil thumbnailUtil;
+    private ResourceUtil resourceUtil;
 
 
     public SecondaryChooserAdapter(List<String> storagesList, Context mContext, int storageNameTextColor) {
@@ -34,6 +38,7 @@ public class SecondaryChooserAdapter extends BaseAdapter {
 
         // create instance once
         thumbnailUtil = new ThumbnailUtil(mContext);
+        resourceUtil = new ResourceUtil(mContext);
     }
 
     @Override
@@ -71,8 +76,11 @@ public class SecondaryChooserAdapter extends BaseAdapter {
             storageName.setTextColor(storageNameTextColor);
         }
 
-        return rootView;
+        if(selectedPaths.contains(i)) {
+                rootView.setBackgroundColor(resourceUtil.getPrimaryColorWithAlpha());
+        }
 
+        return rootView;
     }
 
 

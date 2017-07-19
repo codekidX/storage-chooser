@@ -24,6 +24,7 @@ public class StorageChooser {
 
     public static OnSelectListener onSelectListener;
     public static OnCancelListener onCancelListener;
+    public static OnMultipleSelectListener onMultipleSelectListener;
 
     public static final String NONE = "none";
     public static final String DIRECTORY_CHOOSER = "dir";
@@ -57,6 +58,10 @@ public class StorageChooser {
         void onCancel();
     }
 
+    public interface OnMultipleSelectListener {
+        void onDone(ArrayList<String> selectedFilePaths);
+    }
+
     /**
      * show() shows the storage chooser dialog
      */
@@ -76,6 +81,9 @@ public class StorageChooser {
         }
         if(onCancelListener == null) {
             onCancelListener = getDefaultOnCancelListener();
+        }
+        if(onMultipleSelectListener == null) {
+            onMultipleSelectListener = getDefaultMultipleSelectionListener();
         }
 
         if(sConfig.isResumeSession() && StorageChooser.LAST_SESSION_PATH !=null) {
@@ -112,6 +120,11 @@ public class StorageChooser {
         StorageChooser.onCancelListener = onCancelListener;
     }
 
+    public void setOnMultipleSelectListener(OnMultipleSelectListener onMultipleSelectListener) {
+        StorageChooser.onMultipleSelectListener = onMultipleSelectListener;
+    }
+
+
     public static Config getsConfig() {
         return sConfig;
     }
@@ -146,9 +159,19 @@ public class StorageChooser {
         };
     }
 
+    private OnMultipleSelectListener getDefaultMultipleSelectionListener() {
+        return new OnMultipleSelectListener() {
+            @Override
+            public void onDone(ArrayList<String> selectedFilePaths) {
+                Log.e(TAG, "You need to setup OnMultipleSelectListener from your side. This is default OnMultipleSelectListener fired.");
+            }
+        };
+    }
+
     private static Dialog getStorageChooserDialog(Activity activity) {
         return new Dialog(activity, R.style.DialogTheme);
     }
+
     /**
      * @class Builder
      *  - as the name suggests it gets all the configurations provided by the developer and

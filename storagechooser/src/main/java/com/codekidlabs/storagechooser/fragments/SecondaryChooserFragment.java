@@ -48,6 +48,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import at.markushi.ui.CircleButton;
+
 
 public class SecondaryChooserFragment extends android.app.DialogFragment {
 
@@ -61,6 +63,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     private Button mCreateButton;
     private ImageView mNewFolderImageView;
     private EditText mFolderNameEditText;
+    private CircleButton mMultipleOnSelectButton;
 
     private RelativeLayout mNewFolderView;
 
@@ -74,6 +77,8 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
     private static final int FLAG_DISSMISS_NORMAL = 0;
     private static final int FLAG_DISSMISS_INIT_DIALOG = 1;
+
+    private static boolean MODE_MULTIPLE = false;
 
     private boolean isOpen;
 
@@ -91,6 +96,14 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     private Handler mHandler;
     private ResourceUtil mResourceUtil;
 
+    // multiple mode stuffs
+    private ArrayList<String> mMultipleModeList = new ArrayList<>();
+
+    /**
+     *
+     *  THE HOLY PLACE OF CLICK LISTENERS
+     *
+     * */
     private View.OnClickListener mSelectButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -128,6 +141,15 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         }
     };
 
+    private View.OnClickListener mMultipleModeDoneButtonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            StorageChooser.onMultipleSelectListener.onDone(mMultipleModeList);
+            bringBackSingleMode();
+            dissmissDialog(FLAG_DISSMISS_NORMAL);
+        }
+    };
+
     private View.OnClickListener mCreateButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -144,6 +166,45 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
             }
         }
     };
+
+    private AdapterView.OnItemClickListener mSingleModeClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    String jointPath = theSelectedPath + "/" + customStoragesList.get(i);
+                    if(FileUtil.isDir(jointPath)) {
+                        populateList("/" + customStoragesList.get(i));
+                    } else {
+                        StorageChooser.onSelectListener.onSelect(jointPath);
+                        dissmissDialog(FLAG_DISSMISS_NORMAL);
+                    }
+                }
+            }, 300);
+        }
+    };
+
+    private AdapterView.OnItemClickListener mMultipleModeClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+            handleListMultipleAction(i, view);
+        }
+    };
+
+    private AdapterView.OnItemLongClickListener mLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+            handleListMultipleAction(i, view);
+
+            return true;
+        }
+    };
+
+    // ================ CLICK LISTENER END ==================
+
+
     private boolean keyboardToggle;
     private String TAG = "StorageChooser";
     private boolean isFilePicker;
@@ -203,28 +264,42 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
     private void performBackAction() {
         int slashIndex = theSelectedPath.lastIndexOf("/");
+        if(MODE_MULTIPLE) {
+            bringBackSingleMode();
+            secondaryChooserAdapter.notifyDataSetChanged();
 
-        if(!mConfig.isSkipOverview()) {
-            if(theSelectedPath.equals(mBundlePath)) {
-                SecondaryChooserFragment.this.dismiss();
-
-                //delay until close animation ends
-               mHandler.postDelayed(new Runnable() {
-                   @Override
-                   public void run() {
-                       dissmissDialog(FLAG_DISSMISS_INIT_DIALOG);
-                   }
-               }, 200);
-            } else {
-                theSelectedPath = theSelectedPath.substring(0, slashIndex);
-                Log.e("SCLib", "Performing back action: " + theSelectedPath);
-                StorageChooser.LAST_SESSION_PATH = theSelectedPath;
-                populateList("");
-            }
         } else {
-            dissmissDialog(FLAG_DISSMISS_NORMAL);
+            if(!mConfig.isSkipOverview()) {
+                if(theSelectedPath.equals(mBundlePath)) {
+                    SecondaryChooserFragment.this.dismiss();
+
+                    //delay until close animation ends
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            dissmissDialog(FLAG_DISSMISS_INIT_DIALOG);
+                        }
+                    }, 200);
+                } else {
+                    theSelectedPath = theSelectedPath.substring(0, slashIndex);
+                    Log.e("SCLib", "Performing back action: " + theSelectedPath);
+                    StorageChooser.LAST_SESSION_PATH = theSelectedPath;
+                    populateList("");
+                }
+            } else {
+                dissmissDialog(FLAG_DISSMISS_NORMAL);
+            }
         }
     }
+
+//    private void flushBackgrounds() {
+//        for(int i = 0; i < customStoragesList.size(); i++) {
+//            View pathView = listView.getChildAt(i);
+//            if(pathView != null) {
+//                pathView.setBackgroundColor();
+//            }
+//        }
+//    }
 
     private void dissmissDialog(int flag) {
 
@@ -279,6 +354,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
         mBackButton = (ImageButton) mLayout.findViewById(R.id.back_button);
         mSelectButton = (Button) mLayout.findViewById(R.id.select_button);
+        mMultipleOnSelectButton = mLayout.findViewById(R.id.multiple_selection_done_fab);
 
         mCreateButton = (Button) mLayout.findViewById(R.id.create_folder_button);
 
@@ -286,6 +362,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         mFolderNameEditText = (EditText) mLayout.findViewById(R.id.et_folder_name);
 
         mInactiveGradient = mLayout.findViewById(R.id.inactive_gradient);
+
 
 
     }
@@ -319,6 +396,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         mBackButton.setOnClickListener(mBackButtonClickListener);
         mSelectButton.setOnClickListener(mSelectButtonClickListener);
         mCreateButton.setOnClickListener(mCreateButtonClickListener);
+        mMultipleOnSelectButton.setOnClickListener(mMultipleModeDoneButtonClickListener);
 
         if(mConfig.getSecondaryAction() == StorageChooser.FILE_PICKER) {
             mSelectButton.setVisibility(View.GONE);
@@ -363,25 +441,66 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         listView.setAdapter(secondaryChooserAdapter);
         //listview should be clickable at first
         SecondaryChooserAdapter.shouldEnable = true;
+        listView.setOnItemClickListener(mSingleModeClickListener);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
-                mHandler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        String jointPath = theSelectedPath + "/" + customStoragesList.get(i);
-                        if(FileUtil.isDir(jointPath)) {
-                            populateList("/" + customStoragesList.get(i));
-                        } else {
-                            StorageChooser.onSelectListener.onSelect(jointPath);
-                            dissmissDialog(FLAG_DISSMISS_NORMAL);
-                        }
-                    }
-                }, 300);
+        listView.setOnItemLongClickListener(mLongClickListener);
+
+    }
+
+    /**
+     * handles actions in multiple mode
+     * like adding to list and setting backgroud color
+     * @param i is position of list clicked
+     * */
+    private void handleListMultipleAction(int i, View view) {
+        String jointPath = theSelectedPath + "/" + customStoragesList.get(i);
+        if(!FileUtil.isDir(jointPath)) {
+
+            // if this list path item is not selected before
+            if(!SecondaryChooserAdapter.selectedPaths.contains(i)) {
+                MODE_MULTIPLE = true;
+                listView.setOnItemClickListener(mMultipleModeClickListener);
+
+                view.setBackgroundColor(mResourceUtil.getPrimaryColorWithAlpha());
+
+                SecondaryChooserAdapter.selectedPaths.add(i);
+                mMultipleModeList.add(jointPath);
+
+            } else {
+                //this item is selected before
+                SecondaryChooserAdapter.selectedPaths.remove(i);
+                mMultipleModeList.remove(theSelectedPath);
             }
-        });
+        } else {
+           bringBackSingleMode();
+            // go to directory path
+            populateList("/" + customStoragesList.get(i));
 
+        }
+
+        if(mMultipleOnSelectButton.getVisibility() != View.VISIBLE && MODE_MULTIPLE)
+            playTheMultipleButtonAnimation();
+
+        if(listView.getOnItemLongClickListener() !=null && MODE_MULTIPLE)
+            // long click listener in multiple mode ? haha nice joke
+            listView.setOnItemLongClickListener(null);
+    }
+
+    /**
+     * brings back the default state of storage-chooser
+     * */
+    private void bringBackSingleMode() {
+        // if selected new directory end the multiple mode
+        MODE_MULTIPLE = false;
+        // set listview to single mode click
+        listView.setOnItemClickListener(mSingleModeClickListener);
+        // clear both path list and adapter item list
+        mMultipleModeList.clear();
+        SecondaryChooserAdapter.selectedPaths.clear();
+        // remove access to done button
+        playTheMultipleButtonEndAnimation();
+        // aaaaaaaaand bring back long click listener
+        listView.setOnItemLongClickListener(mLongClickListener);
     }
 
 
@@ -526,10 +645,25 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         }
     }
 
+    // ======================= ANIMATIONS =========================
     private void playTheAddressBarAnimation() {
         mPathChosen.setText(mAddressClippedPath);
         Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_address_bar);
         mPathChosen.startAnimation(animation);
+    }
+
+
+    private void playTheMultipleButtonAnimation() {
+        Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_multiple_button);
+        mMultipleOnSelectButton.setVisibility(View.VISIBLE);
+        mMultipleOnSelectButton.startAnimation(animation);
+    }
+
+
+    private void playTheMultipleButtonEndAnimation() {
+        Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_multiple_button_end);
+        mMultipleOnSelectButton.startAnimation(animation);
+        mMultipleOnSelectButton.setVisibility(View.INVISIBLE);
     }
 
 
