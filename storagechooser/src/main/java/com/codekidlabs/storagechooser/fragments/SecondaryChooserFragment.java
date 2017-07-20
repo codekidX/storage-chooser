@@ -208,6 +208,8 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
             String jointPath = theSelectedPath + "/" + customStoragesList.get(i);
 
             if(!FileUtil.isDir(jointPath)) {
+                MODE_MULTIPLE = true;
+                listView.setOnItemClickListener(mMultipleModeClickListener);
                 handleListMultipleAction(i, view);
             } else {
                 populateList("/" + customStoragesList.get(i));
@@ -474,9 +476,6 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
             // if this list path item is not selected before
         if(!secondaryChooserAdapter.selectedPaths.contains(i)) {
-            MODE_MULTIPLE = true;
-            listView.setOnItemClickListener(mMultipleModeClickListener);
-
             view.setBackgroundColor(mResourceUtil.getPrimaryColorWithAlpha());
 
             secondaryChooserAdapter.selectedPaths.add(i);
