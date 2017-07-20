@@ -24,7 +24,7 @@ public class SecondaryChooserAdapter extends BaseAdapter {
     private Context mContext;
     private int storageNameTextColor;
     public static boolean shouldEnable = true;
-    public static ArrayList<Integer> selectedPaths = new ArrayList<>();
+    public ArrayList<Integer> selectedPaths;
 
     public String prefixPath;
     private ThumbnailUtil thumbnailUtil;
@@ -39,6 +39,7 @@ public class SecondaryChooserAdapter extends BaseAdapter {
         // create instance once
         thumbnailUtil = new ThumbnailUtil(mContext);
         resourceUtil = new ResourceUtil(mContext);
+        selectedPaths = new ArrayList<>();
     }
 
     @Override
@@ -109,4 +110,5 @@ public class SecondaryChooserAdapter extends BaseAdapter {
     public boolean isEnabled(int position) {
         return shouldEnable;
     }
+
 }

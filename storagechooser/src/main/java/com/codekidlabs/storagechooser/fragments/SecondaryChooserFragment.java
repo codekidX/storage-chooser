@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.drawable.Animatable;
 import android.os.Build;
 import android.os.Bundle;
@@ -188,7 +189,15 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     private AdapterView.OnItemClickListener mMultipleModeClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
-            handleListMultipleAction(i, view);
+            String jointPath = theSelectedPath + "/" + customStoragesList.get(i);
+
+            if(!FileUtil.isDir(jointPath)) {
+                handleListMultipleAction(i, view);
+            } else {
+                bringBackSingleMode();
+                populateList("/" + customStoragesList.get(i));
+            }
+
         }
     };
 
@@ -464,19 +473,21 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         String jointPath = theSelectedPath + "/" + customStoragesList.get(i);
 
             // if this list path item is not selected before
-        if(!SecondaryChooserAdapter.selectedPaths.contains(i)) {
+        if(!secondaryChooserAdapter.selectedPaths.contains(i)) {
             MODE_MULTIPLE = true;
             listView.setOnItemClickListener(mMultipleModeClickListener);
 
             view.setBackgroundColor(mResourceUtil.getPrimaryColorWithAlpha());
 
-            SecondaryChooserAdapter.selectedPaths.add(i);
+            secondaryChooserAdapter.selectedPaths.add(i);
             mMultipleModeList.add(jointPath);
 
         } else {
             //this item is selected before
-            SecondaryChooserAdapter.selectedPaths.remove(i);
-            mMultipleModeList.remove(theSelectedPath);
+            secondaryChooserAdapter.selectedPaths.remove(i);
+            // reset bg to white
+            view.setBackgroundColor(Color.WHITE);
+            mMultipleModeList.remove(i);
         }
 
         if(mMultipleOnSelectButton.getVisibility() != View.VISIBLE && MODE_MULTIPLE)
@@ -497,7 +508,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         listView.setOnItemClickListener(mSingleModeClickListener);
         // clear both path list and adapter item list
         mMultipleModeList.clear();
-        SecondaryChooserAdapter.selectedPaths.clear();
+        secondaryChooserAdapter.selectedPaths.clear();
         // remove access to done button
         playTheMultipleButtonEndAnimation();
         // aaaaaaaaand bring back long click listener
