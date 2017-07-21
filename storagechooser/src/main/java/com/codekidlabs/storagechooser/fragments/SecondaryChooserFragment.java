@@ -391,7 +391,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         mFolderNameEditText.setHint(mContent.getTextfieldHintText());
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mFolderNameEditText.setHintTextColor(mResourceUtil.getColor(mContent.getTextfieldHintColor()));
+            mFolderNameEditText.setHintTextColor(scheme[Theme.SEC_HINT_TINT_INDEX]);
         }
 
 

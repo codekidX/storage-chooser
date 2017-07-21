@@ -127,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
         c.setCancelLabel("Cancel");
         c.setSelectLabel("Select");
         c.setOverviewHeading("Choose Drive");
-        c.setAddressTextColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimaryDark));
 
         builder.withActivity(this)
                 .withFragmentManager(getFragmentManager())

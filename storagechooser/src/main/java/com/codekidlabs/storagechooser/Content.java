@@ -21,13 +21,6 @@ public class Content {
     private String textfieldErrorText = "Empty Folder Name";
 
 
-    // COLORS
-    private int secondaryActionColor = android.R.color.black;
-    private int textfieldHintColor = R.color.chevronBgColor;
-    private int addressTextColor = Color.WHITE;
-
-    private int listTextColor = Color.BLACK;
-
 
     public String getSelectLabel() {
         return selectLabel;
@@ -107,37 +100,5 @@ public class Content {
 
     public void setTextfieldErrorText(String textfieldErrorText) {
         this.textfieldErrorText = textfieldErrorText;
-    }
-
-    public int getSecondaryActionColor() {
-        return secondaryActionColor;
-    }
-
-    public void setSecondaryActionColor(int secondaryActionColor) {
-        this.secondaryActionColor = secondaryActionColor;
-    }
-
-    public int getTextfieldHintColor() {
-        return textfieldHintColor;
-    }
-
-    public void setTextfieldHintColor(int textfieldHintColor) {
-        this.textfieldHintColor = textfieldHintColor;
-    }
-
-    public int getListTextColor() {
-        return listTextColor;
-    }
-
-    public void setListTextColor(@ColorInt int listTextColor) {
-        this.listTextColor = listTextColor;
-    }
-
-    public int getAddressTextColor() {
-        return addressTextColor;
-    }
-
-    public void setAddressTextColor(int addressTextColor) {
-        this.addressTextColor = addressTextColor;
     }
 }

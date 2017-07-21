@@ -366,8 +366,9 @@ public class StorageChooser {
         public static final int SEC_BG_INDEX  = 7;
         public static final int SEC_TEXT_INDEX  = 8;
         public static final int SEC_ADDRESS_TINT_INDEX  = 9;
-        public static final int SEC_SELECT_LABEL_INDEX  = 10;
-        public static final int SEC_FOLDER_CREATION_BG_INDEX  = 11;
+        public static final int SEC_HINT_TINT_INDEX  = 10;
+        public static final int SEC_SELECT_LABEL_INDEX  = 11;
+        public static final int SEC_FOLDER_CREATION_BG_INDEX  = 12;
 
         public Theme(Context context) {
             this.context = context;
