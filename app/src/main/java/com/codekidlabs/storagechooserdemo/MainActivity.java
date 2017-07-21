@@ -112,6 +112,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        ((CheckBox) findViewById(R.id.checkbox_dark)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                builder.setTheme(getScTheme(isChecked));
+            }
+        });
+
 
         // ----------------- Localization -------------------
         Content c = new Content();
@@ -158,6 +165,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+    private StorageChooser.Theme getScTheme(boolean isChecked) {
+        StorageChooser.Theme theme = new StorageChooser.Theme(getApplicationContext());
+        theme.setScheme((isChecked) ? theme.getDefaultDarkScheme() : theme.getDefaultScheme());
+        return theme;
     }
 
     @Override
