@@ -27,6 +27,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -50,6 +51,8 @@ import java.util.Comparator;
 import java.util.List;
 
 import at.markushi.ui.CircleButton;
+
+import static com.codekidlabs.storagechooser.StorageChooser.Theme;
 
 
 public class SecondaryChooserFragment extends android.app.DialogFragment {
@@ -91,6 +94,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
     private FileUtil fileUtil;
 
+    private int[] scheme;
     private Config mConfig;
     private Content mContent;
     private Context mContext;
@@ -309,15 +313,6 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         }
     }
 
-//    private void flushBackgrounds() {
-//        for(int i = 0; i < customStoragesList.size(); i++) {
-//            View pathView = listView.getChildAt(i);
-//            if(pathView != null) {
-//                pathView.setBackgroundColor();
-//            }
-//        }
-//    }
-
     private void dissmissDialog(int flag) {
 
         switch (flag) {
@@ -345,6 +340,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
     private View getLayout(LayoutInflater inflater, ViewGroup container) {
         mConfig = StorageChooser.sConfig;
+        scheme = mConfig.getScheme();
         mHandler = new Handler();
 
         // init storage-chooser content [localization]
@@ -376,11 +372,12 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         mCreateButton = (Button) mLayout.findViewById(R.id.create_folder_button);
 
         mNewFolderView = (RelativeLayout) mLayout.findViewById(R.id.new_folder_view);
+        mNewFolderView.setBackgroundColor(scheme[Theme.SEC_FOLDER_CREATION_BG_INDEX]);
         mFolderNameEditText = (EditText) mLayout.findViewById(R.id.et_folder_name);
 
         mInactiveGradient = mLayout.findViewById(R.id.inactive_gradient);
 
-
+        (mLayout.findViewById(R.id.secondary_container)).setBackgroundColor(scheme[Theme.SEC_BG_INDEX]);
 
     }
 
@@ -403,11 +400,11 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         mCreateButton.setText(mContent.getCreateLabel());
 
         // set colors
-        mSelectButton.setTextColor(mResourceUtil.getColor(R.color.select_color));
-        mPathChosen.setTextColor(mContent.getAddressTextColor());
+        mSelectButton.setTextColor(scheme[Theme.SEC_SELECT_LABEL_INDEX]);
+        mPathChosen.setTextColor(scheme[Theme.SEC_ADDRESS_TINT_INDEX]);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mNewFolderImageView.setImageTintList(ColorStateList.valueOf(mContent.getAddressTextColor()));
-            mBackButton.setImageTintList(ColorStateList.valueOf(mContent.getAddressTextColor()));
+            mNewFolderImageView.setImageTintList(ColorStateList.valueOf(scheme[Theme.SEC_ADDRESS_TINT_INDEX]));
+            mBackButton.setImageTintList(ColorStateList.valueOf(scheme[Theme.SEC_ADDRESS_TINT_INDEX]));
         }
 
         mBackButton.setOnClickListener(mBackButtonClickListener);
@@ -452,7 +449,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         mBundlePath = this.getArguments().getString(DiskUtil.SC_PREFERENCE_KEY);
         isFilePicker = this.getArguments().getBoolean(DiskUtil.SC_CHOOSER_FLAG, false);
         populateList(mBundlePath);
-        secondaryChooserAdapter =new SecondaryChooserAdapter(customStoragesList, context, mContent.getListTextColor());
+        secondaryChooserAdapter =new SecondaryChooserAdapter(customStoragesList, context, scheme);
         secondaryChooserAdapter.setPrefixPath(theSelectedPath);
 
         listView.setAdapter(secondaryChooserAdapter);

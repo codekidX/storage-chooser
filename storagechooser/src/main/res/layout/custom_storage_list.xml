@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
+        android:id="@+id/secondary_container"
         android:descendantFocusability="blocksDescendants"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -89,6 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/select_button"
         android:layout_below="@id/custom_path_header"
+        android:listSelector="@drawable/ripple"
         android:divider="@null" />
 
 

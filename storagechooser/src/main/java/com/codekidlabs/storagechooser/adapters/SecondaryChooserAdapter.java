@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codekidlabs.storagechooser.R;
+import com.codekidlabs.storagechooser.StorageChooser;
 import com.codekidlabs.storagechooser.utils.FileUtil;
 import com.codekidlabs.storagechooser.utils.ResourceUtil;
 import com.codekidlabs.storagechooser.utils.ThumbnailUtil;
@@ -22,7 +23,7 @@ public class SecondaryChooserAdapter extends BaseAdapter {
 
     private List<String> storagesList;
     private Context mContext;
-    private int storageNameTextColor;
+    private int[] scheme;
     public static boolean shouldEnable = true;
     public ArrayList<Integer> selectedPaths;
 
@@ -31,10 +32,10 @@ public class SecondaryChooserAdapter extends BaseAdapter {
     private ResourceUtil resourceUtil;
 
 
-    public SecondaryChooserAdapter(List<String> storagesList, Context mContext, int storageNameTextColor) {
+    public SecondaryChooserAdapter(List<String> storagesList, Context mContext, int[] scheme) {
         this.storagesList = storagesList;
         this.mContext = mContext;
-        this.storageNameTextColor = storageNameTextColor;
+        this.scheme = scheme;
 
         // create instance once
         thumbnailUtil = new ThumbnailUtil(mContext);
@@ -73,9 +74,8 @@ public class SecondaryChooserAdapter extends BaseAdapter {
         TextView storageName = (TextView) rootView.findViewById(R.id.storage_name);
         storageName.setText(storagesList.get(i));
 
-        if(storageNameTextColor != -1) {
-            storageName.setTextColor(storageNameTextColor);
-        }
+
+        storageName.setTextColor(scheme[StorageChooser.Theme.SEC_TEXT_INDEX]);
 
         if(selectedPaths.contains(i)) {
                 rootView.setBackgroundColor(resourceUtil.getPrimaryColorWithAlpha());
@@ -103,7 +103,7 @@ public class SecondaryChooserAdapter extends BaseAdapter {
     }
 
     private void applyFolderTint(ImageView im) {
-        im.setColorFilter(ContextCompat.getColor(mContext, R.color.colorPrimary));
+        im.setColorFilter(scheme[StorageChooser.Theme.SEC_FOLDER_TINT_INDEX]);
     }
 
     @Override

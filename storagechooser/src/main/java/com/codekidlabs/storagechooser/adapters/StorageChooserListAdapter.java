@@ -17,12 +17,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.codekidlabs.storagechooser.R;
+import com.codekidlabs.storagechooser.StorageChooser;
 import com.codekidlabs.storagechooser.animators.MemorybarAnimation;
 import com.codekidlabs.storagechooser.exceptions.MemoryNotAccessibleException;
 import com.codekidlabs.storagechooser.models.Storages;
 import com.codekidlabs.storagechooser.utils.MemoryUtil;
 
 import java.util.List;
+
+import static com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_INDICATOR_INDEX;
+import static com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_MEMORYBAR_INDEX;
+import static com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_STORAGE_TEXT_INDEX;
 
 public class StorageChooserListAdapter extends BaseAdapter {
 
@@ -33,14 +38,14 @@ public class StorageChooserListAdapter extends BaseAdapter {
     private ProgressBar memoryBar;
     private static int memoryPercentile;
 
-    private int storageNameTextColor;
+    private int[] scheme;
 
 
-    public StorageChooserListAdapter(List<Storages> storagesList, Context mContext, boolean shouldShowMemoryBar, int storageNameTextColor) {
+    public StorageChooserListAdapter(List<Storages> storagesList, Context mContext, boolean shouldShowMemoryBar, int[] scheme) {
         this.storagesList = storagesList;
         this.mContext = mContext;
         this.shouldShowMemoryBar = shouldShowMemoryBar;
-        this.storageNameTextColor = storageNameTextColor;
+        this.scheme = scheme;
     }
 
     @Override
@@ -79,13 +84,11 @@ public class StorageChooserListAdapter extends BaseAdapter {
         String availableText = mContext.getString(R.string.text_freespace, storages.getMemoryAvailableSize());
         storageName.setText(str);
 
-        if(storageNameTextColor != -1) {
-            storageName.setTextColor(storageNameTextColor);
-        }
+        storageName.setTextColor(scheme[OVERVIEW_STORAGE_TEXT_INDEX]);
         memoryStatus.setText(availableText);
 
-        memoryStatus.setTextColor(ContextCompat.getColor(mContext, R.color.memory_status_color));
-        DrawableCompat.setTint(memoryBar.getProgressDrawable(), ContextCompat.getColor(mContext, R.color.memory_bar_color));
+        memoryStatus.setTextColor(scheme[OVERVIEW_INDICATOR_INDEX]);
+        DrawableCompat.setTint(memoryBar.getProgressDrawable(), scheme[OVERVIEW_MEMORYBAR_INDEX]);
 
         try {
             memoryPercentile = getPercentile(storages.getStoragePath());

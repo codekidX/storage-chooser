@@ -14,7 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +34,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_BG_INDEX;
+import static com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_HEADER_INDEX;
+import static com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_TEXT_INDEX;
 
 
 public class ChooserDialogFragment extends android.app.DialogFragment {
@@ -82,8 +87,12 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
 
         if(mContent.getOverviewHeading() !=null) {
             TextView dialogTitle = (TextView) mLayout.findViewById(R.id.dialog_title);
+            dialogTitle.setTextColor(mConfig.getScheme()[OVERVIEW_TEXT_INDEX]);
             dialogTitle.setText(mContent.getOverviewHeading());
         }
+
+        ((RelativeLayout) mLayout.findViewById(R.id.header_container)).setBackgroundColor(mConfig.getScheme()[OVERVIEW_HEADER_INDEX]);
+        ((LinearLayout) mLayout.findViewById(R.id.overview_container)).setBackgroundColor(mConfig.getScheme()[OVERVIEW_BG_INDEX]);
 
         return mLayout;
     }
@@ -97,7 +106,7 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
         // we need to populate before to get the internal storage path in list
         populateList();
 
-        listView.setAdapter(new StorageChooserListAdapter(storagesList, context, shouldShowMemoryBar, mContent.getListTextColor()));
+        listView.setAdapter(new StorageChooserListAdapter(storagesList, context, shouldShowMemoryBar, mConfig.getScheme()));
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

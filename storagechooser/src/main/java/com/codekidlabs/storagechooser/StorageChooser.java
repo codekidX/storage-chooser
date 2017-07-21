@@ -2,12 +2,12 @@ package com.codekidlabs.storagechooser;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.util.Log;
 
 import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
-import com.codekidlabs.storagechooser.fragments.SecondaryChooserFragment;
 import com.codekidlabs.storagechooser.models.Config;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
 
@@ -195,6 +195,7 @@ public class StorageChooser {
         private boolean mResumeSession = false;
         private String type;
         private Content content;
+        private StorageChooser.Theme theme;
 
         private StorageChooser.FileType filter;
         private ArrayList<StorageChooser.FileType> multipleFilter;
@@ -276,6 +277,11 @@ public class StorageChooser {
             return this;
         }
 
+        public Builder setTheme(StorageChooser.Theme theme) {
+            this.theme = theme;
+            return this;
+        }
+
         public Builder skipOverview(boolean skip, String primaryPath) {
             mSkipOverview = skip;
             devConfig.setPrimaryPath(primaryPath);
@@ -292,15 +298,15 @@ public class StorageChooser {
             return this;
         }
 
-        public Builder withSingleFilter(StorageChooser.FileType filter) {
-            this.filter = filter;
-            return this;
-        }
-
-        public Builder withMultipleFilter(ArrayList<StorageChooser.FileType> multipleFilter) {
-            this.multipleFilter = multipleFilter;
-            return this;
-        }
+//        public Builder withSingleFilter(StorageChooser.FileType filter) {
+//            this.filter = filter;
+//            return this;
+//        }
+//
+//        public Builder withMultipleFilter(ArrayList<StorageChooser.FileType> multipleFilter) {
+//            this.multipleFilter = multipleFilter;
+//            return this;
+//        }
 
         public Builder showFoldersInGrid(boolean showInGrid) {
             devConfig.setGridView(showInGrid);
@@ -328,15 +334,64 @@ public class StorageChooser {
             devConfig.setSingleFilter(filter);
             devConfig.setMultipleFilter(multipleFilter);
 
-            if(type == null) {
-                devConfig.setSecondaryAction(StorageChooser.NONE);
+            type = (type == null) ? StorageChooser.NONE : type;
+            devConfig.setSecondaryAction(type);
+
+            if(theme == null || theme.getScheme() == null) {
+                theme = new Theme(mActivity);
+                devConfig.setScheme(theme.getDefaultScheme());
             } else {
-                devConfig.setSecondaryAction(type);
+                devConfig.setScheme(theme.getScheme());
             }
 
             return new StorageChooser(mActivity, devConfig);
         }
+
     }
+
+    public static class Theme {
+
+        Context context;
+
+        // Overview dialog colors
+        public static final int OVERVIEW_HEADER_INDEX  = 0;
+        public static final int OVERVIEW_TEXT_INDEX  = 1;
+        public static final int OVERVIEW_BG_INDEX  = 2;
+        public static final int OVERVIEW_STORAGE_TEXT_INDEX  = 3;
+        public static final int OVERVIEW_INDICATOR_INDEX  = 4;
+        public static final int OVERVIEW_MEMORYBAR_INDEX  = 5;
+
+        // Secondary dialog colors
+        public static final int SEC_FOLDER_TINT_INDEX  = 6;
+        public static final int SEC_BG_INDEX  = 7;
+        public static final int SEC_TEXT_INDEX  = 8;
+        public static final int SEC_ADDRESS_TINT_INDEX  = 9;
+        public static final int SEC_SELECT_LABEL_INDEX  = 10;
+        public static final int SEC_FOLDER_CREATION_BG_INDEX  = 11;
+
+        public Theme(Context context) {
+            this.context = context;
+        }
+
+        int[] scheme;
+
+        public int[] getDefaultScheme() {
+            return context.getResources().getIntArray(R.array.default_light);
+        }
+        public int[] getDefaultDarkScheme() {
+            return context.getResources().getIntArray(R.array.default_dark);
+        }
+
+
+        public int[] getScheme() {
+            return scheme;
+        }
+
+        public void setScheme(int[] scheme) {
+            this.scheme = scheme;
+        }
+    }
+
 
     public enum FileType {
         MP3, MP4, TXT, TTF

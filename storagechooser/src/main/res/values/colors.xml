@@ -17,4 +17,38 @@
     <color name="new_folder_color">#c14b84</color>
     <color name="select_color">#6b3fa1</color>
     <color name="cancel_color">#3fa19f</color>
+
+    <array name="default_light">
+        <item>@color/colorPrimary</item>
+        <item>@android:color/white</item>
+        <item>@android:color/white</item>
+        <item>@android:color/black</item>
+        <item>@color/colorPrimaryDark</item>
+        <item>@color/colorAccent</item>
+
+        <!-- secondary dialog colors -->
+        <item>@color/colorPrimary</item>
+        <item>@android:color/white</item>
+        <item>@android:color/black</item>
+        <item>@android:color/white</item>
+        <item>#da6c6c</item>
+        <item>#da6c6c</item>
+    </array>
+
+    <array name="default_dark">
+        <item>@color/colorPrimary</item>
+        <item>@android:color/white</item>
+        <item>@android:color/black</item>
+        <item>@android:color/white</item>
+        <item>#da6c6c</item>
+        <item>@color/colorPrimary</item>
+
+        <!-- secondary dialog colors -->
+        <item>@color/colorPrimary</item>
+        <item>@android:color/black</item>
+        <item>@android:color/white</item>
+        <item>@android:color/white</item>
+        <item>#da6c6c</item>
+        <item>#da6c6c</item>
+    </array>
 </resources>

@@ -35,8 +35,10 @@ public class Config {
     private String secondaryAction;
 
     private Content content;
+    private int[] scheme;
     private StorageChooser.FileType singleFilter;
     private ArrayList<StorageChooser.FileType> multipleFilter;
+
 
     public android.app.FragmentManager getFragmentManager() {
         return fragmentManager;
@@ -208,5 +210,13 @@ public class Config {
 
     public void setResumeSession(boolean resumeSession) {
         this.resumeSession = resumeSession;
+    }
+
+    public int[] getScheme() {
+        return scheme;
+    }
+
+    public void setScheme(int[] scheme) {
+        this.scheme = scheme;
     }
 }
