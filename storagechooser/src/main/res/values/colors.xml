@@ -19,36 +19,38 @@
     <color name="cancel_color">#3fa19f</color>
 
     <array name="default_light">
-        <item>@color/colorPrimary</item>
-        <item>@android:color/white</item>
-        <item>@android:color/white</item>
-        <item>@android:color/black</item>
-        <item>@color/colorPrimaryDark</item>
-        <item>@color/colorAccent</item>
+        <!-- Overview -->
+        <item>@color/colorPrimary</item> <!--  Top Header bg -->
+        <item>@android:color/white</item> <!-- header text   -->
+        <item>@android:color/white</item> <!-- list bg  -->
+        <item>@android:color/black</item> <!--  storage list name text  -->
+        <item>@color/colorPrimary</item> <!-- free space text  -->
+        <item>@color/colorAccent</item> <!-- memory bar -->
 
         <!-- secondary dialog colors -->
-        <item>@color/colorPrimary</item>
-        <item>@android:color/white</item>
-        <item>@android:color/black</item>
-        <item>@android:color/white</item>
-        <item>#da6c6c</item>
-        <item>#da6c6c</item>
+        <item>@color/colorPrimary</item> <!-- address bar bg -->
+        <item>@android:color/white</item> <!-- list bg -->
+        <item>@android:color/black</item> <!-- list text -->
+        <item>@android:color/white</item> <!-- address bar tint -->
+        <item>#da6c6c</item> <!-- select button color -->
+        <item>#da6c6c</item> <!-- new folder layour bg -->
     </array>
 
     <array name="default_dark">
-        <item>@color/colorPrimary</item>
-        <item>@android:color/white</item>
-        <item>@android:color/black</item>
-        <item>@android:color/white</item>
-        <item>#da6c6c</item>
-        <item>@color/colorPrimary</item>
+        <!-- Overview -->
+        <item>@color/colorPrimary</item> <!--  Top Header bg -->
+        <item>@android:color/white</item> <!-- header text   -->
+        <item>@android:color/black</item> <!-- list bg  -->
+        <item>@android:color/white</item> <!--  storage list name text  -->
+        <item>#da6c6c</item> <!-- free space text  -->
+        <item>@color/colorPrimary</item> <!-- memory bar -->
 
         <!-- secondary dialog colors -->
-        <item>@color/colorPrimary</item>
-        <item>@android:color/black</item>
-        <item>@android:color/white</item>
-        <item>@android:color/white</item>
-        <item>#da6c6c</item>
-        <item>#da6c6c</item>
+        <item>@color/colorPrimary</item> <!-- address bar bg -->
+        <item>@android:color/black</item> <!-- list bg -->
+        <item>@android:color/white</item> <!-- list text -->
+        <item>@android:color/white</item> <!-- address bar tint -->
+        <item>#da6c6c</item> <!-- select button color -->
+        <item>#da6c6c</item> <!-- new folder layour bg -->
     </array>
 </resources>
