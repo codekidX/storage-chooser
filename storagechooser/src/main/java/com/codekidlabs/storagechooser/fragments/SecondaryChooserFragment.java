@@ -39,10 +39,7 @@ import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.StorageChooser;
 import com.codekidlabs.storagechooser.Content;
 import com.codekidlabs.storagechooser.adapters.SecondaryChooserAdapter;
-import com.codekidlabs.storagechooser.filters.AudioFileFilter;
-import com.codekidlabs.storagechooser.filters.DocsFileFilter;
-import com.codekidlabs.storagechooser.filters.ImageFileFilter;
-import com.codekidlabs.storagechooser.filters.VideoFileFilter;
+import com.codekidlabs.storagechooser.filters.UniversalFileFilter;
 import com.codekidlabs.storagechooser.models.Config;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
 import com.codekidlabs.storagechooser.utils.FileUtil;
@@ -572,7 +569,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
         if(isFilePicker) {
             if(mConfig.getSingleFilter() !=null) {
-                volumeList = new File(theSelectedPath).listFiles(getAppropriateFileFilter(mConfig.getSingleFilter()));
+                volumeList = new File(theSelectedPath).listFiles(new UniversalFileFilter(mConfig.getSingleFilter()));
             } else {
                 volumeList = fileUtil.listFilesInDir(theSelectedPath);
             }
@@ -616,22 +613,6 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
                 Log.e("Bundle_Path_Length", StorageChooser.LAST_SESSION_PATH);
                 mBundlePath = StorageChooser.LAST_SESSION_PATH.substring(StorageChooser.LAST_SESSION_PATH.indexOf("/", 16), StorageChooser.LAST_SESSION_PATH.length());
             }
-        }
-    }
-
-    private FileFilter getAppropriateFileFilter(StorageChooser.FileType fileType) {
-        switch (fileType) {
-            case VIDEO:
-                return new VideoFileFilter();
-            case AUDIO:
-                return new AudioFileFilter();
-            case DOCS:
-                return new DocsFileFilter();
-            case IMAGES:
-                return new ImageFileFilter();
-                default:
-                    return null;
-
         }
     }
 

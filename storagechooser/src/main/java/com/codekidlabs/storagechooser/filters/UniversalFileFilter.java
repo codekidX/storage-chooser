@@ -2,6 +2,8 @@ package com.codekidlabs.storagechooser.filters;
 
 import android.util.Log;
 
+import com.codekidlabs.storagechooser.StorageChooser;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
@@ -9,15 +11,34 @@ import java.util.ArrayList;
 /**
  * Created by codekid on 21/07/17.
  */
-public class VideoFileFilter implements FileFilter {
 
-    protected static final String TAG = "VideoFileFilter";
+public class UniversalFileFilter implements FileFilter {
+    protected static final String TAG = "UniversalFileFilter";
     private final boolean allowDirectories = true;
+    private StorageChooser.FileType fileType;
 
     /**
-     * Video file formats for storage-chooser
+     * ImageFormat for storage-chooser
      */
-    public enum Format
+    public enum ImageFormat
+    {
+        JPG("jpg"),
+        JPEG("jpeg"),
+        PNG("png"),
+        TIFF("tiff"),
+        GIF("gif");
+
+        private String filesuffix;
+
+        ImageFormat( String filesuffix ) {
+            this.filesuffix = filesuffix;
+        }
+    }
+
+    /**
+     * VideoFormat for storage-chooser
+     */
+    public enum VideoFormat
     {
         MP4("mp4"),
         TS("ts"),
@@ -27,13 +48,26 @@ public class VideoFileFilter implements FileFilter {
 
         private String filesuffix;
 
-        Format( String filesuffix ) {
+        VideoFormat( String filesuffix ) {
             this.filesuffix = filesuffix;
         }
 
-        public String getFilesuffix() {
-            return filesuffix;
+    }
+
+    /**
+     * AudioFormat for storage-chooser
+     */
+    public enum AudioFormat
+    {
+        MP3("mp3"),
+        OGG("ogg");
+
+        private String filesuffix;
+
+        AudioFormat( String filesuffix ) {
+            this.filesuffix = filesuffix;
         }
+
     }
 
     private String getFileExtension(File f) {
@@ -48,8 +82,28 @@ public class VideoFileFilter implements FileFilter {
             return null;
     }
 
+    /**
+     * DocsFormat for storage-chooser
+     */
+    public enum DocsFormat
+    {
+        PDF("pdf"),
+        PPT("ppt"),
+        DOC("doc"),
+        DOCX("docx"),
+        EXCEL("xls");
 
-    public VideoFileFilter() {
+        private String filesuffix;
+
+        DocsFormat( String filesuffix ) {
+            this.filesuffix = filesuffix;
+        }
+
+    }
+
+
+    public UniversalFileFilter(StorageChooser.FileType fileType) {
+        this.fileType = fileType;
     }
 
     @Override
@@ -68,7 +122,7 @@ public class VideoFileFilter implements FileFilter {
         String ext = getFileExtension(f);
         if ( ext == null) return false;
         try {
-            if ( Format.valueOf(ext.toUpperCase()) != null ) {
+            if ( getFormatExtention(ext) != null ) {
                 return true;
             }
         } catch(IllegalArgumentException e) {
@@ -76,6 +130,23 @@ public class VideoFileFilter implements FileFilter {
             return false;
         }
         return false;
+    }
+
+    private Object getFormatExtention(String ext) {
+        switch (fileType) {
+            case VIDEO:
+                return VideoFormat.valueOf(ext.toUpperCase());
+            case AUDIO:
+                return AudioFormat.valueOf(ext.toUpperCase());
+            case IMAGES:
+                return ImageFormat.valueOf(ext.toUpperCase());
+            case DOCS:
+                return DocsFormat.valueOf(ext.toUpperCase());
+                default:
+                    return null;
+
+
+        }
     }
 
     private boolean findInDirectory( File dir ) {
@@ -115,3 +186,5 @@ public class VideoFileFilter implements FileFilter {
         }
     }
 }
+
+
