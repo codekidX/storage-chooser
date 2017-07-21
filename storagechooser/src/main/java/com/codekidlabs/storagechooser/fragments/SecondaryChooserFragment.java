@@ -39,12 +39,18 @@ import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.StorageChooser;
 import com.codekidlabs.storagechooser.Content;
 import com.codekidlabs.storagechooser.adapters.SecondaryChooserAdapter;
+import com.codekidlabs.storagechooser.filters.AudioFileFilter;
+import com.codekidlabs.storagechooser.filters.DocsFileFilter;
+import com.codekidlabs.storagechooser.filters.ImageFileFilter;
+import com.codekidlabs.storagechooser.filters.VideoFileFilter;
 import com.codekidlabs.storagechooser.models.Config;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
 import com.codekidlabs.storagechooser.utils.FileUtil;
 import com.codekidlabs.storagechooser.utils.ResourceUtil;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -565,7 +571,11 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         File[] volumeList;
 
         if(isFilePicker) {
-            volumeList = fileUtil.listFilesInDir(theSelectedPath);
+            if(mConfig.getSingleFilter() !=null) {
+                volumeList = new File(theSelectedPath).listFiles(getAppropriateFileFilter(mConfig.getSingleFilter()));
+            } else {
+                volumeList = fileUtil.listFilesInDir(theSelectedPath);
+            }
         } else {
             volumeList = fileUtil.listFilesAsDir(theSelectedPath);
         }
@@ -606,6 +616,22 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
                 Log.e("Bundle_Path_Length", StorageChooser.LAST_SESSION_PATH);
                 mBundlePath = StorageChooser.LAST_SESSION_PATH.substring(StorageChooser.LAST_SESSION_PATH.indexOf("/", 16), StorageChooser.LAST_SESSION_PATH.length());
             }
+        }
+    }
+
+    private FileFilter getAppropriateFileFilter(StorageChooser.FileType fileType) {
+        switch (fileType) {
+            case VIDEO:
+                return new VideoFileFilter();
+            case AUDIO:
+                return new AudioFileFilter();
+            case DOCS:
+                return new DocsFileFilter();
+            case IMAGES:
+                return new ImageFileFilter();
+                default:
+                    return null;
+
         }
     }
 
