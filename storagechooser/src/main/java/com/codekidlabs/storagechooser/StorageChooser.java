@@ -298,15 +298,10 @@ public class StorageChooser {
             return this;
         }
 
-//        public Builder withSingleFilter(StorageChooser.FileType filter) {
-//            this.filter = filter;
-//            return this;
-//        }
-//
-//        public Builder withMultipleFilter(ArrayList<StorageChooser.FileType> multipleFilter) {
-//            this.multipleFilter = multipleFilter;
-//            return this;
-//        }
+        public Builder filter(StorageChooser.FileType filter) {
+            this.filter = filter;
+            return this;
+        }
 
         public Builder showFoldersInGrid(boolean showInGrid) {
             devConfig.setGridView(showInGrid);
@@ -332,7 +327,6 @@ public class StorageChooser {
             devConfig.setGridView(mShowInGrid);
             devConfig.setContent(content);
             devConfig.setSingleFilter(filter);
-            devConfig.setMultipleFilter(multipleFilter);
 
             type = (type == null) ? StorageChooser.NONE : type;
             devConfig.setSecondaryAction(type);
@@ -395,6 +389,6 @@ public class StorageChooser {
 
 
     public enum FileType {
-        MP3, MP4, TXT, TTF
+        VIDEO, AUDIO, DOCS, IMAGES
     }
 }

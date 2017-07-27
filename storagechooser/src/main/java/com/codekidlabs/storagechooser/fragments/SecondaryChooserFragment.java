@@ -39,12 +39,15 @@ import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.StorageChooser;
 import com.codekidlabs.storagechooser.Content;
 import com.codekidlabs.storagechooser.adapters.SecondaryChooserAdapter;
+import com.codekidlabs.storagechooser.filters.UniversalFileFilter;
 import com.codekidlabs.storagechooser.models.Config;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
 import com.codekidlabs.storagechooser.utils.FileUtil;
 import com.codekidlabs.storagechooser.utils.ResourceUtil;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -565,7 +568,11 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         File[] volumeList;
 
         if(isFilePicker) {
-            volumeList = fileUtil.listFilesInDir(theSelectedPath);
+            if(mConfig.getSingleFilter() !=null) {
+                volumeList = new File(theSelectedPath).listFiles(new UniversalFileFilter(mConfig.getSingleFilter()));
+            } else {
+                volumeList = fileUtil.listFilesInDir(theSelectedPath);
+            }
         } else {
             volumeList = fileUtil.listFilesAsDir(theSelectedPath);
         }
