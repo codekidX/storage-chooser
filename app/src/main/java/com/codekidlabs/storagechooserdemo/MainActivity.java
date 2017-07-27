@@ -12,8 +12,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.codekidlabs.storagechooser.Content;
@@ -120,6 +123,41 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        Spinner spinner = (Spinner) findViewById(R.id.filter_spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.filter_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                switch (i) {
+                    case 0:
+                        builder.filter(null);
+                        break;
+                    case 1:
+                        builder.filter(StorageChooser.FileType.VIDEO);
+                        break;
+                    case 2:
+                        builder.filter(StorageChooser.FileType.AUDIO);
+                        break;
+                    case 3:
+                        builder.filter(StorageChooser.FileType.DOCS);
+                        break;
+                    case 4:
+                        builder.filter(StorageChooser.FileType.IMAGES);
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
         // ----------------- Localization -------------------
         Content c = new Content();
         c.setCreateLabel("Create");
@@ -154,9 +192,7 @@ public class MainActivity extends AppCompatActivity {
                 chooser.setOnMultipleSelectListener(new StorageChooser.OnMultipleSelectListener() {
                     @Override
                     public void onDone(ArrayList<String> selectedFilePaths) {
-                        for(String s: selectedFilePaths) {
-                            Log.e(TAG, s);
-                        }
+
                     }
                 });
 
