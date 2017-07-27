@@ -112,50 +112,56 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                final String dirPath = evaluatePath(i);
 
-                // if allowCustomPath is called then directory chooser will be the default secondary dialog
-                if(mConfig.isAllowCustomPath()) {
-                    // if developer wants to apply threshold
-                    if(mConfig.isApplyThreshold()) {
-                        startThresholdTest(i);
-                    } else {
-                        final String dirPath = evaluatePath(i);
-
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                DiskUtil.showSecondaryChooser(dirPath, mConfig);
-                            }
-                        }, 250);
-                    }
-                } else {
-                    String dirPath = evaluatePath(i);
-                    if(mConfig.isActionSave()) {
-                        String preDef = mConfig.getPredefinedPath();
-
-                        if(preDef != null) {
-                            // if dev forgot or did not add '/' at start add it to avoid errors
-                            if(!preDef.startsWith("/")) {
-                                preDef = "/" + preDef;
-                            }
-                            dirPath = dirPath + preDef;
-                            DiskUtil.saveChooserPathPreference(mConfig.getPreference(), dirPath);
-                        } else {
-                            Log.w(TAG, "Predefined path is null set it by .withPredefinedPath() to builder. Saving root directory");
-                            DiskUtil.saveChooserPathPreference(mConfig.getPreference(), dirPath);
-                        }
-                    } else {
-                        //Log.d("StorageChooser", "Chosen path: " + dirPath);
-                        if(mConfig.isApplyThreshold()) {
+                if(new File(dirPath).canRead()){
+                    // if allowCustomPath is called then directory chooser will be the default secondary dialog
+                    if (mConfig.isAllowCustomPath()) {
+                        // if developer wants to apply threshold
+                        if (mConfig.isApplyThreshold()) {
                             startThresholdTest(i);
                         } else {
-                            if (StorageChooser.onSelectListener != null) {
-                                StorageChooser.onSelectListener.onSelect(dirPath);
+
+
+                            mHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    DiskUtil.showSecondaryChooser(dirPath, mConfig);
+                                }
+                            }, 250);
+                        }
+                    } else {
+                        if (mConfig.isActionSave()) {
+                            String preDef = mConfig.getPredefinedPath();
+                            // if dev forgot or did not add '/' at start add it to avoid errors
+                            String preDirPath = null;
+
+                            if (preDef != null) {
+                                if (!preDef.startsWith("/")) {
+                                    preDef = "/" + preDef;
+                                }
+                                preDirPath = dirPath + preDef;
+                                DiskUtil.saveChooserPathPreference(mConfig.getPreference(), preDirPath);
+                            } else {
+                                Log.w(TAG, "Predefined path is null set it by .withPredefinedPath() to builder. Saving root directory");
+                                DiskUtil.saveChooserPathPreference(mConfig.getPreference(), preDirPath);
+                            }
+                        } else {
+                            //Log.d("StorageChooser", "Chosen path: " + dirPath);
+                            if (mConfig.isApplyThreshold()) {
+                                startThresholdTest(i);
+                            } else {
+                                if (StorageChooser.onSelectListener != null) {
+                                    StorageChooser.onSelectListener.onSelect(dirPath);
+                                }
                             }
                         }
                     }
+                    ChooserDialogFragment.this.dismiss();
+                } else {
+                    Toast.makeText(getActivity(), R.string.toast_not_readable, Toast.LENGTH_SHORT)
+                            .show();
                 }
-                ChooserDialogFragment.this.dismiss();
             }
         });
 
