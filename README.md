@@ -1,4 +1,4 @@
-Storage Chooser
+Storage Chooser 2.0 is Here !
 ===================
 
 [![](https://jitpack.io/v/codekidX/storage-chooser.svg)](https://jitpack.io/#codekidX/storage-chooser)  [![](https://img.shields.io/badge/last--stable-da21db4-yellow.svg?style=flat-square)](https://github.com/codekidX/storage-chooser/commit/da21db4e5c46e0c3a8b513112ff093448a23754b)  ![GitHub issues](https://img.shields.io/github/issues/codekidX/storage-chooser.svg?style=flat-square)  [![demo](https://img.shields.io/badge/download-demo-blue.svg?style=flat-square)](https://raw.githubusercontent.com/android-arsenal/apk22/master/5336/app.apk)  [![javadoc](https://img.shields.io/badge/Jitpack-javadoc-blue.svg?style=flat-square)](https://jitpack.io/com/github/codekidX/storage-chooser/1.0.33/javadoc/)
@@ -41,7 +41,7 @@ Add this to your root build.gradle file under repositories:
 
 Add this to your app level build.gradle as dependency:
 
-    com.github.codekidX:storage-chooser:1.0.35
+    com.github.codekidX:storage-chooser:2.0
 
 
 Notes
@@ -112,8 +112,6 @@ chooser.setOnSelectListener(new StorageChooser.OnSelectListener() {
 
 #### File Picker
 
-> **NOTE:** File Picker is still --> *WIP*
-
 ```
 // --- ADD ---
 .allowCustomPath(true)
@@ -133,21 +131,52 @@ chooser.setOnSelectListener(new StorageChooser.OnSelectListener() {
 ```
 String path = sharedPreferences.getString(DiskUtil.SC_PREFERENCE_KEY,"");
 ```
+### (2.0) Theme
+A guide on how to set a theme is posted [here](https://github.com/codekidX/storage-chooser/wiki/A-Look-at-Storage-Chooser.Theme)
+### (2.0) File Filter
+
+File filters are good and when your app is made for a specific purpose like choosing songs to be added in a playlist you might not want the user to go into the folders where there are no songs. Now you can add filter to builder instance like this
+`builder.filter(StorageChooser.FileType.AUDIO);`
+this will filter out all folders containing audio files for you and thereby reducing some effort from user side.
+
+Here are some filters available in storage-chooser. Want any other filter types to be included ? [Open an issue](https://github.com/codekidX/storage-chooser/issues)
+
+| filter | extensions |
+| ------ | ------ |
+| StorageChooser.FileType.AUDIO | .mp3 .ogg |
+| StorageChooser.FileType.VIDEO | .mp4 .ts .mkv .avi .flv |
+| StorageChooser.FileType.IMAGES | .jpg .jpeg .png .gif .tiff |
+| StorageChooser.FileType.DOCS | .pdf .doc .docx .ppt .xls |
+
+### (2.0) Multiselect
+ It's already in there you don't need to write any special code for it. Just make sure your type of chooser is of type FILE_PICKER.
+`builder.setType(StorageChooser.FILE_PICKER);`
+
+![](https://media.giphy.com/media/7AWKkgm9Nozw4/giphy.gif)
+
+## List of configuration for StorageChooser.Builder _(including 2.0)_
+
+You can have the following configuration of builder.
+
+| methods | parameters | compulsary? |
+| ------ | ------ | ------ |
+| withActivity | Activity  | Yes |
+| withFragmentManager | FragmentManager _(legacy)_ | Yes |
+| withMemoryBar | boolean | No |
+| withPreference | SharedPreferences | actionSave(true) |
+| withPredefinedPath | String | No |
+| **setType** | StoragChooser.DIRECTORY_CHOOSER **_or_** StorageChooser.FILE_PICKER| allowCustomPath(true) |
+| showHidden | boolean | No |
+| setTheme | StorageChooser.Theme | No |
+| skipOverview | boolean, String | No |
+| skipOverview | boolean | No |
+| withContent | com.codekidlabs.storagechooser.Content | No |
+| filter | StorageChooser.FileType | No |
+| shouldResumeSession | boolean | No |
 
 ## Localization
 
 A seperate localization wiki is posted [here](https://github.com/codekidX/storage-chooser/wiki/Localizing-your-chooser-using-Content)
-
-
-## Color Scheme
-
-> - Overview header color ->  @colorPrimary
-> - Memory bar color -> @colorAccent
-> - Memory available text -> @colorPrimaryDark
-> - Address bar background -> @colorPrimary
-> - Select button label color -> @colorPrimaryDark
-
-For custom color scheme, read [Wiki](https://github.com/codekidX/storage-chooser/wiki/Custom-color-scheme)
 
 LICENSE
 -------------
@@ -159,4 +188,4 @@ In practice, you can use this library as-is, with a notification of it being use
 
 ### Support Storage Chooser
 
-This is a community based project so help fixing bugs by adding your fixes to it by clicking [Create pull request](https://github.com/codekidX/storage-chooser/pull/new/master)
+This is a community based project so help fixing bugs by adding your fixes to it by [Create pull request](https://github.com/codekidX/storage-chooser/pull/new/master)
