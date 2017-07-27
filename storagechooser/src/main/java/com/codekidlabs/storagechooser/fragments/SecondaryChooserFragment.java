@@ -483,10 +483,10 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
         } else {
             //this item is selected before
-            secondaryChooserAdapter.selectedPaths.remove(i);
+            secondaryChooserAdapter.selectedPaths.remove(secondaryChooserAdapter.selectedPaths.indexOf(i));
             // reset bg to white
-            view.setBackgroundColor(Color.WHITE);
-            mMultipleModeList.remove(i);
+            view.setBackgroundColor(scheme[Theme.SEC_BG_INDEX]);
+            mMultipleModeList.remove(mMultipleModeList.indexOf(jointPath));
         }
 
         if(mMultipleOnSelectButton.getVisibility() != View.VISIBLE && MODE_MULTIPLE)
@@ -495,7 +495,16 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         if(listView.getOnItemLongClickListener() !=null && MODE_MULTIPLE)
             // long click listener in multiple mode ? haha nice joke
             listView.setOnItemLongClickListener(null);
+
+        if (mMultipleModeList.size() == 0)
+            bringBackSingleMode();
     }
+
+//    private int getListIndex(int i) {
+//        for(int j=0; j<secondaryChooserAdapter.selectedPaths.size(); j++) {
+//            if()
+//        }
+//    }
 
     /**
      * brings back the default state of storage-chooser
