@@ -1,7 +1,6 @@
 package com.codekidlabs.storagechooserdemo;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -134,19 +133,31 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (i) {
                     case 0:
+                        builder.crunch();
                         builder.filter(null);
                         break;
                     case 1:
+                        builder.crunch();
                         builder.filter(StorageChooser.FileType.VIDEO);
                         break;
                     case 2:
+                        builder.crunch();
                         builder.filter(StorageChooser.FileType.AUDIO);
                         break;
                     case 3:
+                        builder.crunch();
                         builder.filter(StorageChooser.FileType.DOCS);
                         break;
                     case 4:
+                        builder.crunch();
                         builder.filter(StorageChooser.FileType.IMAGES);
+                        break;
+                    case 5:
+
+                        ArrayList<String> formats = new ArrayList<>();
+                        formats.add("txt");
+                        formats.add("mkv");
+                        builder.customFilter(formats);
                         break;
                 }
             }
@@ -192,7 +203,9 @@ public class MainActivity extends AppCompatActivity {
                 chooser.setOnMultipleSelectListener(new StorageChooser.OnMultipleSelectListener() {
                     @Override
                     public void onDone(ArrayList<String> selectedFilePaths) {
-
+                        for(String s: selectedFilePaths) {
+                            Log.e(TAG, s);
+                        }
                     }
                 });
 
@@ -204,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
 
     private StorageChooser.Theme getScTheme(boolean isChecked) {
         StorageChooser.Theme theme = new StorageChooser.Theme(getApplicationContext());
-        theme.setScheme((isChecked) ? theme.getDefaultDarkScheme() : theme.getDefaultScheme());
+        theme.setScheme((isChecked) ? getResources().getIntArray(R.array.paranoid_theme) : theme.getDefaultScheme());
         return theme;
     }
 

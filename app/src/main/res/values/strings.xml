@@ -10,5 +10,6 @@
         <item>Audio</item>
         <item>Documents</item>
         <item>Images</item>
+        <item>Custom</item>
     </string-array>
 </resources>
