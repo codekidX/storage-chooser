@@ -41,6 +41,7 @@ import static com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_TEXT_
 
 public class ChooserDialogFragment extends android.app.DialogFragment {
 
+    private static final boolean BUILD_DEBUG = true;
     private View mLayout;
     private ViewGroup mContainer;
 
@@ -122,13 +123,18 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
                             startThresholdTest(i);
                         } else {
 
-
-                            mHandler.postDelayed(new Runnable() {
+                            if(BUILD_DEBUG) {
+                                 mHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     DiskUtil.showSecondaryChooser(dirPath, mConfig);
                                 }
-                            }, 250);
+                                }, 250);
+                            } else {
+                                DiskUtil.showSecondaryChooser(dirPath, mConfig);
+                            }
+
+
                         }
                     } else {
                         if (mConfig.isActionSave()) {
