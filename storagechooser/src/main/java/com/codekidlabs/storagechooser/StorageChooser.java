@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
@@ -298,8 +299,19 @@ public class StorageChooser {
             return this;
         }
 
-        public Builder filter(StorageChooser.FileType filter) {
+        public Builder filter(@Nullable StorageChooser.FileType filter) {
             this.filter = filter;
+            return this;
+        }
+
+        public Builder crunch() {
+            devConfig.setCustomFilter(false);
+            return this;
+        }
+
+        public Builder customFilter(ArrayList<String> formats) {
+            devConfig.setCustomFilter(true);
+            devConfig.setCustomEnum(formats);
             return this;
         }
 
@@ -363,6 +375,8 @@ public class StorageChooser {
         public static final int SEC_HINT_TINT_INDEX  = 10;
         public static final int SEC_SELECT_LABEL_INDEX  = 11;
         public static final int SEC_FOLDER_CREATION_BG_INDEX  = 12;
+        public static final int SEC_DONE_FAB_INDEX  = 13;
+        public static final int SEC_ADDRESS_BAR_BG  = 14;
 
         public Theme(Context context) {
             this.context = context;

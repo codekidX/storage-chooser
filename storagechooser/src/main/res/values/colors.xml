@@ -35,6 +35,8 @@
         <item>@color/chevronBgColor</item> <!-- new folder hint tint -->
         <item>#da6c6c</item> <!-- select button color -->
         <item>#da6c6c</item> <!-- new folder layour bg -->
+        <item>#da6c6c</item> <!-- new folder layour bg -->
+        <item>@color/colorPrimary</item> <!-- new folder layour bg -->
     </array>
 
     <array name="default_dark">
@@ -54,5 +56,7 @@
         <item>@color/chevronBgColor</item> <!-- new folder hint tint -->
         <item>#da6c6c</item> <!-- select button color -->
         <item>#da6c6c</item> <!-- new folder layour bg -->
+        <item>#da6c6c</item> <!-- new multi fab -->
+        <item>#da6c6c</item> <!-- new multi fab -->
     </array>
 </resources>

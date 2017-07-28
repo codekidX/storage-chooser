@@ -15,8 +15,10 @@ import java.util.ArrayList;
 public class UniversalFileFilter implements FileFilter {
     protected static final String TAG = "UniversalFileFilter";
     private final boolean allowDirectories = true;
-    private StorageChooser.FileType fileType;
 
+    private StorageChooser.FileType fileType;
+    private boolean customEnumLock = false;
+    private ArrayList<String> customEnum;
 
     /**
      * ArchiveFormat for storage-chooser
@@ -123,6 +125,11 @@ public class UniversalFileFilter implements FileFilter {
         this.fileType = fileType;
     }
 
+    public UniversalFileFilter(boolean customLock, ArrayList<String> customEnum) {
+        this.customEnumLock = customLock;
+        this.customEnum = customEnum;
+    }
+
     @Override
     public boolean accept(File f) {
         if ( f.isHidden() || !f.canRead() ) {
@@ -139,8 +146,12 @@ public class UniversalFileFilter implements FileFilter {
         String ext = getFileExtension(f);
         if ( ext == null) return false;
         try {
-            if ( getFormatExtention(ext) != null ) {
-                return true;
+            if(customEnumLock) {
+                return customEnum.contains(ext);
+            } else {
+                if ( getFormatExtention(ext) != null ) {
+                    return true;
+                }
             }
         } catch(IllegalArgumentException e) {
             //Not known enum value
@@ -161,10 +172,8 @@ public class UniversalFileFilter implements FileFilter {
                 return DocsFormat.valueOf(ext.toUpperCase());
             case ARCHIVE:
                 return ArchiveFormat.valueOf(ext.toUpperCase());
-                default:
-                    return null;
-
-
+            default:
+                return null;
         }
     }
 

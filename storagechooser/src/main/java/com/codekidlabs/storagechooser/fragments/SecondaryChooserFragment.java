@@ -409,6 +409,10 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
             mNewFolderImageView.setImageTintList(ColorStateList.valueOf(scheme[Theme.SEC_ADDRESS_TINT_INDEX]));
             mBackButton.setImageTintList(ColorStateList.valueOf(scheme[Theme.SEC_ADDRESS_TINT_INDEX]));
         }
+        mMultipleOnSelectButton.setColor(scheme[Theme.SEC_DONE_FAB_INDEX]);
+        ((RelativeLayout) mLayout.findViewById(R.id.custom_path_header)).setBackgroundColor(scheme[Theme.SEC_ADDRESS_BAR_BG]);
+
+        // ----
 
         mBackButton.setOnClickListener(mBackButtonClickListener);
         mSelectButton.setOnClickListener(mSelectButtonClickListener);
@@ -577,10 +581,17 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         File[] volumeList;
 
         if(isFilePicker) {
-            if(mConfig.getSingleFilter() !=null) {
-                volumeList = new File(theSelectedPath).listFiles(new UniversalFileFilter(mConfig.getSingleFilter()));
+            if(mConfig.isCustomFilter()) {
+                UniversalFileFilter universalFileFilter =
+                        new UniversalFileFilter(mConfig.isCustomFilter(), mConfig.getCustomEnum());
+                volumeList = new File(theSelectedPath)
+                        .listFiles(universalFileFilter);
             } else {
-                volumeList = fileUtil.listFilesInDir(theSelectedPath);
+                if(mConfig.getSingleFilter() !=null) {
+                    volumeList = new File(theSelectedPath).listFiles(new UniversalFileFilter(mConfig.getSingleFilter()));
+                } else {
+                    volumeList = fileUtil.listFilesInDir(theSelectedPath);
+                }
             }
         } else {
             volumeList = fileUtil.listFilesAsDir(theSelectedPath);

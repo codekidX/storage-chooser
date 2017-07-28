@@ -1,7 +1,6 @@
 package com.codekidlabs.storagechooser.models;
 
 import android.content.SharedPreferences;
-import android.support.v4.app.FragmentManager;
 
 import com.codekidlabs.storagechooser.Content;
 import com.codekidlabs.storagechooser.StorageChooser;
@@ -37,7 +36,8 @@ public class Config {
     private Content content;
     private int[] scheme;
     private StorageChooser.FileType singleFilter;
-    private ArrayList<StorageChooser.FileType> multipleFilter;
+    private ArrayList<String> customEnum;
+    private boolean customFilter;
 
 
     public android.app.FragmentManager getFragmentManager() {
@@ -188,12 +188,20 @@ public class Config {
         this.singleFilter = singleFilter;
     }
 
-    public ArrayList<StorageChooser.FileType> getMultipleFilter() {
-        return multipleFilter;
+    public ArrayList<String> getCustomEnum() {
+        return customEnum;
     }
 
-    public void setMultipleFilter(ArrayList<StorageChooser.FileType> multipleFilter) {
-        this.multipleFilter = multipleFilter;
+    public void setCustomEnum(ArrayList<String> customEnum) {
+        this.customEnum = customEnum;
+    }
+
+    public boolean isCustomFilter() {
+        return customFilter;
+    }
+
+    public void setCustomFilter(boolean customFilter) {
+        this.customFilter = customFilter;
     }
 
     public boolean isGridView() {
