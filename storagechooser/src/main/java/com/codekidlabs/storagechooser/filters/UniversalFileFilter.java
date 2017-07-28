@@ -17,6 +17,23 @@ public class UniversalFileFilter implements FileFilter {
     private final boolean allowDirectories = true;
     private StorageChooser.FileType fileType;
 
+
+    /**
+     * ArchiveFormat for storage-chooser
+     */
+    public enum ArchiveFormat
+    {
+        ZIP("zip"),
+        RAR("rar");
+
+        private String filesuffix;
+
+        ArchiveFormat( String filesuffix ) {
+            this.filesuffix = filesuffix;
+        }
+
+    }
+
     /**
      * ImageFormat for storage-chooser
      */
@@ -142,6 +159,8 @@ public class UniversalFileFilter implements FileFilter {
                 return ImageFormat.valueOf(ext.toUpperCase());
             case DOCS:
                 return DocsFormat.valueOf(ext.toUpperCase());
+            case ARCHIVE:
+                return ArchiveFormat.valueOf(ext.toUpperCase());
                 default:
                     return null;
 

@@ -389,6 +389,6 @@ public class StorageChooser {
 
 
     public enum FileType {
-        VIDEO, AUDIO, DOCS, IMAGES
+        VIDEO, AUDIO, DOCS, IMAGES, ARCHIVE
     }
 }
