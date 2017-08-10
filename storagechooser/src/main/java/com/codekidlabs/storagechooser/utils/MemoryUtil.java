@@ -15,6 +15,7 @@ public class MemoryUtil {
     public static final String EMULATED_DIR_NAME = "emulated";
     public static final String EMULATED_DIR_KNOX = "knox-emulated";
     public static final String SDCARD0_DIR_NAME = "sdcard0";
+    public static final String CONTAINER = "container";
 
     public boolean isExternalStoragePresent() {
         return getStorageListSize() != 1;
@@ -30,16 +31,12 @@ public class MemoryUtil {
         Collections.addAll(volumeList, storageDir.listFiles());
         // segregate the list
         for(int i=0;i < volumeList.size(); i++) {
-            if(volumeList.get(i).getName().equals(SELF_DIR_NAME)) {
-                volumeList.remove(i);
-            }
-            if(volumeList.get(i).getName().equals(EMULATED_DIR_NAME)) {
-                volumeList.remove(i);
-            }
-            if(volumeList.get(i).getName().equals(EMULATED_DIR_KNOX)) {
-                volumeList.remove(i);
-            }
-            if(volumeList.get(i).getName().equals(SDCARD0_DIR_NAME)) {
+            String storageName = volumeList.get(i).getName();
+            if(storageName.equals(SELF_DIR_NAME) ||
+                    storageName.equals(EMULATED_DIR_KNOX) ||
+                    storageName.equals(EMULATED_DIR_KNOX) ||
+                    storageName.equals(SDCARD0_DIR_NAME) ||
+                    storageName.equals(CONTAINER)) {
                 volumeList.remove(i);
             }
         }

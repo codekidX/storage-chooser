@@ -251,7 +251,8 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
             if(!f.getName().equals(MemoryUtil.SELF_DIR_NAME)
                     && !f.getName().equals(MemoryUtil.EMULATED_DIR_KNOX)
                     && !f.getName().equals(MemoryUtil.EMULATED_DIR_NAME)
-                    && !f.getName().equals(MemoryUtil.SDCARD0_DIR_NAME)) {
+                    && !f.getName().equals(MemoryUtil.SDCARD0_DIR_NAME)
+                    && !f.getName().equals(MemoryUtil.CONTAINER)) {
                 Storages sharedStorage = new Storages();
                 String fPath = f.getAbsolutePath();
                 sharedStorage.setStorageTitle(f.getName());
