@@ -4,7 +4,7 @@ Storage Chooser 2.0 is Here !
 [![](https://jitpack.io/v/codekidX/storage-chooser.svg)](https://jitpack.io/#codekidX/storage-chooser)  [![](https://img.shields.io/badge/last--stable-da21db4-yellow.svg?style=flat-square)](https://github.com/codekidX/storage-chooser/commit/da21db4e5c46e0c3a8b513112ff093448a23754b)  ![GitHub issues](https://img.shields.io/github/issues/codekidX/storage-chooser.svg?style=flat-square)  [![demo](https://img.shields.io/badge/download-demo-blue.svg?style=flat-square)](https://raw.githubusercontent.com/android-arsenal/apk22/master/5336/app.apk)  [![javadoc](https://img.shields.io/badge/Jitpack-javadoc-blue.svg?style=flat-square)](https://jitpack.io/com/github/codekidX/storage-chooser/1.0.33/javadoc/)
 
 
-A pretty and simple directory chooser and file picker library for 4.4+ devices. This library was created to be included in [OpenGApps App](https://play.google.com/store/apps/details?id=org.opengapps.app). There are too many storage chooser out there but this one is too materially :stuck_out_tongue: . Easy to implement and does not take a lot of your valueable time in setting-up all the other necessary things that every developer seeks, like 
+A pretty and simple directory chooser and file picker library for 4.4+ devices. This library was created to be included in [OpenGApps App](https://play.google.com/store/apps/details?id=org.opengapps.app). There are too many storage chooser out there but this one is too materially :stuck_out_tongue: . Easy to implement and does not take a lot of your valueable time in setting-up all the other necessary things that every developer seeks, like
 
 - saving path to sharedPreference
 - event when path is selected and act upon that path
@@ -41,7 +41,7 @@ Add this to your root build.gradle file under repositories:
 
 Add this to your app level build.gradle as dependency:
 
-    com.github.codekidX:storage-chooser:2.0
+    com.github.codekidX:storage-chooser:2.0.1
 
 
 Notes
@@ -70,7 +70,7 @@ Implementation
 StorageChooser chooser = new StorageChooser.Builder()
 .withActivity(MainActivity.this)
 .withFragmentManager(getFragmentManager())
-.withMemoryBar(true) 
+.withMemoryBar(true)
 .build();
 
 // Show dialog whenever you want by
@@ -100,7 +100,7 @@ chooser.setOnSelectListener(new StorageChooser.OnSelectListener() {
 
 ### Custom Type
 
-- Let's your user choose custom directory/file. 
+- Let's your user choose custom directory/file.
 
 #### Directory Chooser
 
