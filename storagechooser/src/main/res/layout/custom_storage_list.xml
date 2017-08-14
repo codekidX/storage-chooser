@@ -149,7 +149,7 @@
 
         <at.markushi.ui.CircleButton
             android:id="@+id/multiple_selection_done_fab"
-            android:src="@drawable/check"
+            android:src="@drawable/ic_check_white_24dp"
             android:visibility="invisible"
             app:cb_color="@color/colorAccent"
             app:cb_pressedRingWidth="8dip"
