@@ -1,4 +1,4 @@
-Storage Chooser 2.0 is Here !
+Storage Chooser 2.0 ! - [Changes and Snippets](https://codekidlabs.github.io/blog/storage-chooser-2.0.html)
 ===================
 
 [![](https://jitpack.io/v/codekidX/storage-chooser.svg)](https://jitpack.io/#codekidX/storage-chooser)  [![](https://img.shields.io/badge/last--stable-da21db4-yellow.svg?style=flat-square)](https://github.com/codekidX/storage-chooser/commit/da21db4e5c46e0c3a8b513112ff093448a23754b)  ![GitHub issues](https://img.shields.io/github/issues/codekidX/storage-chooser.svg?style=flat-square)  [![demo](https://img.shields.io/badge/download-demo-blue.svg?style=flat-square)](https://raw.githubusercontent.com/android-arsenal/apk22/master/5336/app.apk)  [![javadoc](https://img.shields.io/badge/Jitpack-javadoc-blue.svg?style=flat-square)](https://jitpack.io/com/github/codekidX/storage-chooser/1.0.33/javadoc/)
@@ -41,7 +41,7 @@ Add this to your root build.gradle file under repositories:
 
 Add this to your app level build.gradle as dependency:
 
-    com.github.codekidX:storage-chooser:2.0.1
+    com.github.codekidX:storage-chooser:2.0.2
 
 
 Notes
