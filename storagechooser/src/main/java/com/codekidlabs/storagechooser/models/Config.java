@@ -16,6 +16,7 @@ public class Config {
     private android.app.FragmentManager fragmentManager;
     private String predefinedPath;
     private boolean showMemoryBar;
+    private float memorybarHeight;
     private boolean actionSave;
     private SharedPreferences preference;
     private int memoryThreshold;
@@ -226,5 +227,13 @@ public class Config {
 
     public void setScheme(int[] scheme) {
         this.scheme = scheme;
+    }
+
+    public float getMemorybarHeight() {
+        return memorybarHeight;
+    }
+
+    public void setMemorybarHeight(float memorybarHeight) {
+        this.memorybarHeight = memorybarHeight;
     }
 }

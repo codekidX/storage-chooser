@@ -35,13 +35,17 @@ public class StorageChooserListAdapter extends BaseAdapter {
     private boolean shouldShowMemoryBar;
     private ProgressBar memoryBar;
     private int[] scheme;
+    private float memorybarHeight;
 
 
-    public StorageChooserListAdapter(List<Storages> storagesList, Context mContext, boolean shouldShowMemoryBar, int[] scheme) {
+    public StorageChooserListAdapter(List<Storages> storagesList, Context mContext,
+                                     boolean shouldShowMemoryBar, int[] scheme,
+                                     float memorybarHeight) {
         this.storagesList = storagesList;
         this.mContext = mContext;
         this.shouldShowMemoryBar = shouldShowMemoryBar;
         this.scheme = scheme;
+        this.memorybarHeight = memorybarHeight;
     }
 
     @Override
@@ -71,7 +75,7 @@ public class StorageChooserListAdapter extends BaseAdapter {
         memoryBar = rootView.findViewById(R.id.memory_bar);
 
         // new scaled memorybar - following the new google play update!
-        memoryBar.setScaleY(2f);
+        memoryBar.setScaleY(memorybarHeight);
 
         Storages storages = storagesList.get(i);
         final SpannableStringBuilder str = new SpannableStringBuilder(storages.getStorageTitle() + " (" + storages.getMemoryTotalSize() + ")");

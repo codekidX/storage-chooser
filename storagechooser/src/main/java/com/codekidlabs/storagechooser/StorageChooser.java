@@ -195,6 +195,7 @@ public class StorageChooser {
         private boolean mApplyMemoryThreshold = false;
         private boolean mShowInGrid = false;
         private boolean mResumeSession = false;
+        private float mMemorybarHeight = 2f;
         private String type;
         private Content content;
         private StorageChooser.Theme theme;
@@ -217,6 +218,11 @@ public class StorageChooser {
 
         public Builder withMemoryBar(boolean memoryBarBoolean) {
             mShowMemoryBar = memoryBarBoolean;
+            return this;
+        }
+
+        public Builder setMemoryBarHeight(float height) {
+            this.mMemorybarHeight = height;
             return this;
         }
 
@@ -336,6 +342,7 @@ public class StorageChooser {
             devConfig.setGridView(mShowInGrid);
             devConfig.setContent(content);
             devConfig.setSingleFilter(filter);
+            devConfig.setMemorybarHeight(mMemorybarHeight);
 
             type = (type == null) ? StorageChooser.NONE : type;
             devConfig.setSecondaryAction(type);

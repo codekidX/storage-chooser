@@ -60,7 +60,6 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
     // delaying secondary chooser
     private Handler mHandler;
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -105,7 +104,8 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
         // we need to populate before to get the internal storage path in list
         populateList();
 
-        listView.setAdapter(new StorageChooserListAdapter(storagesList, context, shouldShowMemoryBar, mConfig.getScheme()));
+        listView.setAdapter(new StorageChooserListAdapter(storagesList, context,
+                shouldShowMemoryBar, mConfig.getScheme(), mConfig.getMemorybarHeight()));
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
