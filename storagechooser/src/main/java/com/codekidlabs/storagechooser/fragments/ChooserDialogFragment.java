@@ -265,6 +265,12 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
 
     }
 
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        super.onCancel(dialog);
+        StorageChooser.onCancelListener.onCancel();
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
