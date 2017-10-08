@@ -9,14 +9,11 @@ import com.codekidlabs.storagechooser.R;
 
 public class ThumbnailUtil {
 
-    private Context mContext;
-
     // Constant extensions
     private static final String TEXT_FILE = "txt";
     private static final String LOG_FILE = "log";
     private static final String CSV_FILE = "csv";
     private static final String PROP_FILE = "prop";
-
     // video files
     private static final String VIDEO_FILE = "mp4";
     private static final String VIDEO_MOV_FILE = "mov";
@@ -35,25 +32,22 @@ public class ThumbnailUtil {
     private static final String RAR_FILE = "rar";
     private static final String TAR_GZ_FILE = "gz";
     private static final String TAR_FILE = "tar";
-
     // office files
     private static final String DOC_FILE = "doc";
     private static final String PPT_FILE = "ppt";
     private static final String EXCEL_FILE = "xls";
     private static final String PDF_FILE = "pdf";
-
     // font files
     private static final String TTF_FILE = "ttf";
     private static final String OTF_FILE = "otf";
-
     // torrent files
     private static final String TORRENtT_FILE = "torrent";
-
     //web files
     private static final String HTML_FILE = "html";
     private static final String PHP_FILE = "php";
     private static final String CSS_FILE = "css";
     private static final String CR_DL_FILE = "crdownload";
+    private Context mContext;
 
     public ThumbnailUtil(Context mContext) {
         this.mContext = mContext;
@@ -73,7 +67,7 @@ public class ThumbnailUtil {
             case DOC_FILE:
             case PROP_FILE:
             case LOG_FILE:
-                    imageView.setImageDrawable(getDrawableFromRes(R.drawable.doc));
+                imageView.setImageDrawable(getDrawableFromRes(R.drawable.doc));
                 break;
             case VIDEO_FILE:
             case VIDEO_AVI_FILE:

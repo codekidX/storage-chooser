@@ -11,6 +11,15 @@ import java.util.List;
 
 public class FileUtil {
 
+    public static boolean createDirectory(String name, String path) {
+        File dir = new File(path + "/" + name);
+        return dir.mkdirs();
+    }
+
+    public static boolean isDir(String path) {
+        return new File(path).isDirectory();
+    }
+
     public File[] listFilesAsDir(String dirPath) {
         return new File(dirPath).listFiles(new FileFilter() {
             @Override
@@ -36,18 +45,18 @@ public class FileUtil {
     public void removeNonOperational(List<File> volumeList) {
         // segregate the list
 
-        for(int i=0;i < volumeList.size(); i++) {
+        for (int i = 0; i < volumeList.size(); i++) {
             String volumeName = volumeList.get(i).getName();
-            if(volumeName.equals(MemoryUtil.SELF_DIR_NAME)) {
+            if (volumeName.equals(MemoryUtil.SELF_DIR_NAME)) {
                 volumeList.remove(i);
             }
-            if(volumeName.equals(MemoryUtil.EMULATED_DIR_NAME)) {
+            if (volumeName.equals(MemoryUtil.EMULATED_DIR_NAME)) {
                 volumeList.remove(i);
             }
-            if(volumeName.equals(MemoryUtil.EMULATED_DIR_KNOX)) {
+            if (volumeName.equals(MemoryUtil.EMULATED_DIR_KNOX)) {
                 volumeList.remove(i);
             }
-            if(volumeName.equals(MemoryUtil.SDCARD0_DIR_NAME)) {
+            if (volumeName.equals(MemoryUtil.SDCARD0_DIR_NAME)) {
                 volumeList.remove(i);
             }
         }
@@ -55,18 +64,9 @@ public class FileUtil {
 
     public String[] fileListToStringArray(List<String> dirNames) {
         String[] dirList = new String[dirNames.size()];
-        for(int i=0; i< dirNames.size(); i++) {
+        for (int i = 0; i < dirNames.size(); i++) {
             dirList[i] = dirNames.get(i);
         }
         return dirList;
-    }
-
-    public static boolean createDirectory(String name, String path) {
-        File dir = new File(path + "/" + name);
-        return dir.mkdirs();
-    }
-
-    public static boolean isDir(String path) {
-        return new File(path).isDirectory();
     }
 }

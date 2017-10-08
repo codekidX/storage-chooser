@@ -9,99 +9,97 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/custom_path_header"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/colorPrimary">
-
-        <LinearLayout
+        <RelativeLayout
+            android:id="@+id/custom_path_header"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerInParent="true"
-            android:layout_margin="8dp"
-            android:background="@drawable/path_layout_bg"
-            android:orientation="horizontal">
+            android:layout_height="60dp"
+            android:background="@color/colorPrimary">
 
-            <RelativeLayout
-                android:id="@+id/back_button_holder"
-                android:layout_width="50dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/chevronBgColor">
+                android:layout_centerInParent="true"
+                android:layout_margin="8dp"
+                android:background="@drawable/path_layout_bg"
+                android:orientation="horizontal">
 
-                <ImageButton
-                    android:id="@+id/back_button"
+                <RelativeLayout
+                    android:id="@+id/back_button_holder"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/chevronBgColor">
+
+                    <ImageButton
+                        android:id="@+id/back_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/ic_chevron_left_white_24dp" />
+
+                </RelativeLayout>
+
+
+                <!-- address bar -->
+                <RelativeLayout
+                    android:id="@+id/new_folder_button_holder"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:background="@color/chevronBgColor">
+
+                    <include layout="@layout/layout_new_folder_iv" />
+
+                </RelativeLayout>
+
+
+                <TextView
+                    android:id="@+id/path_chosen"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:background="@android:color/transparent"
-                    android:src="@drawable/ic_chevron_left_white_24dp" />
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginStart="16dp"
+                    android:fontFamily="sans-serif-condensed"
+                    android:text="blahblahblah"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp" />
 
-            </RelativeLayout>
+            </LinearLayout>
 
+        </RelativeLayout>
 
-            <!-- address bar -->
-            <RelativeLayout
-                android:id="@+id/new_folder_button_holder"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:background="@color/chevronBgColor">
+        <Button
+            android:id="@+id/select_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:background="@android:color/transparent"
+            android:textColor="@color/colorPrimaryDark"
+            android:textStyle="bold" />
 
-                <include layout="@layout/layout_new_folder_iv" />
-
-            </RelativeLayout>
-
-
-            <TextView
-                android:id="@+id/path_chosen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="16dp"
-                android:layout_marginStart="16dp"
-                android:fontFamily="sans-serif-condensed"
-                android:text="blahblahblah"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-    </RelativeLayout>
-
-    <Button
-        android:id="@+id/select_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:background="@android:color/transparent"
-        android:textColor="@color/colorPrimaryDark"
-        android:textStyle="bold" />
-
-    <ListView
-        android:id="@+id/storage_list_view"
-        android:longClickable="true"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/select_button"
-        android:layout_below="@id/custom_path_header"
-        android:listSelector="@drawable/ripple"
-        android:divider="@null" />
-
-
+        <ListView
+            android:id="@+id/storage_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/select_button"
+            android:layout_below="@id/custom_path_header"
+            android:divider="@null"
+            android:listSelector="@drawable/ripple"
+            android:longClickable="true" />
 
 
         <!-- create folder view -->
-    <RelativeLayout
-        android:id="@+id/new_folder_view"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_above="@id/select_button"
-        android:background="@color/colorPrimary">
+        <RelativeLayout
+            android:id="@+id/new_folder_view"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_above="@id/select_button"
+            android:background="@color/colorPrimary">
 
             <EditText
                 android:id="@+id/et_folder_name"
@@ -113,53 +111,53 @@
                 android:layout_margin="16dp"
                 android:layout_toLeftOf="@+id/create_folder_button"
                 android:layout_toStartOf="@+id/create_folder_button"
-                android:textColorHint="@color/chevronBgColor"
                 android:backgroundTint="@color/pathLayoutBgColor"
-                android:textColor="@android:color/white"
-                android:singleLine="true"
                 android:maxLength="50"
                 android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textColorHint="@color/chevronBgColor"
                 android:textSize="16sp" />
 
-        <Button
-            android:id="@+id/create_folder_button"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginBottom="16dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="16dp"
-            android:background="@null"
-            android:textColor="@android:color/white" />
+            <Button
+                android:id="@+id/create_folder_button"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="16dp"
+                android:background="@null"
+                android:textColor="@android:color/white" />
 
-    </RelativeLayout>
+        </RelativeLayout>
 
 
         <!-- gradient view -->
-    <View
-        android:id="@+id/inactive_gradient"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/new_folder_view"
-        android:layout_below="@id/custom_path_header"
-        android:background="@color/inactiveGradientColor" />
+        <View
+            android:id="@+id/inactive_gradient"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/new_folder_view"
+            android:layout_below="@id/custom_path_header"
+            android:background="@color/inactiveGradientColor" />
 
         <at.markushi.ui.CircleButton
             android:id="@+id/multiple_selection_done_fab"
+            android:layout_width="72dip"
+            android:layout_height="72dip"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="16dp"
+            android:drawableTop="@drawable/ic_chevron_left_white_24dp"
             android:src="@drawable/ic_check_white_24dp"
             android:visibility="invisible"
             app:cb_color="@color/colorAccent"
-            app:cb_pressedRingWidth="8dip"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="16dp"
-            android:drawableTop="@drawable/ic_chevron_left_white_24dp"
-            android:layout_width="72dip"
-            android:layout_height="72dip" />
+            app:cb_pressedRingWidth="8dip" />
 
     </RelativeLayout>
 

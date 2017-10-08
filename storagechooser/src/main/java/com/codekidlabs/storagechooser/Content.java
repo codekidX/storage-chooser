@@ -1,8 +1,5 @@
 package com.codekidlabs.storagechooser;
 
-import android.graphics.Color;
-import android.support.annotation.ColorInt;
-
 /**
  * Content class handles changes to dialog's view and whatever is in it
  */
@@ -19,7 +16,6 @@ public class Content {
     private String folderErrorToastText = "Error occured while creating folder. Try again.";
     private String textfieldHintText = "Folder Name";
     private String textfieldErrorText = "Empty Folder Name";
-
 
 
     public String getSelectLabel() {

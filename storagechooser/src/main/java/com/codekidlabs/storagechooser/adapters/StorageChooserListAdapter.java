@@ -2,7 +2,6 @@ package com.codekidlabs.storagechooser.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -17,7 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.codekidlabs.storagechooser.R;
-import com.codekidlabs.storagechooser.StorageChooser;
 import com.codekidlabs.storagechooser.animators.MemorybarAnimation;
 import com.codekidlabs.storagechooser.exceptions.MemoryNotAccessibleException;
 import com.codekidlabs.storagechooser.models.Storages;
@@ -31,13 +29,11 @@ import static com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_STORA
 
 public class StorageChooserListAdapter extends BaseAdapter {
 
+    private static int memoryPercentile;
     private List<Storages> storagesList;
     private Context mContext;
     private boolean shouldShowMemoryBar;
-
     private ProgressBar memoryBar;
-    private static int memoryPercentile;
-
     private int[] scheme;
 
 
@@ -70,9 +66,9 @@ public class StorageChooserListAdapter extends BaseAdapter {
         View rootView = inflater.inflate(R.layout.row_storage, viewGroup, false);
 
         //for animation set current position to provide animation delay
-        TextView storageName = (TextView) rootView.findViewById(R.id.storage_name);
-        TextView memoryStatus = (TextView) rootView.findViewById(R.id.memory_status);
-        memoryBar = (ProgressBar) rootView.findViewById(R.id.memory_bar);
+        TextView storageName = rootView.findViewById(R.id.storage_name);
+        TextView memoryStatus = rootView.findViewById(R.id.memory_status);
+        memoryBar = rootView.findViewById(R.id.memory_bar);
 
         // new scaled memorybar - following the new google play update!
         memoryBar.setScaleY(2f);
@@ -96,24 +92,24 @@ public class StorageChooserListAdapter extends BaseAdapter {
             e.printStackTrace();
         }
         // THE ONE AND ONLY MEMORY BAR
-        if(shouldShowMemoryBar && memoryPercentile != -1) {
+        if (shouldShowMemoryBar && memoryPercentile != -1) {
             memoryBar.setMax(100);
             memoryBar.setProgress(memoryPercentile);
             runMemorybarAnimation(i);
         } else {
             memoryBar.setVisibility(View.GONE);
         }
-        
+
         return rootView;
 
     }
 
     private void runMemorybarAnimation(int pos) {
-        MemorybarAnimation animation = new MemorybarAnimation(memoryBar,0, memoryPercentile);
+        MemorybarAnimation animation = new MemorybarAnimation(memoryBar, 0, memoryPercentile);
         animation.setDuration(500);
         animation.setInterpolator(new AccelerateDecelerateInterpolator());
 
-        if(pos > 0) {
+        if (pos > 0) {
             animation.setStartOffset(300);
         }
 
@@ -122,15 +118,17 @@ public class StorageChooserListAdapter extends BaseAdapter {
 
     /**
      * return the spannable index of character '('
+     *
      * @param str SpannableStringBuilder to apply typeface changes
      * @return index of '('
      */
     private int getSpannableIndex(SpannableStringBuilder str) {
-            return str.toString().indexOf("(") + 1;
+        return str.toString().indexOf("(") + 1;
     }
 
     /**
      * calculate percentage of memory left for memorybar
+     *
      * @param path use same statfs
      * @return integer value of the percentage with amount of storage used
      */
@@ -138,10 +136,10 @@ public class StorageChooserListAdapter extends BaseAdapter {
         MemoryUtil memoryUtil = new MemoryUtil();
         int percent;
 
-        long availableMem =  memoryUtil.getAvailableMemorySize(path);
-        long totalMem =  memoryUtil.getTotalMemorySize(path);
+        long availableMem = memoryUtil.getAvailableMemorySize(path);
+        long totalMem = memoryUtil.getTotalMemorySize(path);
 
-        if(totalMem > 0) {
+        if (totalMem > 0) {
             percent = (int) (100 - ((availableMem * 100) / totalMem));
         } else {
             throw new MemoryNotAccessibleException("Cannot compute memory for " + path);
@@ -153,21 +151,22 @@ public class StorageChooserListAdapter extends BaseAdapter {
     /**
      * remove KiB,MiB,GiB text that we got from MemoryUtil.getAvailableMemorySize() &
      * MemoryUtil.getTotalMemorySize()
+     *
      * @param size String in the format of user readable string, with MB, GiB .. suffix
      * @return integer value of the percentage with amount of storage used
      */
     private long getMemoryFromString(String size) {
         long mem;
 
-        if(size.contains("MiB")) {
-            mem = Integer.parseInt(size.replace(",","").replace("MiB",""));
-        } else if (size.contains("GiB")){
-            mem = Integer.parseInt(size.replace(",","").replace("GiB",""));
+        if (size.contains("MiB")) {
+            mem = Integer.parseInt(size.replace(",", "").replace("MiB", ""));
+        } else if (size.contains("GiB")) {
+            mem = Integer.parseInt(size.replace(",", "").replace("GiB", ""));
         } else {
-            mem = Integer.parseInt(size.replace(",","").replace("KiB",""));
+            mem = Integer.parseInt(size.replace(",", "").replace("KiB", ""));
         }
 
-        Log.d("TAG", "Memory:"+ mem);
+        Log.d("TAG", "Memory:" + mem);
         return mem;
     }
 }

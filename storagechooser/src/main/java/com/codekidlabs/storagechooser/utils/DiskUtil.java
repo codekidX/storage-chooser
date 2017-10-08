@@ -39,11 +39,11 @@ public class DiskUtil {
     /**
      * secondary choosers are dialogs apart from overview (CustomChooserFragment and FilePickerFragment)
      * Configs :-
-     *     setType()
-     *     allowCustomPath()
+     * setType()
+     * allowCustomPath()
      *
      * @param dirPath root path(starting-point) for the secondary choosers
-     * @param config configuration from developer
+     * @param config  configuration from developer
      */
 
     public static void showSecondaryChooser(String dirPath, Config config) {

@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.drawable.Animatable;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,8 +11,6 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.TypedValue;
@@ -27,7 +24,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -35,9 +31,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.codekidlabs.storagechooser.Content;
 import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.StorageChooser;
-import com.codekidlabs.storagechooser.Content;
 import com.codekidlabs.storagechooser.adapters.SecondaryChooserAdapter;
 import com.codekidlabs.storagechooser.filters.UniversalFileFilter;
 import com.codekidlabs.storagechooser.models.Config;
@@ -46,8 +42,6 @@ import com.codekidlabs.storagechooser.utils.FileUtil;
 import com.codekidlabs.storagechooser.utils.ResourceUtil;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -60,10 +54,16 @@ import static com.codekidlabs.storagechooser.StorageChooser.Theme;
 
 public class SecondaryChooserFragment extends android.app.DialogFragment {
 
+    private static final String INTERNAL_STORAGE_TITLE = "Internal Storage";
+    private static final String EXTERNAL_STORAGE_TITLE = "ExtSD";
+    private static final int FLAG_DISSMISS_NORMAL = 0;
+    private static final int FLAG_DISSMISS_INIT_DIALOG = 1;
+    private static boolean MODE_MULTIPLE = false;
+    private static String theSelectedPath = "";
+    private static String mAddressClippedPath = "";
     private View mLayout;
     private View mInactiveGradient;
     private ViewGroup mContainer;
-
     private TextView mPathChosen;
     private ImageButton mBackButton;
     private Button mSelectButton;
@@ -71,27 +71,10 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     private ImageView mNewFolderImageView;
     private EditText mFolderNameEditText;
     private CircleButton mMultipleOnSelectButton;
-
     private RelativeLayout mNewFolderView;
-
     private String mBundlePath;
     private ListView listView;
-
-
-    private static final String INTERNAL_STORAGE_TITLE = "Internal Storage";
-    private static final String EXTERNAL_STORAGE_TITLE = "ExtSD";
-
-
-    private static final int FLAG_DISSMISS_NORMAL = 0;
-    private static final int FLAG_DISSMISS_INIT_DIALOG = 1;
-
-    private static boolean MODE_MULTIPLE = false;
-
     private boolean isOpen;
-
-    private static String theSelectedPath = "";
-    private static String mAddressClippedPath = "";
-
     private List<String> customStoragesList;
     private SecondaryChooserAdapter secondaryChooserAdapter;
 
@@ -108,14 +91,12 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     private ArrayList<String> mMultipleModeList = new ArrayList<>();
 
     /**
-     *
-     *  THE HOLY PLACE OF CLICK LISTENERS
-     *
-     * */
+     * THE HOLY PLACE OF CLICK LISTENERS
+     */
     private View.OnClickListener mSelectButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(mConfig.isActionSave()) {
+            if (mConfig.isActionSave()) {
                 DiskUtil.saveChooserPathPreference(mConfig.getPreference(), theSelectedPath);
             } else {
                 Log.d("StorageChooser", "Chosen path: " + theSelectedPath);
@@ -126,21 +107,6 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         }
 
     };
-
-    private View.OnClickListener mBackButtonClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            performBackAction();
-        }
-    };
-
-    private View.OnClickListener mNewFolderButtonClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            showAddFolderView();
-        }
-    };
-
     private View.OnClickListener mNewFolderButtonCloseListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -148,22 +114,21 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
             hideKeyboard();
         }
     };
-
-    private View.OnClickListener mMultipleModeDoneButtonClickListener = new View.OnClickListener() {
+    private View.OnClickListener mNewFolderButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            StorageChooser.onMultipleSelectListener.onDone(mMultipleModeList);
-            bringBackSingleMode();
-            dissmissDialog(FLAG_DISSMISS_NORMAL);
+            showAddFolderView();
         }
     };
-
+    private boolean keyboardToggle;
+    private String TAG = "StorageChooser";
+    private boolean isFilePicker;
     private View.OnClickListener mCreateButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if(validateFolderName()) {
+            if (validateFolderName()) {
                 boolean success = FileUtil.createDirectory(mFolderNameEditText.getText().toString().trim(), theSelectedPath);
-                if(success) {
+                if (success) {
                     Toast.makeText(mContext, mContent.getFolderCreatedToastText(), Toast.LENGTH_SHORT).show();
                     trimPopulate(theSelectedPath);
                     hideKeyboard();
@@ -174,7 +139,6 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
             }
         }
     };
-
     private AdapterView.OnItemClickListener mSingleModeClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
@@ -182,7 +146,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
                 @Override
                 public void run() {
                     String jointPath = theSelectedPath + "/" + customStoragesList.get(i);
-                    if(FileUtil.isDir(jointPath)) {
+                    if (FileUtil.isDir(jointPath)) {
                         populateList("/" + customStoragesList.get(i));
                     } else {
                         StorageChooser.onSelectListener.onSelect(jointPath);
@@ -192,29 +156,13 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
             }, 300);
         }
     };
-
-    private AdapterView.OnItemClickListener mMultipleModeClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
-            String jointPath = theSelectedPath + "/" + customStoragesList.get(i);
-
-            if(!FileUtil.isDir(jointPath)) {
-                handleListMultipleAction(i, view);
-            } else {
-                bringBackSingleMode();
-                populateList("/" + customStoragesList.get(i));
-            }
-
-        }
-    };
-
     private AdapterView.OnItemLongClickListener mLongClickListener = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
 
             String jointPath = theSelectedPath + "/" + customStoragesList.get(i);
 
-            if(!FileUtil.isDir(jointPath)) {
+            if (!FileUtil.isDir(jointPath)) {
                 MODE_MULTIPLE = true;
                 listView.setOnItemClickListener(mMultipleModeClickListener);
                 handleListMultipleAction(i, view);
@@ -227,11 +175,34 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     };
 
     // ================ CLICK LISTENER END ==================
+    private View.OnClickListener mBackButtonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            performBackAction();
+        }
+    };
+    private View.OnClickListener mMultipleModeDoneButtonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            StorageChooser.onMultipleSelectListener.onDone(mMultipleModeList);
+            bringBackSingleMode();
+            dissmissDialog(FLAG_DISSMISS_NORMAL);
+        }
+    };
+    private AdapterView.OnItemClickListener mMultipleModeClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> adapterView, View view, final int i, long l) {
+            String jointPath = theSelectedPath + "/" + customStoragesList.get(i);
 
+            if (!FileUtil.isDir(jointPath)) {
+                handleListMultipleAction(i, view);
+            } else {
+                bringBackSingleMode();
+                populateList("/" + customStoragesList.get(i));
+            }
 
-    private boolean keyboardToggle;
-    private String TAG = "StorageChooser";
-    private boolean isFilePicker;
+        }
+    };
 
     private void showAddFolderView() {
         mNewFolderView.setVisibility(View.VISIBLE);
@@ -240,13 +211,13 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         mInactiveGradient.startAnimation(anim);
 
 
-            if (DiskUtil.isLollipopAndAbove()) {
-                mNewFolderImageView.setImageDrawable(ContextCompat.getDrawable(mContext,R.drawable.drawable_plus_to_close));
-                // image button animation
-                Animatable animatable = (Animatable) mNewFolderImageView.getDrawable();
-                animatable.start();
-            }
-            mNewFolderImageView.setOnClickListener(mNewFolderButtonCloseListener);
+        if (DiskUtil.isLollipopAndAbove()) {
+            mNewFolderImageView.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.drawable_plus_to_close));
+            // image button animation
+            Animatable animatable = (Animatable) mNewFolderImageView.getDrawable();
+            animatable.start();
+        }
+        mNewFolderImageView.setOnClickListener(mNewFolderButtonCloseListener);
 
 //        mNewFolderButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.window_close));
 
@@ -259,13 +230,13 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         mNewFolderView.startAnimation(anim);
         mNewFolderView.setVisibility(View.INVISIBLE);
 
-            if (DiskUtil.isLollipopAndAbove()) {
-                mNewFolderImageView.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.drawable_close_to_plus));
-                // image button animation
-                Animatable animatable = (Animatable) mNewFolderImageView.getDrawable();
-                animatable.start();
-            }
-            mNewFolderImageView.setOnClickListener(mNewFolderButtonClickListener);
+        if (DiskUtil.isLollipopAndAbove()) {
+            mNewFolderImageView.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.drawable_close_to_plus));
+            // image button animation
+            Animatable animatable = (Animatable) mNewFolderImageView.getDrawable();
+            animatable.start();
+        }
+        mNewFolderImageView.setOnClickListener(mNewFolderButtonClickListener);
 
         //listview should be clickable
         SecondaryChooserAdapter.shouldEnable = true;
@@ -288,13 +259,13 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
     private void performBackAction() {
         int slashIndex = theSelectedPath.lastIndexOf("/");
-        if(MODE_MULTIPLE) {
+        if (MODE_MULTIPLE) {
             bringBackSingleMode();
             secondaryChooserAdapter.notifyDataSetChanged();
 
         } else {
-            if(!mConfig.isSkipOverview()) {
-                if(theSelectedPath.equals(mBundlePath)) {
+            if (!mConfig.isSkipOverview()) {
+                if (theSelectedPath.equals(mBundlePath)) {
                     SecondaryChooserFragment.this.dismiss();
 
                     //delay until close animation ends
@@ -347,7 +318,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         mHandler = new Handler();
 
         // init storage-chooser content [localization]
-        if(mConfig.getContent() == null) {
+        if (mConfig.getContent() == null) {
             mContent = new Content();
         } else {
             mContent = mConfig.getContent();
@@ -366,17 +337,17 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     }
 
 
-    private void initUI()  {
+    private void initUI() {
 
-        mBackButton = (ImageButton) mLayout.findViewById(R.id.back_button);
-        mSelectButton = (Button) mLayout.findViewById(R.id.select_button);
+        mBackButton = mLayout.findViewById(R.id.back_button);
+        mSelectButton = mLayout.findViewById(R.id.select_button);
         mMultipleOnSelectButton = mLayout.findViewById(R.id.multiple_selection_done_fab);
 
-        mCreateButton = (Button) mLayout.findViewById(R.id.create_folder_button);
+        mCreateButton = mLayout.findViewById(R.id.create_folder_button);
 
-        mNewFolderView = (RelativeLayout) mLayout.findViewById(R.id.new_folder_view);
+        mNewFolderView = mLayout.findViewById(R.id.new_folder_view);
         mNewFolderView.setBackgroundColor(scheme[Theme.SEC_FOLDER_CREATION_BG_INDEX]);
-        mFolderNameEditText = (EditText) mLayout.findViewById(R.id.et_folder_name);
+        mFolderNameEditText = mLayout.findViewById(R.id.et_folder_name);
 
         mInactiveGradient = mLayout.findViewById(R.id.inactive_gradient);
 
@@ -410,7 +381,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
             mBackButton.setImageTintList(ColorStateList.valueOf(scheme[Theme.SEC_ADDRESS_TINT_INDEX]));
         }
         mMultipleOnSelectButton.setColor(scheme[Theme.SEC_DONE_FAB_INDEX]);
-        ((RelativeLayout) mLayout.findViewById(R.id.custom_path_header)).setBackgroundColor(scheme[Theme.SEC_ADDRESS_BAR_BG]);
+        mLayout.findViewById(R.id.custom_path_header).setBackgroundColor(scheme[Theme.SEC_ADDRESS_BAR_BG]);
 
         // ----
 
@@ -419,7 +390,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         mCreateButton.setOnClickListener(mCreateButtonClickListener);
         mMultipleOnSelectButton.setOnClickListener(mMultipleModeDoneButtonClickListener);
 
-        if(mConfig.getSecondaryAction() == StorageChooser.FILE_PICKER) {
+        if (mConfig.getSecondaryAction() == StorageChooser.FILE_PICKER) {
             mSelectButton.setVisibility(View.GONE);
             setBottomNewFolderView();
         }
@@ -435,12 +406,12 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
     private void initNewFolderView() {
 
-        RelativeLayout mNewFolderButtonHolder = (RelativeLayout) mLayout.findViewById(R.id.new_folder_button_holder);
+        RelativeLayout mNewFolderButtonHolder = mLayout.findViewById(R.id.new_folder_button_holder);
 
-        mNewFolderImageView = (ImageView) mLayout.findViewById(R.id.new_folder_iv);
+        mNewFolderImageView = mLayout.findViewById(R.id.new_folder_iv);
         mNewFolderImageView.setOnClickListener(mNewFolderButtonClickListener);
 
-        if(!mConfig.isAllowAddFolder()) {
+        if (!mConfig.isAllowAddFolder()) {
             mNewFolderButtonHolder.setVisibility(View.GONE);
         }
 
@@ -451,12 +422,12 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
      * storage listView related code in this block
      */
     private void initListView(Context context, View view, boolean shouldShowMemoryBar) {
-        listView = (ListView) view.findViewById(R.id.storage_list_view);
-        mPathChosen = (TextView) view.findViewById(R.id.path_chosen);
+        listView = view.findViewById(R.id.storage_list_view);
+        mPathChosen = view.findViewById(R.id.path_chosen);
         mBundlePath = this.getArguments().getString(DiskUtil.SC_PREFERENCE_KEY);
         isFilePicker = this.getArguments().getBoolean(DiskUtil.SC_CHOOSER_FLAG, false);
         populateList(mBundlePath);
-        secondaryChooserAdapter =new SecondaryChooserAdapter(customStoragesList, context, scheme);
+        secondaryChooserAdapter = new SecondaryChooserAdapter(customStoragesList, context, scheme);
         secondaryChooserAdapter.setPrefixPath(theSelectedPath);
 
         listView.setAdapter(secondaryChooserAdapter);
@@ -464,7 +435,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         SecondaryChooserAdapter.shouldEnable = true;
         listView.setOnItemClickListener(mSingleModeClickListener);
 
-        if(isFilePicker) {
+        if (isFilePicker) {
             listView.setOnItemLongClickListener(mLongClickListener);
         }
 
@@ -473,13 +444,14 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     /**
      * handles actions in multiple mode
      * like adding to list and setting backgroud color
+     *
      * @param i is position of list clicked
-     * */
+     */
     private void handleListMultipleAction(int i, View view) {
         String jointPath = theSelectedPath + "/" + customStoragesList.get(i);
 
-            // if this list path item is not selected before
-        if(!secondaryChooserAdapter.selectedPaths.contains(i)) {
+        // if this list path item is not selected before
+        if (!secondaryChooserAdapter.selectedPaths.contains(i)) {
             view.setBackgroundColor(mResourceUtil.getPrimaryColorWithAlpha());
 
             secondaryChooserAdapter.selectedPaths.add(i);
@@ -493,10 +465,10 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
             mMultipleModeList.remove(mMultipleModeList.indexOf(jointPath));
         }
 
-        if(mMultipleOnSelectButton.getVisibility() != View.VISIBLE && MODE_MULTIPLE)
+        if (mMultipleOnSelectButton.getVisibility() != View.VISIBLE && MODE_MULTIPLE)
             playTheMultipleButtonAnimation();
 
-        if(listView.getOnItemLongClickListener() !=null && MODE_MULTIPLE)
+        if (listView.getOnItemLongClickListener() != null && MODE_MULTIPLE)
             // long click listener in multiple mode ? haha nice joke
             listView.setOnItemLongClickListener(null);
 
@@ -512,7 +484,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
     /**
      * brings back the default state of storage-chooser
-     * */
+     */
     private void bringBackSingleMode() {
         // if selected new directory end the multiple mode
         MODE_MULTIPLE = false;
@@ -530,14 +502,15 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
     /**
      * evaluates path with respect to the list click position
+     *
      * @param i position in list
      */
     private void evaluateAction(int i) {
         String preDefPath = mConfig.getPredefinedPath();
         boolean isCustom = mConfig.isAllowCustomPath();
-        if(preDefPath == null) {
+        if (preDefPath == null) {
             Log.w(TAG, "No predefined path set");
-        } else if(isCustom) {
+        } else if (isCustom) {
             populateList("/" + customStoragesList.get(i));
         }
     }
@@ -548,30 +521,31 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
     /**
      * populate storageList with necessary storages with filter applied
+     *
      * @param path defines the path for which list of folder is requested
      */
     private void populateList(String path) {
-        if(customStoragesList == null) {
+        if (customStoragesList == null) {
             customStoragesList = new ArrayList<>();
         } else {
             customStoragesList.clear();
         }
 
         fileUtil = new FileUtil();
-        theSelectedPath = theSelectedPath +  path;
-        if(secondaryChooserAdapter !=null && secondaryChooserAdapter.getPrefixPath() !=null) {
+        theSelectedPath = theSelectedPath + path;
+        if (secondaryChooserAdapter != null && secondaryChooserAdapter.getPrefixPath() != null) {
             secondaryChooserAdapter.setPrefixPath(theSelectedPath);
         }
 
         //if the path length is greater than that of the addressbar length
         // we need to clip the starting part so that it fits the length and makes some room
         int pathLength = theSelectedPath.length();
-        if(pathLength >= 25) {
+        if (pathLength >= 25) {
             // how many directories did user choose
             int slashCount = getSlashCount(theSelectedPath);
-            if(slashCount > 2) {
+            if (slashCount > 2) {
                 mAddressClippedPath = theSelectedPath.substring(theSelectedPath.indexOf("/", theSelectedPath.indexOf("/") + 2), pathLength);
-            } else if(slashCount <= 2) {
+            } else if (slashCount <= 2) {
                 mAddressClippedPath = theSelectedPath.substring(theSelectedPath.indexOf("/", theSelectedPath.indexOf("/") + 2), pathLength);
             }
         } else {
@@ -580,14 +554,14 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
         File[] volumeList;
 
-        if(isFilePicker) {
-            if(mConfig.isCustomFilter()) {
+        if (isFilePicker) {
+            if (mConfig.isCustomFilter()) {
                 UniversalFileFilter universalFileFilter =
                         new UniversalFileFilter(mConfig.isCustomFilter(), mConfig.getCustomEnum());
                 volumeList = new File(theSelectedPath)
                         .listFiles(universalFileFilter);
             } else {
-                if(mConfig.getSingleFilter() !=null) {
+                if (mConfig.getSingleFilter() != null) {
                     volumeList = new File(theSelectedPath).listFiles(new UniversalFileFilter(mConfig.getSingleFilter()));
                 } else {
                     volumeList = fileUtil.listFilesInDir(theSelectedPath);
@@ -598,9 +572,9 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         }
 
         Log.e("SCLib", theSelectedPath);
-        if(volumeList != null) {
+        if (volumeList != null) {
             for (File f : volumeList) {
-                if(mConfig.isShowHidden()) {
+                if (mConfig.isShowHidden()) {
                     customStoragesList.add(f.getName());
                 } else {
                     if (!f.getName().startsWith(".")) {
@@ -615,19 +589,19 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
                     return s1.compareToIgnoreCase(s2);
                 }
             });
-        }else {
+        } else {
             customStoragesList.clear();
         }
 
 
-        if(secondaryChooserAdapter !=null) {
+        if (secondaryChooserAdapter != null) {
             secondaryChooserAdapter.notifyDataSetChanged();
         }
 
         playTheAddressBarAnimation();
 
-        if(mConfig.isResumeSession() && StorageChooser.LAST_SESSION_PATH !=null) {
-            if(StorageChooser.LAST_SESSION_PATH.startsWith(Environment.getExternalStorageDirectory().getAbsolutePath())) {
+        if (mConfig.isResumeSession() && StorageChooser.LAST_SESSION_PATH != null) {
+            if (StorageChooser.LAST_SESSION_PATH.startsWith(Environment.getExternalStorageDirectory().getAbsolutePath())) {
                 mBundlePath = Environment.getExternalStorageDirectory().getAbsolutePath();
             } else {
                 Log.e("Bundle_Path_Length", StorageChooser.LAST_SESSION_PATH);
@@ -639,26 +613,27 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     /**
      * Unlike populate list trim populate only updates the list not the addressbar.
      * This is used when creating new folder and update to list is required
+     *
      * @param s is the path to be refreshed
-     * */
+     */
     private void trimPopulate(String s) {
-        if(customStoragesList == null) {
+        if (customStoragesList == null) {
             customStoragesList = new ArrayList<>();
         } else {
             customStoragesList.clear();
         }
         File[] volumeList;
 
-        if(isFilePicker) {
+        if (isFilePicker) {
             volumeList = fileUtil.listFilesInDir(theSelectedPath);
         } else {
             volumeList = fileUtil.listFilesAsDir(theSelectedPath);
         }
 
         Log.e("SCLib", theSelectedPath);
-        if(volumeList != null) {
+        if (volumeList != null) {
             for (File f : volumeList) {
-                if(!f.getName().startsWith(".")) {
+                if (!f.getName().startsWith(".")) {
                     customStoragesList.add(f.getName());
                 }
             }
@@ -669,12 +644,12 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
                     return s1.compareToIgnoreCase(s2);
                 }
             });
-        }else {
+        } else {
             customStoragesList.clear();
         }
 
 
-        if(secondaryChooserAdapter !=null) {
+        if (secondaryChooserAdapter != null) {
             secondaryChooserAdapter.setPrefixPath(s);
             secondaryChooserAdapter.notifyDataSetChanged();
         }
@@ -735,8 +710,8 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     private int getSlashCount(String path) {
         int count = 0;
 
-        for(char s: path.toCharArray()) {
-            if(s == '/') {
+        for (char s : path.toCharArray()) {
+            if (s == '/') {
                 count++;
             }
         }

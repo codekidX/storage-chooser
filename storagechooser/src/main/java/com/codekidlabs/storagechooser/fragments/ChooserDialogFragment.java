@@ -2,27 +2,25 @@ package com.codekidlabs.storagechooser.fragments;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.codekidlabs.storagechooser.Content;
 import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.StorageChooser;
-import com.codekidlabs.storagechooser.Content;
 import com.codekidlabs.storagechooser.adapters.StorageChooserListAdapter;
 import com.codekidlabs.storagechooser.models.Config;
 import com.codekidlabs.storagechooser.models.Storages;
@@ -78,7 +76,7 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
         mConfig = StorageChooser.sConfig;
         mHandler = new Handler();
         // init storage-chooser content [localization]
-        if(mConfig.getContent() == null) {
+        if (mConfig.getContent() == null) {
             mContent = new Content();
         } else {
             mContent = mConfig.getContent();
@@ -86,14 +84,14 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
         mLayout = inflater.inflate(R.layout.storage_list, container, false);
         initListView(getActivity().getApplicationContext(), mLayout, mConfig.isShowMemoryBar());
 
-        if(mContent.getOverviewHeading() !=null) {
-            TextView dialogTitle = (TextView) mLayout.findViewById(R.id.dialog_title);
+        if (mContent.getOverviewHeading() != null) {
+            TextView dialogTitle = mLayout.findViewById(R.id.dialog_title);
             dialogTitle.setTextColor(mConfig.getScheme()[OVERVIEW_TEXT_INDEX]);
             dialogTitle.setText(mContent.getOverviewHeading());
         }
 
-        ((RelativeLayout) mLayout.findViewById(R.id.header_container)).setBackgroundColor(mConfig.getScheme()[OVERVIEW_HEADER_INDEX]);
-        ((LinearLayout) mLayout.findViewById(R.id.overview_container)).setBackgroundColor(mConfig.getScheme()[OVERVIEW_BG_INDEX]);
+        mLayout.findViewById(R.id.header_container).setBackgroundColor(mConfig.getScheme()[OVERVIEW_HEADER_INDEX]);
+        mLayout.findViewById(R.id.overview_container).setBackgroundColor(mConfig.getScheme()[OVERVIEW_BG_INDEX]);
 
         return mLayout;
     }
@@ -102,7 +100,7 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
      * storage listView related code in this block
      */
     private void initListView(Context context, View view, boolean shouldShowMemoryBar) {
-        ListView listView = (ListView) view.findViewById(R.id.storage_list_view);
+        ListView listView = view.findViewById(R.id.storage_list_view);
 
         // we need to populate before to get the internal storage path in list
         populateList();
@@ -115,7 +113,7 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 final String dirPath = evaluatePath(i);
 
-                if(new File(dirPath).canRead()){
+                if (new File(dirPath).canRead()) {
                     // if allowCustomPath is called then directory chooser will be the default secondary dialog
                     if (mConfig.isAllowCustomPath()) {
                         // if developer wants to apply threshold
@@ -123,12 +121,12 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
                             startThresholdTest(i);
                         } else {
 
-                            if(BUILD_DEBUG) {
-                                 mHandler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    DiskUtil.showSecondaryChooser(dirPath, mConfig);
-                                }
+                            if (BUILD_DEBUG) {
+                                mHandler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        DiskUtil.showSecondaryChooser(dirPath, mConfig);
+                                    }
                                 }, 250);
                             } else {
                                 DiskUtil.showSecondaryChooser(dirPath, mConfig);
@@ -175,14 +173,15 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
 
     /**
      * initiate to take threshold test
+     *
      * @param position list click index
      */
 
     private void startThresholdTest(int position) {
-        String thresholdSuffix= mConfig.getThresholdSuffix();
+        String thresholdSuffix = mConfig.getThresholdSuffix();
 
         // if threshold suffix is null then memory threshold is also null
-        if(thresholdSuffix != null) {
+        if (thresholdSuffix != null) {
             long availableMem = memoryUtil.getAvailableMemorySize(evaluatePath(position));
 
 
@@ -202,11 +201,12 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
 
     /**
      * evaluates path with respect to the list click position
+     *
      * @param i position in list
      * @return String with the required path for developers
      */
     private String evaluatePath(int i) {
-        if(i == 0) {
+        if (i == 0) {
             return Environment.getExternalStorageDirectory().getAbsolutePath();
         } else {
             return "/storage/" + storagesList.get(i).getStorageTitle();
@@ -216,8 +216,8 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
     /**
      * checks if available space in user's device is greater than the developer defined threshold
      *
-     * @param threshold defined by the developer using Config.withThreshold()
-     * @param memorySuffix also defined in Config.withThreshold() - check in GB, MB, KB ?
+     * @param threshold      defined by the developer using Config.withThreshold()
+     * @param memorySuffix   also defined in Config.withThreshold() - check in GB, MB, KB ?
      * @param availableSpace statfs available mem in bytes (long)
      * @return if available memory is more than threshold
      */
@@ -247,8 +247,8 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
         storagesList.add(storages);
 
 
-        for(File f: volumeList) {
-            if(!f.getName().equals(MemoryUtil.SELF_DIR_NAME)
+        for (File f : volumeList) {
+            if (!f.getName().equals(MemoryUtil.SELF_DIR_NAME)
                     && !f.getName().equals(MemoryUtil.EMULATED_DIR_KNOX)
                     && !f.getName().equals(MemoryUtil.EMULATED_DIR_NAME)
                     && !f.getName().equals(MemoryUtil.SDCARD0_DIR_NAME)

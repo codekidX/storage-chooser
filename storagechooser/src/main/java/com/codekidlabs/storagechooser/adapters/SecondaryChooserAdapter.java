@@ -1,7 +1,6 @@
 package com.codekidlabs.storagechooser.adapters;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,13 +20,12 @@ import java.util.List;
 
 public class SecondaryChooserAdapter extends BaseAdapter {
 
+    public static boolean shouldEnable = true;
+    public ArrayList<Integer> selectedPaths;
+    public String prefixPath;
     private List<String> storagesList;
     private Context mContext;
     private int[] scheme;
-    public static boolean shouldEnable = true;
-    public ArrayList<Integer> selectedPaths;
-
-    public String prefixPath;
     private ThumbnailUtil thumbnailUtil;
     private ResourceUtil resourceUtil;
 
@@ -64,21 +62,21 @@ public class SecondaryChooserAdapter extends BaseAdapter {
 
         View rootView = inflater.inflate(R.layout.row_custom_paths, viewGroup, false);
 
-        ImageView pathFolderIcon = (ImageView) rootView.findViewById(R.id.path_folder_icon);
-        if(FileUtil.isDir(prefixPath + "/" + storagesList.get(i))) {
+        ImageView pathFolderIcon = rootView.findViewById(R.id.path_folder_icon);
+        if (FileUtil.isDir(prefixPath + "/" + storagesList.get(i))) {
             applyFolderTint(pathFolderIcon);
         }
 
         thumbnailUtil.init(pathFolderIcon, storagesList.get(i));
 
-        TextView storageName = (TextView) rootView.findViewById(R.id.storage_name);
+        TextView storageName = rootView.findViewById(R.id.storage_name);
         storageName.setText(storagesList.get(i));
 
 
         storageName.setTextColor(scheme[StorageChooser.Theme.SEC_TEXT_INDEX]);
 
-        if(selectedPaths.contains(i)) {
-                rootView.setBackgroundColor(resourceUtil.getPrimaryColorWithAlpha());
+        if (selectedPaths.contains(i)) {
+            rootView.setBackgroundColor(resourceUtil.getPrimaryColorWithAlpha());
         }
 
         return rootView;
@@ -87,6 +85,7 @@ public class SecondaryChooserAdapter extends BaseAdapter {
 
     /**
      * return the spannable index of character '('
+     *
      * @param str SpannableStringBuilder to apply typeface changes
      * @return index of '('
      */
@@ -94,12 +93,12 @@ public class SecondaryChooserAdapter extends BaseAdapter {
         return str.toString().indexOf("(") + 1;
     }
 
-    public void setPrefixPath(String path) {
-        this.prefixPath = path;
-    }
-
     public String getPrefixPath() {
         return prefixPath;
+    }
+
+    public void setPrefixPath(String path) {
+        this.prefixPath = path;
     }
 
     private void applyFolderTint(ImageView im) {

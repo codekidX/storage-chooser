@@ -17,24 +17,21 @@ import java.util.ArrayList;
 
 public class StorageChooser {
 
-    private final String TAG = this.getClass().getName();
-    public static Dialog dialog;
-
-    public static Config sConfig;
-    private Activity chooserActivity;
-
-    public static OnSelectListener onSelectListener;
-    public static OnCancelListener onCancelListener;
-    public static OnMultipleSelectListener onMultipleSelectListener;
-
     public static final String NONE = "none";
     public static final String DIRECTORY_CHOOSER = "dir";
     public static final String FILE_PICKER = "file";
-
+    public static Dialog dialog;
+    public static Config sConfig;
+    public static OnSelectListener onSelectListener;
+    public static OnCancelListener onCancelListener;
+    public static OnMultipleSelectListener onMultipleSelectListener;
     public static String LAST_SESSION_PATH = null;
+    private final String TAG = this.getClass().getName();
+    private Activity chooserActivity;
 
     /**
      * basic constructor of StorageChooser
+     *
      * @param config to use with dialog window addition
      */
     StorageChooser(Activity activity, Config config) {
@@ -49,18 +46,16 @@ public class StorageChooser {
     public StorageChooser() {
     }
 
-    public interface OnSelectListener {
-
-        void onSelect(String path);
+    public static Config getsConfig() {
+        return sConfig;
     }
 
-    public interface OnCancelListener {
-
-        void onCancel();
+    public static void setsConfig(Config sConfig) {
+        StorageChooser.sConfig = sConfig;
     }
 
-    public interface OnMultipleSelectListener {
-        void onDone(ArrayList<String> selectedFilePaths);
+    private static Dialog getStorageChooserDialog(Activity activity) {
+        return new Dialog(activity, R.style.DialogTheme);
     }
 
     /**
@@ -77,17 +72,17 @@ public class StorageChooser {
         dialog = getStorageChooserDialog(getChooserActivity());
 
         // check if listeners are set to avoid crash
-        if(onSelectListener == null) {
+        if (onSelectListener == null) {
             onSelectListener = getDefaultOnSelectListener();
         }
-        if(onCancelListener == null) {
+        if (onCancelListener == null) {
             onCancelListener = getDefaultOnCancelListener();
         }
-        if(onMultipleSelectListener == null) {
+        if (onMultipleSelectListener == null) {
             onMultipleSelectListener = getDefaultMultipleSelectionListener();
         }
 
-        if(sConfig.isResumeSession() && StorageChooser.LAST_SESSION_PATH !=null) {
+        if (sConfig.isResumeSession() && StorageChooser.LAST_SESSION_PATH != null) {
             DiskUtil.showSecondaryChooser(StorageChooser.LAST_SESSION_PATH, sConfig);
         } else {
 
@@ -125,15 +120,6 @@ public class StorageChooser {
         StorageChooser.onMultipleSelectListener = onMultipleSelectListener;
     }
 
-
-    public static Config getsConfig() {
-        return sConfig;
-    }
-
-    public static void setsConfig(Config sConfig) {
-        StorageChooser.sConfig = sConfig;
-    }
-
     private Activity getChooserActivity() {
         return chooserActivity;
     }
@@ -169,21 +155,36 @@ public class StorageChooser {
         };
     }
 
-    private static Dialog getStorageChooserDialog(Activity activity) {
-        return new Dialog(activity, R.style.DialogTheme);
+    public enum FileType {
+        VIDEO, AUDIO, DOCS, IMAGES, ARCHIVE
+    }
+
+    public interface OnSelectListener {
+
+        void onSelect(String path);
+    }
+
+    public interface OnCancelListener {
+
+        void onCancel();
+    }
+
+    public interface OnMultipleSelectListener {
+        void onDone(ArrayList<String> selectedFilePaths);
     }
 
     /**
      * @class Builder
-     *  - as the name suggests it gets all the configurations provided by the developer and
-     *    passes them to the StorageChooser class using the constructor.
-     *
-     *    NOTE: The dialog is still not yet show even though the builder instance is present.
-     *    show() is called seperately on the builder because it does not return a builder but
-     *    triggers init() inside the StorageChooser class.
+     * - as the name suggests it gets all the configurations provided by the developer and
+     * passes them to the StorageChooser class using the constructor.
+     * <p>
+     * NOTE: The dialog is still not yet show even though the builder instance is present.
+     * show() is called seperately on the builder because it does not return a builder but
+     * triggers init() inside the StorageChooser class.
      */
     public static class Builder {
 
+        Config devConfig;
         private Activity mActivity;
         private boolean mActionSave = false;
         private boolean mShowMemoryBar = false;
@@ -197,14 +198,11 @@ public class StorageChooser {
         private String type;
         private Content content;
         private StorageChooser.Theme theme;
-
         private StorageChooser.FileType filter;
         private ArrayList<StorageChooser.FileType> multipleFilter;
 
-        Config devConfig;
-
         public Builder() {
-            devConfig =  new Config();
+            devConfig = new Config();
         }
 
         public Builder withActivity(Activity activity) {
@@ -258,7 +256,7 @@ public class StorageChooser {
             return this;
         }
 
-        public  Builder allowCustomPath(boolean allowCustomPath) {
+        public Builder allowCustomPath(boolean allowCustomPath) {
             mAllowCustomPath = allowCustomPath;
             return this;
         }
@@ -326,7 +324,6 @@ public class StorageChooser {
         }
 
 
-
         public StorageChooser build() {
             devConfig.setActionSave(mActionSave);
             devConfig.setShowMemoryBar(mShowMemoryBar);
@@ -343,7 +340,7 @@ public class StorageChooser {
             type = (type == null) ? StorageChooser.NONE : type;
             devConfig.setSecondaryAction(type);
 
-            if(theme == null || theme.getScheme() == null) {
+            if (theme == null || theme.getScheme() == null) {
                 theme = new Theme(mActivity);
                 devConfig.setScheme(theme.getDefaultScheme());
             } else {
@@ -357,36 +354,34 @@ public class StorageChooser {
 
     public static class Theme {
 
-        Context context;
-
         // Overview dialog colors
-        public static final int OVERVIEW_HEADER_INDEX  = 0;
-        public static final int OVERVIEW_TEXT_INDEX  = 1;
-        public static final int OVERVIEW_BG_INDEX  = 2;
-        public static final int OVERVIEW_STORAGE_TEXT_INDEX  = 3;
-        public static final int OVERVIEW_INDICATOR_INDEX  = 4;
-        public static final int OVERVIEW_MEMORYBAR_INDEX  = 5;
-
+        public static final int OVERVIEW_HEADER_INDEX = 0;
+        public static final int OVERVIEW_TEXT_INDEX = 1;
+        public static final int OVERVIEW_BG_INDEX = 2;
+        public static final int OVERVIEW_STORAGE_TEXT_INDEX = 3;
+        public static final int OVERVIEW_INDICATOR_INDEX = 4;
+        public static final int OVERVIEW_MEMORYBAR_INDEX = 5;
         // Secondary dialog colors
-        public static final int SEC_FOLDER_TINT_INDEX  = 6;
-        public static final int SEC_BG_INDEX  = 7;
-        public static final int SEC_TEXT_INDEX  = 8;
-        public static final int SEC_ADDRESS_TINT_INDEX  = 9;
-        public static final int SEC_HINT_TINT_INDEX  = 10;
-        public static final int SEC_SELECT_LABEL_INDEX  = 11;
-        public static final int SEC_FOLDER_CREATION_BG_INDEX  = 12;
-        public static final int SEC_DONE_FAB_INDEX  = 13;
-        public static final int SEC_ADDRESS_BAR_BG  = 14;
+        public static final int SEC_FOLDER_TINT_INDEX = 6;
+        public static final int SEC_BG_INDEX = 7;
+        public static final int SEC_TEXT_INDEX = 8;
+        public static final int SEC_ADDRESS_TINT_INDEX = 9;
+        public static final int SEC_HINT_TINT_INDEX = 10;
+        public static final int SEC_SELECT_LABEL_INDEX = 11;
+        public static final int SEC_FOLDER_CREATION_BG_INDEX = 12;
+        public static final int SEC_DONE_FAB_INDEX = 13;
+        public static final int SEC_ADDRESS_BAR_BG = 14;
+        Context context;
+        int[] scheme;
 
         public Theme(Context context) {
             this.context = context;
         }
 
-        int[] scheme;
-
         public int[] getDefaultScheme() {
             return context.getResources().getIntArray(R.array.default_light);
         }
+
         public int[] getDefaultDarkScheme() {
             return context.getResources().getIntArray(R.array.default_dark);
         }
@@ -399,10 +394,5 @@ public class StorageChooser {
         public void setScheme(int[] scheme) {
             this.scheme = scheme;
         }
-    }
-
-
-    public enum FileType {
-        VIDEO, AUDIO, DOCS, IMAGES, ARCHIVE
     }
 }

@@ -10,12 +10,12 @@ import java.util.List;
 
 public class MemoryUtil {
 
-    private static final String ERROR = "error";
     public static final String SELF_DIR_NAME = "self";
     public static final String EMULATED_DIR_NAME = "emulated";
     public static final String EMULATED_DIR_KNOX = "knox-emulated";
     public static final String SDCARD0_DIR_NAME = "sdcard0";
     public static final String CONTAINER = "container";
+    private static final String ERROR = "error";
 
     public boolean isExternalStoragePresent() {
         return getStorageListSize() != 1;
@@ -23,6 +23,7 @@ public class MemoryUtil {
 
     /**
      * Returns an the number of the files inside '/storage' directory
+     *
      * @return int - number of storages present except the redundant once
      */
     public int getStorageListSize() {
@@ -30,9 +31,9 @@ public class MemoryUtil {
         List<File> volumeList = new ArrayList<>();
         Collections.addAll(volumeList, storageDir.listFiles());
         // segregate the list
-        for(int i=0;i < volumeList.size(); i++) {
+        for (int i = 0; i < volumeList.size(); i++) {
             String storageName = volumeList.get(i).getName();
-            if(storageName.equals(SELF_DIR_NAME) ||
+            if (storageName.equals(SELF_DIR_NAME) ||
                     storageName.equals(EMULATED_DIR_KNOX) ||
                     storageName.equals(EMULATED_DIR_KNOX) ||
                     storageName.equals(SDCARD0_DIR_NAME) ||
@@ -47,6 +48,7 @@ public class MemoryUtil {
 
     /**
      * calculate available/free size of any directory
+     *
      * @param path path of the storage
      * @return size in bytes
      */
@@ -60,6 +62,7 @@ public class MemoryUtil {
 
     /**
      * calculate total size of any directory
+     *
      * @param path path of the storage
      * @return size in bytes
      */
@@ -73,6 +76,7 @@ public class MemoryUtil {
 
     /**
      * mainly to format the available bytes into user readable string
+     *
      * @param size long - value gained from the getTotalMemorySize() and getAvailableMemorySize()
      *             using StatFs
      * @return a formatted string with KiB, MiB, GiB suffix
@@ -109,11 +113,11 @@ public class MemoryUtil {
 
         switch (suffix) {
             case "KiB":
-                return size/1024;
+                return size / 1024;
             case "MiB":
-                return (long) (size/Math.pow(1024, 2));
+                return (long) (size / Math.pow(1024, 2));
             case "GiB":
-                return (long) (size/Math.pow(1024, 3));
+                return (long) (size / Math.pow(1024, 3));
             default:
                 return 0;
         }
