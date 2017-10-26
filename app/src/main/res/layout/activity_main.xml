@@ -100,6 +100,22 @@
                     android:layout_marginTop="8dp"
                     android:text="setTheme (Dark)" />
 
+                <CheckBox
+                    android:id="@+id/checkbox_heading_typeface"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Change Heading Typeface" />
+
+                <CheckBox
+                    android:id="@+id/checkbox_list_typeface"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Change List Typeface" />
+
                 <Spinner
                     android:id="@+id/filter_spinner"
                     android:tooltipText="Filter Folders"

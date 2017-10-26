@@ -121,6 +121,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        ((CheckBox) findViewById(R.id.checkbox_heading_typeface)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    builder.setHeadingTypeface("fonts/Belmongo.ttf", true);
+                } else {
+                    builder.setHeadingTypeface(null, false);
+                }
+            }
+        });
+
+        ((CheckBox) findViewById(R.id.checkbox_list_typeface)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    builder.setListTypeface("fonts/Belmongo.ttf", true);
+                } else {
+                    builder.setListTypeface(null, false);
+                }
+            }
+        });
+
 
         Spinner spinner = (Spinner) findViewById(R.id.filter_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
