@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.StorageChooser;
+import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
 import com.codekidlabs.storagechooser.utils.FileUtil;
 import com.codekidlabs.storagechooser.utils.ResourceUtil;
 import com.codekidlabs.storagechooser.utils.ThumbnailUtil;
@@ -29,11 +30,17 @@ public class SecondaryChooserAdapter extends BaseAdapter {
     private ThumbnailUtil thumbnailUtil;
     private ResourceUtil resourceUtil;
 
+    private String listTypeface;
+    private boolean fromAssets;
 
-    public SecondaryChooserAdapter(List<String> storagesList, Context mContext, int[] scheme) {
+
+    public SecondaryChooserAdapter(List<String> storagesList, Context mContext, int[] scheme,
+                                   String listTypeface, boolean fromAssets) {
         this.storagesList = storagesList;
         this.mContext = mContext;
         this.scheme = scheme;
+        this.listTypeface = listTypeface;
+        this.fromAssets = fromAssets;
 
         // create instance once
         thumbnailUtil = new ThumbnailUtil(mContext);
@@ -71,6 +78,11 @@ public class SecondaryChooserAdapter extends BaseAdapter {
 
         TextView storageName = rootView.findViewById(R.id.storage_name);
         storageName.setText(storagesList.get(i));
+
+        if (listTypeface != null) {
+            storageName.setTypeface(ChooserDialogFragment.getSCTypeface(mContext, listTypeface,
+                    fromAssets));
+        }
 
 
         storageName.setTextColor(scheme[StorageChooser.Theme.SEC_TEXT_INDEX]);

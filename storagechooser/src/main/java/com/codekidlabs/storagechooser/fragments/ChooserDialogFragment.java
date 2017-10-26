@@ -3,6 +3,7 @@ package com.codekidlabs.storagechooser.fragments;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -43,8 +44,6 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
     private View mLayout;
     private ViewGroup mContainer;
 
-    private TextView mPathChosen;
-
     private List<Storages> storagesList;
     private List<String> customStoragesList;
     private String TAG = "StorageChooser";
@@ -62,7 +61,8 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         mContainer = container;
         if (getShowsDialog()) {
             // one could return null here, or be nice and call super()
@@ -87,10 +87,19 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
             TextView dialogTitle = mLayout.findViewById(R.id.dialog_title);
             dialogTitle.setTextColor(mConfig.getScheme()[OVERVIEW_TEXT_INDEX]);
             dialogTitle.setText(mContent.getOverviewHeading());
+
+            // set heading typeface
+            if(mConfig.getHeadingFont() != null) {
+                dialogTitle.setTypeface(getSCTypeface(getActivity().getApplicationContext(),
+                        mConfig.getHeadingFont(),
+                        mConfig.isHeadingFromAssets()));
+            }
         }
 
-        mLayout.findViewById(R.id.header_container).setBackgroundColor(mConfig.getScheme()[OVERVIEW_HEADER_INDEX]);
-        mLayout.findViewById(R.id.overview_container).setBackgroundColor(mConfig.getScheme()[OVERVIEW_BG_INDEX]);
+        mLayout.findViewById(R.id.header_container).setBackgroundColor(
+                mConfig.getScheme()[OVERVIEW_HEADER_INDEX]);
+        mLayout.findViewById(R.id.overview_container).setBackgroundColor(
+                mConfig.getScheme()[OVERVIEW_BG_INDEX]);
 
         return mLayout;
     }
@@ -105,7 +114,8 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
         populateList();
 
         listView.setAdapter(new StorageChooserListAdapter(storagesList, context,
-                shouldShowMemoryBar, mConfig.getScheme(), mConfig.getMemorybarHeight()));
+                shouldShowMemoryBar, mConfig.getScheme(), mConfig.getMemorybarHeight(),
+                mConfig.getListFont(), mConfig.isListFromAssets()));
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -263,6 +273,16 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
             }
         }
 
+    }
+
+    // Convinience methods
+
+    public static Typeface getSCTypeface(Context context, String path, boolean assets) {
+        if (assets) {
+            return Typeface.createFromAsset(context.getAssets(),
+                    path);
+        }
+        return Typeface.createFromFile(path);
     }
 
     @Override

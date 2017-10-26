@@ -31,6 +31,11 @@ public class Config {
     private String primaryPath;
     private boolean isGridView;
     private boolean resumeSession;
+    //typeface config
+    private String headingFont;
+    private String listFont;
+    private boolean headingFromAssets;
+    private boolean listFromAssets;
 
     private String secondaryAction;
 
@@ -235,5 +240,37 @@ public class Config {
 
     public void setMemorybarHeight(float memorybarHeight) {
         this.memorybarHeight = memorybarHeight;
+    }
+
+    public String getHeadingFont() {
+        return headingFont;
+    }
+
+    public void setHeadingFont(String headingFont) {
+        this.headingFont = headingFont;
+    }
+
+    public String getListFont() {
+        return listFont;
+    }
+
+    public void setListFont(String listFont) {
+        this.listFont = listFont;
+    }
+
+    public boolean isHeadingFromAssets() {
+        return headingFromAssets;
+    }
+
+    public void setHeadingFromAssets(boolean headingFromAssets) {
+        this.headingFromAssets = headingFromAssets;
+    }
+
+    public boolean isListFromAssets() {
+        return listFromAssets;
+    }
+
+    public void setListFromAssets(boolean listFromAssets) {
+        this.listFromAssets = listFromAssets;
     }
 }
