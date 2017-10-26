@@ -346,6 +346,11 @@ public class StorageChooser {
             return this;
         }
 
+        public Builder disableMultiSelect() {
+            devConfig.setMultiSelect(false);
+            return this;
+        }
+
 
         public StorageChooser build() {
             devConfig.setActionSave(mActionSave);

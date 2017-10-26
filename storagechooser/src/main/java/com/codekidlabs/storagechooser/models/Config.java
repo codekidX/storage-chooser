@@ -37,6 +37,9 @@ public class Config {
     private boolean headingFromAssets;
     private boolean listFromAssets;
 
+    //multi
+    private boolean multiSelect = true;
+
     private String secondaryAction;
 
     private Content content;
@@ -272,5 +275,13 @@ public class Config {
 
     public void setListFromAssets(boolean listFromAssets) {
         this.listFromAssets = listFromAssets;
+    }
+
+    public boolean isMultiSelect() {
+        return multiSelect;
+    }
+
+    public void setMultiSelect(boolean multiSelect) {
+        this.multiSelect = multiSelect;
     }
 }

@@ -398,7 +398,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         mCreateButton.setOnClickListener(mCreateButtonClickListener);
         mMultipleOnSelectButton.setOnClickListener(mMultipleModeDoneButtonClickListener);
 
-        if (mConfig.getSecondaryAction() == StorageChooser.FILE_PICKER) {
+        if (mConfig.getSecondaryAction().equals(StorageChooser.FILE_PICKER)) {
             mSelectButton.setVisibility(View.GONE);
             setBottomNewFolderView();
         }
@@ -444,7 +444,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         SecondaryChooserAdapter.shouldEnable = true;
         listView.setOnItemClickListener(mSingleModeClickListener);
 
-        if (isFilePicker) {
+        if (isFilePicker && mConfig.isMultiSelect()) {
             listView.setOnItemLongClickListener(mLongClickListener);
         }
 
