@@ -59,6 +59,30 @@ Before you implement this library here are some notes that you can follow to avo
 Implementation
 -------------
 
+
+## List of configuration for StorageChooser.Builder
+
+You can have the following configuration of builder.
+
+| methods | parameters | compulsary? |
+| ------ | ------ | ------ |
+| withActivity | Activity  | Yes |
+| withFragmentManager | FragmentManager _(legacy)_ | Yes |
+| withMemoryBar | boolean | No |
+| withPreference | SharedPreferences | actionSave(true) |
+| withPredefinedPath | String | No |
+| **setType** | StoragChooser.DIRECTORY_CHOOSER **_or_** StorageChooser.FILE_PICKER| allowCustomPath(true) |
+| showHidden | boolean | No |
+| setTheme | StorageChooser.Theme | No |
+| skipOverview | boolean, String | No |
+| skipOverview | boolean | No |
+| withContent | com.codekidlabs.storagechooser.Content | No |
+| filter | StorageChooser.FileType | No |
+| shouldResumeSession | boolean | No |
+| setHeadingTypeface | String, boolean | No |
+| setListTypeface | String, boolean | No |
+| disableMultiSelect | NONE | No |
+
 ### Simple Type
 
 - Let's you toggle between inernal/external root directory.
@@ -153,26 +177,6 @@ Here are some filters available in storage-chooser. Want any other filter types 
 `builder.setType(StorageChooser.FILE_PICKER);`
 
 ![](https://media.giphy.com/media/7AWKkgm9Nozw4/giphy.gif)
-
-## List of configuration for StorageChooser.Builder _(including 2.0)_
-
-You can have the following configuration of builder.
-
-| methods | parameters | compulsary? |
-| ------ | ------ | ------ |
-| withActivity | Activity  | Yes |
-| withFragmentManager | FragmentManager _(legacy)_ | Yes |
-| withMemoryBar | boolean | No |
-| withPreference | SharedPreferences | actionSave(true) |
-| withPredefinedPath | String | No |
-| **setType** | StoragChooser.DIRECTORY_CHOOSER **_or_** StorageChooser.FILE_PICKER| allowCustomPath(true) |
-| showHidden | boolean | No |
-| setTheme | StorageChooser.Theme | No |
-| skipOverview | boolean, String | No |
-| skipOverview | boolean | No |
-| withContent | com.codekidlabs.storagechooser.Content | No |
-| filter | StorageChooser.FileType | No |
-| shouldResumeSession | boolean | No |
 
 ## Localization
 
