@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -12,6 +13,7 @@ import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
 import com.codekidlabs.storagechooser.models.Config;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 
@@ -195,6 +197,8 @@ public class StorageChooser {
         private boolean mApplyMemoryThreshold = false;
         private boolean mShowInGrid = false;
         private boolean mResumeSession = false;
+        private boolean mHeadingFromAssets = false;
+        private boolean mListFromAssets = false;
         private float mMemorybarHeight = 2f;
         private String type;
         private Content content;
@@ -329,6 +333,19 @@ public class StorageChooser {
             return this;
         }
 
+        // typefaces
+        public Builder setHeadingTypeface(String path, boolean fromAssets) {
+            devConfig.setHeadingFont(path);
+            mHeadingFromAssets = fromAssets;
+            return this;
+        }
+
+        public Builder setListTypeface(String path, boolean fromAssets) {
+            devConfig.setListFont(path);
+            mListFromAssets = fromAssets;
+            return this;
+        }
+
 
         public StorageChooser build() {
             devConfig.setActionSave(mActionSave);
@@ -343,6 +360,8 @@ public class StorageChooser {
             devConfig.setContent(content);
             devConfig.setSingleFilter(filter);
             devConfig.setMemorybarHeight(mMemorybarHeight);
+            devConfig.setHeadingFromAssets(mHeadingFromAssets);
+            devConfig.setListFromAssets(mListFromAssets);
 
             type = (type == null) ? StorageChooser.NONE : type;
             devConfig.setSecondaryAction(type);

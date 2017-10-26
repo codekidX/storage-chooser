@@ -373,9 +373,17 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         mSelectButton.setText(mContent.getSelectLabel());
         mCreateButton.setText(mContent.getCreateLabel());
 
+
         // set colors
         mSelectButton.setTextColor(scheme[Theme.SEC_SELECT_LABEL_INDEX]);
         mPathChosen.setTextColor(scheme[Theme.SEC_ADDRESS_TINT_INDEX]);
+
+        // set addressbar typeface
+        if (mConfig.getHeadingFont() != null) {
+            mPathChosen.setTypeface(ChooserDialogFragment.getSCTypeface(mContext,
+                    mConfig.getHeadingFont(), mConfig.isHeadingFromAssets()));
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mNewFolderImageView.setImageTintList(ColorStateList.valueOf(scheme[Theme.SEC_ADDRESS_TINT_INDEX]));
             mBackButton.setImageTintList(ColorStateList.valueOf(scheme[Theme.SEC_ADDRESS_TINT_INDEX]));
@@ -427,7 +435,8 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         mBundlePath = this.getArguments().getString(DiskUtil.SC_PREFERENCE_KEY);
         isFilePicker = this.getArguments().getBoolean(DiskUtil.SC_CHOOSER_FLAG, false);
         populateList(mBundlePath);
-        secondaryChooserAdapter = new SecondaryChooserAdapter(customStoragesList, context, scheme);
+        secondaryChooserAdapter = new SecondaryChooserAdapter(customStoragesList, context, scheme,
+                mConfig.getListFont(), mConfig.isListFromAssets());
         secondaryChooserAdapter.setPrefixPath(theSelectedPath);
 
         listView.setAdapter(secondaryChooserAdapter);

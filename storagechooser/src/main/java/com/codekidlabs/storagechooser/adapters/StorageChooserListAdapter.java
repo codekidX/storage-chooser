@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.animators.MemorybarAnimation;
 import com.codekidlabs.storagechooser.exceptions.MemoryNotAccessibleException;
+import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
 import com.codekidlabs.storagechooser.models.Storages;
 import com.codekidlabs.storagechooser.utils.MemoryUtil;
 
@@ -36,16 +37,20 @@ public class StorageChooserListAdapter extends BaseAdapter {
     private ProgressBar memoryBar;
     private int[] scheme;
     private float memorybarHeight;
+    private String listTypeface;
+    private boolean fromAssets;
 
 
     public StorageChooserListAdapter(List<Storages> storagesList, Context mContext,
                                      boolean shouldShowMemoryBar, int[] scheme,
-                                     float memorybarHeight) {
+                                     float memorybarHeight, String listTypeface, boolean fromAssets) {
         this.storagesList = storagesList;
         this.mContext = mContext;
         this.shouldShowMemoryBar = shouldShowMemoryBar;
         this.scheme = scheme;
         this.memorybarHeight = memorybarHeight;
+        this.listTypeface = listTypeface;
+        this.fromAssets = fromAssets;
     }
 
     @Override
@@ -86,6 +91,13 @@ public class StorageChooserListAdapter extends BaseAdapter {
 
         storageName.setTextColor(scheme[OVERVIEW_STORAGE_TEXT_INDEX]);
         memoryStatus.setText(availableText);
+
+        if (listTypeface != null) {
+            storageName.setTypeface(ChooserDialogFragment.getSCTypeface(mContext, listTypeface,
+                    fromAssets));
+            memoryStatus.setTypeface(ChooserDialogFragment.getSCTypeface(mContext, listTypeface,
+                    fromAssets));
+        }
 
         memoryStatus.setTextColor(scheme[OVERVIEW_INDICATOR_INDEX]);
         DrawableCompat.setTint(memoryBar.getProgressDrawable(), scheme[OVERVIEW_MEMORYBAR_INDEX]);
