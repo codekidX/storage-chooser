@@ -89,6 +89,7 @@
             android:layout_above="@id/select_button"
             android:layout_below="@id/custom_path_header"
             android:divider="@null"
+            android:listSelector="@drawable/ripple"
             android:longClickable="true" />
 
 
@@ -104,11 +105,9 @@
                 android:id="@+id/et_folder_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_margin="16dp"
-                android:layout_toLeftOf="@+id/create_folder_button"
                 android:layout_toStartOf="@+id/create_folder_button"
                 android:backgroundTint="@color/pathLayoutBgColor"
                 android:maxLength="50"
@@ -150,7 +149,6 @@
             android:layout_height="72dip"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
             android:layout_margin="16dp"
             android:drawableTop="@drawable/ic_chevron_left_white_24dp"
             android:src="@drawable/ic_check_white_24dp"
