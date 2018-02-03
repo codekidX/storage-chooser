@@ -12,6 +12,7 @@ public class Content {
     private String cancelLabel = "Cancel";
     private String overviewHeading = "Choose Storage";
     private String internalStorageText = "Internal Storage";
+    private String freeSpaceText = "%s free";
     private String folderCreatedToastText = "Folder Created";
     private String folderErrorToastText = "Error occured while creating folder. Try again.";
     private String textfieldHintText = "Folder Name";
@@ -64,6 +65,14 @@ public class Content {
 
     public void setInternalStorageText(String internalStorageText) {
         this.internalStorageText = internalStorageText;
+    }
+
+    public String getFreeSpaceText() {
+        return freeSpaceText;
+    }
+
+    public void setFreeSpaceText(String freeSpaceText) {
+        this.freeSpaceText = freeSpaceText;
     }
 
     public String getFolderCreatedToastText() {
