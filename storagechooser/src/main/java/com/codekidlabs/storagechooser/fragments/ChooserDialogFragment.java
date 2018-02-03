@@ -115,7 +115,7 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
 
         listView.setAdapter(new StorageChooserListAdapter(storagesList, context,
                 shouldShowMemoryBar, mConfig.getScheme(), mConfig.getMemorybarHeight(),
-                mConfig.getListFont(), mConfig.isListFromAssets()));
+                mConfig.getListFont(), mConfig.isListFromAssets(), mContent));
 
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

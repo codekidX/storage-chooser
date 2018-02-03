@@ -15,6 +15,7 @@ import android.widget.BaseAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.codekidlabs.storagechooser.Content;
 import com.codekidlabs.storagechooser.R;
 import com.codekidlabs.storagechooser.animators.MemorybarAnimation;
 import com.codekidlabs.storagechooser.exceptions.MemoryNotAccessibleException;
@@ -39,11 +40,13 @@ public class StorageChooserListAdapter extends BaseAdapter {
     private float memorybarHeight;
     private String listTypeface;
     private boolean fromAssets;
+    private Content mContent;
 
 
     public StorageChooserListAdapter(List<Storages> storagesList, Context mContext,
                                      boolean shouldShowMemoryBar, int[] scheme,
-                                     float memorybarHeight, String listTypeface, boolean fromAssets) {
+                                     float memorybarHeight, String listTypeface, boolean fromAssets,
+                                     Content content) {
         this.storagesList = storagesList;
         this.mContext = mContext;
         this.shouldShowMemoryBar = shouldShowMemoryBar;
@@ -51,6 +54,7 @@ public class StorageChooserListAdapter extends BaseAdapter {
         this.memorybarHeight = memorybarHeight;
         this.listTypeface = listTypeface;
         this.fromAssets = fromAssets;
+        this.mContent = content;
     }
 
     @Override
@@ -86,7 +90,7 @@ public class StorageChooserListAdapter extends BaseAdapter {
         final SpannableStringBuilder str = new SpannableStringBuilder(storages.getStorageTitle() + " (" + storages.getMemoryTotalSize() + ")");
 
         str.setSpan(new StyleSpan(Typeface.ITALIC), getSpannableIndex(str), str.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        String availableText = mContext.getString(R.string.text_freespace, storages.getMemoryAvailableSize());
+        String availableText = String.format(mContent.getFreeSpaceText(), storages.getMemoryAvailableSize());
         storageName.setText(str);
 
         storageName.setTextColor(scheme[OVERVIEW_STORAGE_TEXT_INDEX]);
