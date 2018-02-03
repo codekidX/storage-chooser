@@ -7,11 +7,13 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -35,6 +37,7 @@ public class StorageChooserListAdapter extends BaseAdapter {
     private List<Storages> storagesList;
     private Context mContext;
     private boolean shouldShowMemoryBar;
+    private boolean hideFreeSpaceLabel;
     private ProgressBar memoryBar;
     private int[] scheme;
     private float memorybarHeight;
@@ -44,12 +47,13 @@ public class StorageChooserListAdapter extends BaseAdapter {
 
 
     public StorageChooserListAdapter(List<Storages> storagesList, Context mContext,
-                                     boolean shouldShowMemoryBar, int[] scheme,
-                                     float memorybarHeight, String listTypeface, boolean fromAssets,
-                                     Content content) {
+                                     boolean shouldShowMemoryBar, boolean hideFreeSpaceLabel,
+                                     int[] scheme, float memorybarHeight, String listTypeface,
+                                     boolean fromAssets, Content content) {
         this.storagesList = storagesList;
         this.mContext = mContext;
         this.shouldShowMemoryBar = shouldShowMemoryBar;
+        this.hideFreeSpaceLabel = hideFreeSpaceLabel;
         this.scheme = scheme;
         this.memorybarHeight = memorybarHeight;
         this.listTypeface = listTypeface;
@@ -118,6 +122,11 @@ public class StorageChooserListAdapter extends BaseAdapter {
             runMemorybarAnimation(i);
         } else {
             memoryBar.setVisibility(View.GONE);
+        }
+
+        if (hideFreeSpaceLabel) {
+            memoryStatus.setVisibility(View.GONE);
+            storageName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         }
 
         return rootView;

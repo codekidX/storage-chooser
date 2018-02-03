@@ -16,6 +16,7 @@ public class Config {
     private android.app.FragmentManager fragmentManager;
     private String predefinedPath;
     private boolean showMemoryBar;
+    private boolean hideFreeSpaceLabel;
     private float memorybarHeight;
     private boolean actionSave;
     private SharedPreferences preference;
@@ -71,6 +72,14 @@ public class Config {
 
     public void setShowMemoryBar(boolean showMemoryBar) {
         this.showMemoryBar = showMemoryBar;
+    }
+
+    public boolean isHideFreeSpaceLabel() {
+        return hideFreeSpaceLabel;
+    }
+
+    public void setHideFreeSpaceLabel(boolean hideFreeSpaceLabel) {
+        this.hideFreeSpaceLabel = hideFreeSpaceLabel;
     }
 
     public boolean isActionSave() {
