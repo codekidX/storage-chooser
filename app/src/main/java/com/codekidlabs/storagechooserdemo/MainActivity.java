@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         ((CheckBox) findViewById(R.id.checkbox_free_space_label)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                builder.withoutFreeSpaceLabel(isChecked);
+                builder.hideFreeSpaceLabel(isChecked);
             }
         });
 

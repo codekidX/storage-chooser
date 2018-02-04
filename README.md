@@ -69,7 +69,7 @@ You can have the following configuration of builder.
 | withActivity | Activity  | Yes |
 | withFragmentManager | FragmentManager _(legacy)_ | Yes |
 | withMemoryBar | boolean | No |
-| withoutFreeSpaceLabel | boolean | No |
+| hideFreeSpaceLabel | boolean | No |
 | withPreference | SharedPreferences | actionSave(true) |
 | withPredefinedPath | String | No |
 | **setType** | StoragChooser.DIRECTORY_CHOOSER **_or_** StorageChooser.FILE_PICKER| allowCustomPath(true) |

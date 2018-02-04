@@ -226,7 +226,7 @@ public class StorageChooser {
             return this;
         }
 
-        public Builder withoutFreeSpaceLabel(boolean hideFreeSpaceLabel) {
+        public Builder hideFreeSpaceLabel(boolean hideFreeSpaceLabel) {
             mHideFreeSpaceLabel = hideFreeSpaceLabel;
             return this;
         }
