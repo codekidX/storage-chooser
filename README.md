@@ -1,4 +1,4 @@
-Storage Chooser 2.0 ! - [Changes and Snippets](https://codekidlabs.github.io/blog/storage-chooser-2.0.html)
+Storage Chooser 2.0 ! - [Changes and Snippets](https://codekidlabs.github.io/2017/12/30/storage-chooser-2.0/)
 ===================
 
 [![](https://jitpack.io/v/codekidX/storage-chooser.svg)](https://jitpack.io/#codekidX/storage-chooser)  [![](https://img.shields.io/badge/last--stable-da21db4-yellow.svg?style=flat-square)](https://github.com/codekidX/storage-chooser/commit/da21db4e5c46e0c3a8b513112ff093448a23754b)  ![GitHub issues](https://img.shields.io/github/issues/codekidX/storage-chooser.svg?style=flat-square)  [![demo](https://img.shields.io/badge/download-demo-blue.svg?style=flat-square)](https://raw.githubusercontent.com/android-arsenal/apk22/master/5336/app.apk)  [![javadoc](https://img.shields.io/badge/Jitpack-javadoc-blue.svg?style=flat-square)](https://jitpack.io/com/github/codekidX/storage-chooser/1.0.33/javadoc/)
@@ -22,14 +22,14 @@ There are also some really nice features that I thought would come in handy:
 
 
 Preview
--------------
+-------
 
 ![SC Features](http://i.imgur.com/nmqPJok.gif)
 
 
 
 Installation
--------------
+------------
 
 Add this to your root build.gradle file under repositories:
 
@@ -45,7 +45,7 @@ Add this to your app level build.gradle as dependency:
 
 
 Notes
--------------
+-----
 
 Before you implement this library here are some notes that you can follow to avoid errors.
 
@@ -57,7 +57,7 @@ Before you implement this library here are some notes that you can follow to avo
 
 
 Implementation
--------------
+--------------
 
 
 ## List of configuration for StorageChooser.Builder
@@ -77,6 +77,7 @@ You can have the following configuration of builder.
 | skipOverview | boolean, String | No |
 | skipOverview | boolean | No |
 | withContent | com.codekidlabs.storagechooser.Content | No |
+| customFilter | ArrayList<String> | No |
 | filter | StorageChooser.FileType | No |
 | shouldResumeSession | boolean | No |
 | setHeadingTypeface | String, boolean | No |
@@ -163,7 +164,7 @@ File filters are good and when your app is made for a specific purpose like choo
 `builder.filter(StorageChooser.FileType.AUDIO);`
 this will filter out all folders containing audio files for you and thereby reducing some effort from user side.
 
-Here are some filters available in storage-chooser. Want any other filter types to be included ? [Open an issue](https://github.com/codekidX/storage-chooser/issues)
+In version *2.0.3*+, there is a support for custom file filters, all you need to do is create an `ArrayList<String>` of all the extensions without the `.` before it and send it to `builder.customFilter` function.
 
 | filter | extensions |
 | ------ | ------ |
@@ -183,7 +184,7 @@ Here are some filters available in storage-chooser. Want any other filter types 
 A seperate localization wiki is posted [here](https://github.com/codekidX/storage-chooser/wiki/Localizing-your-chooser-using-Content)
 
 LICENSE
--------------
+-------
 
 This project is licensed with the Mozilla Public License v2.
 
