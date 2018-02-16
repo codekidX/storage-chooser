@@ -3,6 +3,7 @@ package com.codekidlabs.storagechooserdemo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,13 +31,13 @@ public class ReportBottomSheet extends BottomSheetDialogFragment {
 
         TextView reportText = null;
         if (v != null) {
-            reportText = (TextView) v.findViewById(R.id.report_text);
+            reportText = v.findViewById(R.id.report_text);
         }
         TypefaceUtil.setTypefaceBold(getContext(), reportText);
 
-        Button helpButton = (Button) v.findViewById(R.id.help_button);
-        TypefaceUtil.setTypefaceLight(getContext(),helpButton);
-        helpButton.setBackgroundColor(MainActivity.getColorFromResource(getContext(),android.R.color.white));
+        Button helpButton = v.findViewById(R.id.help_button);
+        TypefaceUtil.setTypefaceLight(getContext(), helpButton);
+        helpButton.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.white));
 
 //        storageChooserButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -45,9 +46,9 @@ public class ReportBottomSheet extends BottomSheetDialogFragment {
 //            }
 //        });
 
-        Button reportButton = (Button) v.findViewById(R.id.report_button);
-        TypefaceUtil.setTypefaceLight(getContext(),reportButton);
-        reportButton.setBackgroundColor(MainActivity.getColorFromResource(getContext(),android.R.color.white));
+        Button reportButton = v.findViewById(R.id.report_button);
+        TypefaceUtil.setTypefaceLight(getContext(), reportButton);
+        reportButton.setBackgroundColor(ContextCompat.getColor(getContext(), android.R.color.white));
 //
 //        storageChooserButtonMemorybar.setOnClickListener(new View.OnClickListener() {
 //            @Override

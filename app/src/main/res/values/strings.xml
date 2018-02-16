@@ -3,4 +3,13 @@
     <string name="action_settings">Settings</string>
     <string name="report_and_help"><![CDATA[REPORT & HELP]]></string>
     <string name="text_freespace">%1$s free</string>
+
+    <string-array name="filter_array">
+        <item>None</item>
+        <item>Video</item>
+        <item>Audio</item>
+        <item>Documents</item>
+        <item>Images</item>
+        <item>Custom</item>
+    </string-array>
 </resources>
