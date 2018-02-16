@@ -37,6 +37,14 @@
                     android:text="withMemoryBar" />
 
                 <CheckBox
+                    android:id="@+id/checkbox_free_space_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:text="hideFreeSpaceLabel" />
+
+                <CheckBox
                     android:id="@+id/checkbox_add_folder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
