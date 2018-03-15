@@ -259,7 +259,8 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
 
 
         for (File f : volumeList) {
-            if (!f.getName().equals(MemoryUtil.SELF_DIR_NAME)
+            if (f.isDirectory()
+                    && !f.getName().equals(MemoryUtil.SELF_DIR_NAME)
                     && !f.getName().equals(MemoryUtil.EMULATED_DIR_KNOX)
                     && !f.getName().equals(MemoryUtil.EMULATED_DIR_NAME)
                     && !f.getName().equals(MemoryUtil.SDCARD0_DIR_NAME)
