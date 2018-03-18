@@ -259,32 +259,43 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
     private void performBackAction() {
         int slashIndex = theSelectedPath.lastIndexOf("/");
-        if (MODE_MULTIPLE) {
-            bringBackSingleMode();
-            secondaryChooserAdapter.notifyDataSetChanged();
 
-        } else {
-            if (!mConfig.isSkipOverview()) {
-                if (theSelectedPath.equals(mBundlePath)) {
-                    SecondaryChooserFragment.this.dismiss();
+        if(slashIndex != -1) {
+            if (MODE_MULTIPLE) {
+                bringBackSingleMode();
+                secondaryChooserAdapter.notifyDataSetChanged();
 
-                    //delay until close animation ends
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            dissmissDialog(FLAG_DISSMISS_INIT_DIALOG);
-                        }
-                    }, 200);
-                } else {
-                    theSelectedPath = theSelectedPath.substring(0, slashIndex);
-                    Log.e("SCLib", "Performing back action: " + theSelectedPath);
-                    StorageChooser.LAST_SESSION_PATH = theSelectedPath;
-                    populateList("");
-                }
             } else {
-                dissmissDialog(FLAG_DISSMISS_NORMAL);
+                if (!mConfig.isSkipOverview()) {
+                    if (theSelectedPath.equals(mBundlePath)) {
+                        SecondaryChooserFragment.this.dismiss();
+
+                        //delay until close animation ends
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                dissmissDialog(FLAG_DISSMISS_INIT_DIALOG);
+                            }
+                        }, 200);
+                    } else {
+                        theSelectedPath = theSelectedPath.substring(0, slashIndex);
+                        StorageChooser.LAST_SESSION_PATH = theSelectedPath;
+                        populateList("");
+                    }
+                } else {
+                    dissmissDialog(FLAG_DISSMISS_NORMAL);
+                }
             }
+        } else {
+            // let's just say that there is no / in the path at any given point
+            // which is hard to imagine but.. what to do at that time ?
+            // we set it to bundle path until the issue is totally investigated
+            // TODO - dig deep about this condition !
+            theSelectedPath = mBundlePath;
+            StorageChooser.LAST_SESSION_PATH = theSelectedPath;
+            populateList("");
         }
+
     }
 
     private void dissmissDialog(int flag) {
@@ -452,7 +463,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
     /**
      * handles actions in multiple mode
-     * like adding to list and setting backgroud color
+     * like adding to list and setting background color
      *
      * @param i is position of list clicked
      */
