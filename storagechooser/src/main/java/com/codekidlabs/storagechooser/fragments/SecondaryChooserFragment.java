@@ -121,7 +121,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         }
     };
     private boolean keyboardToggle;
-    private String TAG = "StorageChooser";
+    private final String TAG = "StorageChooser";
     private boolean isFilePicker;
     private View.OnClickListener mCreateButtonClickListener = new View.OnClickListener() {
         @Override
@@ -174,7 +174,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         }
     };
 
-    // ================ CLICK LISTENER END ==================
+
     private View.OnClickListener mBackButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -203,6 +203,8 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
         }
     };
+
+    // ================ CLICK LISTENER END ==================
 
     private void showAddFolderView() {
         mNewFolderView.setVisibility(View.VISIBLE);
@@ -701,7 +703,10 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog d = StorageChooser.dialog;
-        d.setContentView(getLayout(LayoutInflater.from(getActivity().getApplicationContext()), mContainer));
+        if(getActivity() != null) {
+            d.setContentView(getLayout(LayoutInflater.from(getActivity().getApplicationContext()), mContainer));
+        }
+
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(d.getWindow().getAttributes());
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
