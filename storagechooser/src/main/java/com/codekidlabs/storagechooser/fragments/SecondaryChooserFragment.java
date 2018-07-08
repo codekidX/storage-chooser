@@ -1,10 +1,12 @@
 package com.codekidlabs.storagechooser.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Animatable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -27,6 +29,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -72,6 +75,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     private EditText mFolderNameEditText;
     private CircleButton mMultipleOnSelectButton;
     private RelativeLayout mNewFolderView;
+    private ProgressBar mFilesProgress;
     private String mBundlePath;
     private ListView listView;
     private boolean isOpen;
@@ -340,6 +344,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         mContext = getActivity().getApplicationContext();
         mResourceUtil = new ResourceUtil(mContext);
         mLayout = inflater.inflate(R.layout.custom_storage_list, container, false);
+
         initListView(mContext, mLayout, mConfig.isShowMemoryBar());
 
         initUI();
@@ -445,6 +450,12 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     private void initListView(Context context, View view, boolean shouldShowMemoryBar) {
         listView = view.findViewById(R.id.storage_list_view);
         mPathChosen = view.findViewById(R.id.path_chosen);
+        mFilesProgress = mLayout.findViewById(R.id.files_loader);
+        mFilesProgress.setIndeterminate(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mFilesProgress.setIndeterminateTintList(ColorStateList.valueOf(scheme[Theme.OVERVIEW_MEMORYBAR_INDEX]));
+        }
+
         mBundlePath = this.getArguments().getString(DiskUtil.SC_PREFERENCE_KEY);
         isFilePicker = this.getArguments().getBoolean(DiskUtil.SC_CHOOSER_FLAG, false);
         populateList(mBundlePath);
@@ -578,22 +589,60 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
         if (isFilePicker) {
             if (mConfig.isCustomFilter()) {
-                UniversalFileFilter universalFileFilter =
-                        new UniversalFileFilter(mConfig.isCustomFilter(), mConfig.getCustomEnum());
-                volumeList = new File(theSelectedPath)
-                        .listFiles(universalFileFilter);
+                // we need to start a async task here because the filter loops through all files
+                // and if the files are more it'll take ages and it'll cause ANR as this is
+                // running on main thread
+                new FileFilterTask(mConfig, true).execute();
             } else {
                 if (mConfig.getSingleFilter() != null) {
-                    volumeList = new File(theSelectedPath).listFiles(new UniversalFileFilter(mConfig.getSingleFilter()));
+                    new FileFilterTask(mConfig, false).execute();
                 } else {
                     volumeList = fileUtil.listFilesInDir(theSelectedPath);
+                    setAdapterList(volumeList);
+                    refreshList();
+                    setBundlePathOnUpdate();
                 }
             }
         } else {
             volumeList = fileUtil.listFilesAsDir(theSelectedPath);
+            setAdapterList(volumeList);
+            refreshList();
+            setBundlePathOnUpdate();
         }
 
-        Log.e("SCLib", theSelectedPath);
+        playTheAddressBarAnimation();
+    }
+
+    /**
+     * setBundlePathOnUpdate sets the mBundlePath on each list element change. Bundle path is used
+     * to change the main working directory of chooser.
+     */
+    public void setBundlePathOnUpdate() {
+        if (mConfig.isResumeSession() && StorageChooser.LAST_SESSION_PATH != null) {
+            if (StorageChooser.LAST_SESSION_PATH.startsWith(Environment.getExternalStorageDirectory().getAbsolutePath())) {
+                mBundlePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+            } else {
+                mBundlePath = StorageChooser.LAST_SESSION_PATH.substring(StorageChooser.LAST_SESSION_PATH.indexOf("/", 16), StorageChooser.LAST_SESSION_PATH.length());
+            }
+        }
+    }
+
+    /**
+     * Refreshes the list LOL. It checks if adapter is null and notifies change of list on each
+     * file list update.
+     */
+    public void refreshList() {
+        if (secondaryChooserAdapter != null) {
+            secondaryChooserAdapter.notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * Accepts a file list and sets it for use of storage chooser. Called before all refreshList()
+     *
+     * @param volumeList File list to be shown in storage chooser
+     */
+    public void setAdapterList(File[] volumeList) {
         if (volumeList != null) {
             for (File f : volumeList) {
                 if (mConfig.isShowHidden()) {
@@ -613,22 +662,6 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
             });
         } else {
             customStoragesList.clear();
-        }
-
-
-        if (secondaryChooserAdapter != null) {
-            secondaryChooserAdapter.notifyDataSetChanged();
-        }
-
-        playTheAddressBarAnimation();
-
-        if (mConfig.isResumeSession() && StorageChooser.LAST_SESSION_PATH != null) {
-            if (StorageChooser.LAST_SESSION_PATH.startsWith(Environment.getExternalStorageDirectory().getAbsolutePath())) {
-                mBundlePath = Environment.getExternalStorageDirectory().getAbsolutePath();
-            } else {
-                Log.e("Bundle_Path_Length", StorageChooser.LAST_SESSION_PATH);
-                mBundlePath = StorageChooser.LAST_SESSION_PATH.substring(StorageChooser.LAST_SESSION_PATH.indexOf("/", 16), StorageChooser.LAST_SESSION_PATH.length());
-            }
         }
     }
 
@@ -753,5 +786,46 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
             return false;
         }
         return true;
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    class FileFilterTask extends AsyncTask<Void, String, Boolean> {
+
+        private Config mConfig;
+        private boolean isMultiple;
+        private File[] fileList;
+
+        FileFilterTask(Config mConfig, boolean isMultiple) {
+            this.mConfig = mConfig;
+            this.isMultiple = isMultiple;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mFilesProgress.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            if (isMultiple) {
+                UniversalFileFilter universalFileFilter =
+                        new UniversalFileFilter(mConfig.isCustomFilter(), mConfig.getCustomEnum());
+                fileList = new File(theSelectedPath)
+                        .listFiles(universalFileFilter);
+            } else {
+                fileList = new File(theSelectedPath).listFiles(new UniversalFileFilter(mConfig.getSingleFilter()));
+            }
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            super.onPostExecute(aBoolean);
+            mFilesProgress.setVisibility(View.INVISIBLE);
+            setAdapterList(this.fileList);
+            refreshList();
+            setBundlePathOnUpdate();
+        }
     }
 }

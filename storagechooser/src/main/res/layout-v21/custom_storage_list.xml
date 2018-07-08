@@ -92,6 +92,15 @@
             android:listSelector="@drawable/ripple"
             android:longClickable="true" />
 
+        <ProgressBar
+            android:id="@+id/files_loader"
+            style="?android:progressBarStyleHorizontal"
+            android:layout_centerInParent="true"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            />
+
 
         <!-- create folder view -->
         <RelativeLayout
