@@ -98,7 +98,7 @@
             android:layout_centerInParent="true"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
-            android:visibility="visible"
+            android:visibility="invisible"
             />
 
 
@@ -152,18 +152,16 @@
             android:layout_below="@id/custom_path_header"
             android:background="@color/inactiveGradientColor" />
 
-        <at.markushi.ui.CircleButton
+        <android.support.design.widget.FloatingActionButton
             android:id="@+id/multiple_selection_done_fab"
-            android:layout_width="72dip"
-            android:layout_height="72dip"
+            app:fabSize="normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_margin="16dp"
-            android:drawableTop="@drawable/ic_chevron_left_white_24dp"
-            android:src="@drawable/ic_check_white_24dp"
-            android:visibility="invisible"
-            app:cb_color="@color/colorAccent"
-            app:cb_pressedRingWidth="8dip" />
+            app:srcCompat="@drawable/ic_check_white_24dp"
+            android:visibility="invisible" />
 
     </RelativeLayout>
 
