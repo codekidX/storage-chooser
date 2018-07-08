@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         builder.withActivity(this)
                 .withFragmentManager(getFragmentManager())
                 .setMemoryBarHeight(1.5f)
-                .disableMultiSelect()
+//                .disableMultiSelect()
                 .withContent(c);
 
 
