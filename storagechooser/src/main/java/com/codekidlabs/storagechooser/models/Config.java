@@ -1,11 +1,13 @@
 package com.codekidlabs.storagechooser.models;
 
 import android.content.SharedPreferences;
+import android.widget.ListView;
 
 import com.codekidlabs.storagechooser.Content;
 import com.codekidlabs.storagechooser.StorageChooser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Model to save configs passed to the Builder without passing too many things to the constructor
@@ -45,7 +47,7 @@ public class Config {
     private Content content;
     private int[] scheme;
     private StorageChooser.FileType singleFilter;
-    private ArrayList<String> customEnum;
+    private List<String> customEnum;
     private boolean customFilter;
 
 
@@ -197,11 +199,11 @@ public class Config {
         this.singleFilter = singleFilter;
     }
 
-    public ArrayList<String> getCustomEnum() {
+    public List<String> getCustomEnum() {
         return customEnum;
     }
 
-    public void setCustomEnum(ArrayList<String> customEnum) {
+    public void setCustomEnum(List<String> customEnum) {
         this.customEnum = customEnum;
     }
 

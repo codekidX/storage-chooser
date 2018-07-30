@@ -15,6 +15,7 @@ import com.codekidlabs.storagechooser.utils.DiskUtil;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class StorageChooser {
@@ -317,7 +318,7 @@ public class StorageChooser {
             return this;
         }
 
-        public Builder customFilter(ArrayList<String> formats) {
+        public Builder customFilter(List<String> formats) {
             devConfig.setCustomFilter(true);
             devConfig.setCustomEnum(formats);
             return this;
