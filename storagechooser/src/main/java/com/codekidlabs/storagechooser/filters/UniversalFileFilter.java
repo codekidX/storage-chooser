@@ -7,6 +7,7 @@ import com.codekidlabs.storagechooser.StorageChooser;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by codekid on 21/07/17.
@@ -18,13 +19,13 @@ public class UniversalFileFilter implements FileFilter {
 
     private StorageChooser.FileType fileType;
     private boolean customEnumLock = false;
-    private ArrayList<String> customEnum;
+    private List<String> customEnum;
 
     public UniversalFileFilter(StorageChooser.FileType fileType) {
         this.fileType = fileType;
     }
 
-    public UniversalFileFilter(boolean customLock, ArrayList<String> customEnum) {
+    public UniversalFileFilter(boolean customLock, List<String> customEnum) {
         this.customEnumLock = customLock;
         this.customEnum = customEnum;
     }
