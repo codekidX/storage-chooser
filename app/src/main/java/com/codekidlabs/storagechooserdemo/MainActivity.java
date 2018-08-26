@@ -49,6 +49,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        ((CheckBox) findViewById(R.id.checkbox_free_space_label)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                builder.hideFreeSpaceLabel(isChecked);
+            }
+        });
+
         ((CheckBox) findViewById(R.id.checkbox_add_folder)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

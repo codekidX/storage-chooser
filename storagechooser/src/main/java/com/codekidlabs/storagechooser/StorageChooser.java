@@ -191,6 +191,7 @@ public class StorageChooser {
         private Activity mActivity;
         private boolean mActionSave = false;
         private boolean mShowMemoryBar = false;
+        private boolean mHideFreeSpaceLabel = false;
         private boolean mAllowCustomPath = false;
         private boolean mAllowAddFolder = false;
         private boolean mShowHidden = false;
@@ -223,6 +224,11 @@ public class StorageChooser {
 
         public Builder withMemoryBar(boolean memoryBarBoolean) {
             mShowMemoryBar = memoryBarBoolean;
+            return this;
+        }
+
+        public Builder hideFreeSpaceLabel(boolean hideFreeSpaceLabel) {
+            mHideFreeSpaceLabel = hideFreeSpaceLabel;
             return this;
         }
 
@@ -356,6 +362,7 @@ public class StorageChooser {
         public StorageChooser build() {
             devConfig.setActionSave(mActionSave);
             devConfig.setShowMemoryBar(mShowMemoryBar);
+            devConfig.setHideFreeSpaceLabel(mHideFreeSpaceLabel);
             devConfig.setAllowCustomPath(mAllowCustomPath);
             devConfig.setAllowAddFolder(mAllowAddFolder);
             devConfig.setShowHidden(mShowHidden);
