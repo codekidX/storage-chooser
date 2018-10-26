@@ -7,8 +7,10 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,7 +40,7 @@ import static com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_HEADE
 import static com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_TEXT_INDEX;
 
 
-public class ChooserDialogFragment extends android.app.DialogFragment {
+public class ChooserDialogFragment extends DialogFragment {
 
     private static final boolean BUILD_DEBUG = true;
     private View mLayout;
@@ -303,6 +305,7 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
         lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         d.getWindow().setAttributes(lp);
+        d.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(getContext(), R.drawable.dialog_rounded));
         return d;
     }
 }

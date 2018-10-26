@@ -4,16 +4,16 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.os.Environment;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 
 import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
 import com.codekidlabs.storagechooser.models.Config;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,7 +98,7 @@ public class StorageChooser {
                     String dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
                     DiskUtil.showSecondaryChooser(dirPath, sConfig);
                 } else {
-
+                    Log.e("BBBB", sConfig.getPrimaryPath());
                     // path provided by dev is the goto path for chooser
                     DiskUtil.showSecondaryChooser(sConfig.getPrimaryPath(), sConfig);
                 }
@@ -217,7 +217,7 @@ public class StorageChooser {
             return this;
         }
 
-        public Builder withFragmentManager(android.app.FragmentManager fragmentManager) {
+        public Builder withFragmentManager(FragmentManager fragmentManager) {
             devConfig.setFragmentManager(fragmentManager);
             return this;
         }

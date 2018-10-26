@@ -1,12 +1,11 @@
 package com.codekidlabs.storagechooser.models;
 
 import android.content.SharedPreferences;
-import android.widget.ListView;
+import androidx.fragment.app.FragmentManager;
 
 import com.codekidlabs.storagechooser.Content;
 import com.codekidlabs.storagechooser.StorageChooser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +14,7 @@ import java.util.List;
  */
 public class Config {
 
-    private android.app.FragmentManager fragmentManager;
+    private FragmentManager fragmentManager;
     private String predefinedPath;
     private boolean showMemoryBar;
     private boolean hideFreeSpaceLabel;
@@ -52,11 +51,11 @@ public class Config {
     private boolean customFilter;
 
 
-    public android.app.FragmentManager getFragmentManager() {
+    public FragmentManager getFragmentManager() {
         return fragmentManager;
     }
 
-    public void setFragmentManager(android.app.FragmentManager fragmentManager) {
+    public void setFragmentManager(FragmentManager fragmentManager) {
         this.fragmentManager = fragmentManager;
     }
 

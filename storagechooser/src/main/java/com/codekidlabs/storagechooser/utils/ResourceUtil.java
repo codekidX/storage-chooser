@@ -2,8 +2,8 @@ package com.codekidlabs.storagechooser.utils;
 
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.graphics.ColorUtils;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.ColorUtils;
 
 import com.codekidlabs.storagechooser.R;
 

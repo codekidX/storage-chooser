@@ -5,20 +5,29 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.ColorStateList;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.graphics.drawable.Animatable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.core.content.ContextCompat;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -55,7 +64,7 @@ import at.markushi.ui.CircleButton;
 import static com.codekidlabs.storagechooser.StorageChooser.Theme;
 
 
-public class SecondaryChooserFragment extends android.app.DialogFragment {
+public class SecondaryChooserFragment extends DialogFragment {
 
     private static final String INTERNAL_STORAGE_TITLE = "Internal Storage";
     private static final String EXTERNAL_STORAGE_TITLE = "ExtSD";
@@ -745,7 +754,83 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
         lp.height = WindowManager.LayoutParams.MATCH_PARENT;
         d.getWindow().setAttributes(lp);
-        return d;
+        d.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(getContext(), R.drawable.dialog_rounded));
+        return setMargins(d, 16, 16, 16, 16);
+    }
+
+    public static Dialog setMargins( Dialog dialog, int marginLeft, int marginTop, int marginRight, int marginBottom )
+    {
+        Window window = dialog.getWindow();
+        if ( window == null )
+        {
+            // dialog window is not available, cannot apply margins
+            return dialog;
+        }
+        Context context = dialog.getContext();
+
+        // set dialog to fullscreen
+        RelativeLayout root = new RelativeLayout( context );
+        root.setLayoutParams( new ViewGroup.LayoutParams( ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT ) );
+        dialog.requestWindowFeature( Window.FEATURE_NO_TITLE );
+        dialog.setContentView( root );
+        // set background to get rid of additional margins
+        window.setBackgroundDrawable( new ColorDrawable( Color.WHITE ) );
+
+        // apply left and top margin directly
+        window.setGravity( Gravity.LEFT | Gravity.TOP );
+        WindowManager.LayoutParams attributes = window.getAttributes();
+        attributes.x = marginLeft;
+        attributes.y = marginTop;
+        window.setAttributes( attributes );
+
+        // set right and bottom margin implicitly by calculating width and height of dialog
+        Point displaySize = getDisplayDimensions( context );
+        int width = displaySize.x - marginLeft - marginRight;
+        int height = displaySize.y - marginTop - marginBottom;
+        window.setLayout( width, height );
+
+        return dialog;
+    }
+
+    @NonNull
+    public static Point getDisplayDimensions( Context context )
+    {
+        WindowManager wm = ( WindowManager ) context.getSystemService( Context.WINDOW_SERVICE );
+        Display display = wm.getDefaultDisplay();
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        display.getMetrics( metrics );
+        int screenWidth = metrics.widthPixels;
+        int screenHeight = metrics.heightPixels;
+
+        // find out if status bar has already been subtracted from screenHeight
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            display.getRealMetrics( metrics );
+        }
+        int physicalHeight = metrics.heightPixels;
+        int statusBarHeight = getStatusBarHeight( context );
+        int navigationBarHeight = getNavigationBarHeight( context );
+        int heightDelta = physicalHeight - screenHeight;
+        if ( heightDelta == 0 || heightDelta == navigationBarHeight )
+        {
+            screenHeight -= statusBarHeight;
+        }
+
+        return new Point( screenWidth, screenHeight );
+    }
+
+    public static int getStatusBarHeight( Context context )
+    {
+        Resources resources = context.getResources();
+        int resourceId = resources.getIdentifier( "status_bar_height", "dimen", "android" );
+        return ( resourceId > 0 ) ? resources.getDimensionPixelSize( resourceId ) : 0;
+    }
+
+    public static int getNavigationBarHeight( Context context )
+    {
+        Resources resources = context.getResources();
+        int resourceId = resources.getIdentifier( "navigation_bar_height", "dimen", "android" );
+        return ( resourceId > 0 ) ? resources.getDimensionPixelSize( resourceId ) : 0;
     }
 
     @Override

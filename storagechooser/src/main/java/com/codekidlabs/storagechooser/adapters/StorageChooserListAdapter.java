@@ -2,7 +2,7 @@ package com.codekidlabs.storagechooser.adapters;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.support.v4.graphics.drawable.DrawableCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.StyleSpan;
