@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codekidlabs.storagechooser.R;
-import com.codekidlabs.storagechooser.StorageChooser;
+import com.codekidlabs.storagechooser.OldStorageChooser;
 import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
 import com.codekidlabs.storagechooser.utils.FileUtil;
 import com.codekidlabs.storagechooser.utils.ResourceUtil;
@@ -85,7 +85,7 @@ public class SecondaryChooserAdapter extends BaseAdapter {
         }
 
 
-        storageName.setTextColor(scheme[StorageChooser.Theme.SEC_TEXT_INDEX]);
+        storageName.setTextColor(scheme[OldStorageChooser.Theme.SEC_TEXT_INDEX]);
 
         if (selectedPaths.contains(i)) {
             rootView.setBackgroundColor(resourceUtil.getPrimaryColorWithAlpha());
@@ -114,7 +114,7 @@ public class SecondaryChooserAdapter extends BaseAdapter {
     }
 
     private void applyFolderTint(ImageView im) {
-        im.setColorFilter(scheme[StorageChooser.Theme.SEC_FOLDER_TINT_INDEX]);
+        im.setColorFilter(scheme[OldStorageChooser.Theme.SEC_FOLDER_TINT_INDEX]);
     }
 
     @Override

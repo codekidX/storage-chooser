@@ -22,8 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codekidlabs.storagechooser.Content;
+import com.codekidlabs.storagechooser.OldStorageChooser;
 import com.codekidlabs.storagechooser.R;
-import com.codekidlabs.storagechooser.StorageChooser;
 import com.codekidlabs.storagechooser.adapters.StorageChooserListAdapter;
 import com.codekidlabs.storagechooser.models.Config;
 import com.codekidlabs.storagechooser.models.Storages;
@@ -35,9 +35,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_BG_INDEX;
-import static com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_HEADER_INDEX;
-import static com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_TEXT_INDEX;
+import static com.codekidlabs.storagechooser.OldStorageChooser.Theme.OVERVIEW_BG_INDEX;
+import static com.codekidlabs.storagechooser.OldStorageChooser.Theme.OVERVIEW_HEADER_INDEX;
+import static com.codekidlabs.storagechooser.OldStorageChooser.Theme.OVERVIEW_TEXT_INDEX;
 
 
 public class ChooserDialogFragment extends DialogFragment {
@@ -48,7 +48,7 @@ public class ChooserDialogFragment extends DialogFragment {
 
     private List<Storages> storagesList;
     private List<String> customStoragesList;
-    private String TAG = "StorageChooser";
+    private String TAG = "OldStorageChooser";
     private MemoryUtil memoryUtil = new MemoryUtil();
     private FileUtil fileUtil = new FileUtil();
 
@@ -74,7 +74,7 @@ public class ChooserDialogFragment extends DialogFragment {
     }
 
     private View getLayout(LayoutInflater inflater, ViewGroup container) {
-        mConfig = StorageChooser.sConfig;
+        mConfig = OldStorageChooser.sConfig;
         mHandler = new Handler();
         // init storage-chooser content [localization]
         if (mConfig.getContent() == null) {
@@ -164,12 +164,12 @@ public class ChooserDialogFragment extends DialogFragment {
                                 DiskUtil.saveChooserPathPreference(mConfig.getPreference(), preDirPath);
                             }
                         } else {
-                            //Log.d("StorageChooser", "Chosen path: " + dirPath);
+                            //Log.d("OldStorageChooser", "Chosen path: " + dirPath);
                             if (mConfig.isApplyThreshold()) {
                                 startThresholdTest(i);
                             } else {
-                                if (StorageChooser.onSelectListener != null) {
-                                    StorageChooser.onSelectListener.onSelect(dirPath);
+                                if (OldStorageChooser.onSelectListener != null) {
+                                    OldStorageChooser.onSelectListener.onSelect(dirPath);
                                 }
                             }
                         }
@@ -207,7 +207,7 @@ public class ChooserDialogFragment extends DialogFragment {
             }
         } else {
             // THROW: error in log
-            Log.e(TAG, "add .withThreshold(int size, String suffix) to your StorageChooser.Builder instance");
+            Log.e(TAG, "add .withThreshold(int size, String suffix) to your OldStorageChooser.Builder instance");
         }
     }
 
@@ -292,13 +292,13 @@ public class ChooserDialogFragment extends DialogFragment {
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
-        StorageChooser.onCancelListener.onCancel();
+        OldStorageChooser.onCancelListener.onCancel();
     }
 
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog d = StorageChooser.dialog;
+        Dialog d = OldStorageChooser.dialog;
         d.setContentView(getLayout(LayoutInflater.from(getActivity().getApplicationContext()), mContainer));
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         lp.copyFrom(d.getWindow().getAttributes());

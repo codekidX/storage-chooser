@@ -1,9 +1,6 @@
 package com.codekidlabs.storagechooserdemo
 
 import android.Manifest
-import android.app.AlertDialog
-import android.app.Dialog
-import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -17,11 +14,11 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.CheckBox
-import android.widget.CompoundButton
 import android.widget.Spinner
 import android.widget.Toast
 
 import com.codekidlabs.storagechooser.Content
+import com.codekidlabs.storagechooser.OldStorageChooser
 import com.codekidlabs.storagechooser.StorageChooser
 import com.codekidlabs.storagechooser.utils.DiskUtil
 
@@ -33,8 +30,8 @@ class MainActivity : AppCompatActivity() {
     private var dirCheckBox: CheckBox? = null
     private var fileCheckBox: CheckBox? = null
 
-    private val builder = StorageChooser.Builder()
-    private var chooser: StorageChooser? = null
+    private val builder = OldStorageChooser.Builder()
+    private var chooser: OldStorageChooser? = null
     private val TAG = javaClass.getName()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,7 +54,7 @@ class MainActivity : AppCompatActivity() {
             builder.allowCustomPath(isChecked)
 
             if (isChecked) {
-                builder.setType(StorageChooser.DIRECTORY_CHOOSER)
+                builder.setType(OldStorageChooser.DIRECTORY_CHOOSER)
                 fileCheckBox!!.isEnabled = false
             } else {
                 fileCheckBox!!.isEnabled = true
@@ -72,7 +69,7 @@ class MainActivity : AppCompatActivity() {
             builder.allowCustomPath(isChecked)
 
             if (isChecked) {
-                builder.setType(StorageChooser.FILE_PICKER)
+                builder.setType(OldStorageChooser.FILE_PICKER)
                 dirCheckBox!!.isEnabled = false
             } else {
                 dirCheckBox!!.isEnabled = true
@@ -102,19 +99,19 @@ class MainActivity : AppCompatActivity() {
                     }
                     1 -> {
                         builder.crunch()
-                        builder.filter(StorageChooser.FileType.VIDEO)
+                        builder.filter(OldStorageChooser.FileType.VIDEO)
                     }
                     2 -> {
                         builder.crunch()
-                        builder.filter(StorageChooser.FileType.AUDIO)
+                        builder.filter(OldStorageChooser.FileType.AUDIO)
                     }
                     3 -> {
                         builder.crunch()
-                        builder.filter(StorageChooser.FileType.DOCS)
+                        builder.filter(OldStorageChooser.FileType.DOCS)
                     }
                     4 -> {
                         builder.crunch()
-                        builder.filter(StorageChooser.FileType.IMAGES)
+                        builder.filter(OldStorageChooser.FileType.IMAGES)
                     }
                     5 -> {
 
@@ -176,8 +173,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getScTheme(isChecked: Boolean): StorageChooser.Theme {
-        val theme = StorageChooser.Theme(applicationContext)
+    private fun getScTheme(isChecked: Boolean): OldStorageChooser.Theme {
+        val theme = OldStorageChooser.Theme(applicationContext)
         theme.scheme = if (isChecked) resources.getIntArray(R.array.paranoid_theme) else theme.defaultScheme
         return theme
     }

@@ -6,7 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.codekidlabs.storagechooser.StorageChooser;
+import com.codekidlabs.storagechooser.OldStorageChooser;
 import com.codekidlabs.storagechooser.fragments.SecondaryChooserFragment;
 import com.codekidlabs.storagechooser.models.Config;
 
@@ -28,7 +28,7 @@ public class DiskUtil {
             editor.putString(SC_PREFERENCE_KEY, path);
             editor.apply();
         } catch (NullPointerException e) {
-            Log.e("StorageChooser", "No sharedPreference was supplied. Supply sharedPreferencesObject via withPreference() or disable saving with actionSave(false)");
+            Log.e("OldStorageChooser", "No sharedPreference was supplied. Supply sharedPreferencesObject via withPreference() or disable saving with actionSave(false)");
         }
     }
 
@@ -52,15 +52,15 @@ public class DiskUtil {
         bundle.putString(DiskUtil.SC_PREFERENCE_KEY, dirPath);
 
         switch (config.getSecondaryAction()) {
-            case StorageChooser.NONE:
+            case OldStorageChooser.NONE:
                 break;
-            case StorageChooser.DIRECTORY_CHOOSER:
+            case OldStorageChooser.DIRECTORY_CHOOSER:
                 bundle.putBoolean(DiskUtil.SC_CHOOSER_FLAG, false);
                 SecondaryChooserFragment c = new SecondaryChooserFragment();
                 c.setArguments(bundle);
                 c.show(config.getFragmentManager(), "custom_chooser");
                 break;
-            case StorageChooser.FILE_PICKER:
+            case OldStorageChooser.FILE_PICKER:
                 bundle.putBoolean(DiskUtil.SC_CHOOSER_FLAG, true);
                 SecondaryChooserFragment f = new SecondaryChooserFragment();
                 f.setArguments(bundle);

@@ -4,7 +4,7 @@ import android.content.SharedPreferences;
 import androidx.fragment.app.FragmentManager;
 
 import com.codekidlabs.storagechooser.Content;
-import com.codekidlabs.storagechooser.StorageChooser;
+import com.codekidlabs.storagechooser.OldStorageChooser;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class Config {
 
     private Content content;
     private int[] scheme;
-    private StorageChooser.FileType singleFilter;
+    private OldStorageChooser.FileType singleFilter;
     private List<String> customEnum;
     private boolean customFilter;
 
@@ -199,11 +199,11 @@ public class Config {
     }
 
 
-    public StorageChooser.FileType getSingleFilter() {
+    public OldStorageChooser.FileType getSingleFilter() {
         return singleFilter;
     }
 
-    public void setSingleFilter(StorageChooser.FileType singleFilter) {
+    public void setSingleFilter(OldStorageChooser.FileType singleFilter) {
         this.singleFilter = singleFilter;
     }
 

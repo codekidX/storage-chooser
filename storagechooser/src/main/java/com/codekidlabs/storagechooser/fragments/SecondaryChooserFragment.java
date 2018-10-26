@@ -44,8 +44,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.codekidlabs.storagechooser.Content;
+import com.codekidlabs.storagechooser.OldStorageChooser;
 import com.codekidlabs.storagechooser.R;
-import com.codekidlabs.storagechooser.StorageChooser;
 import com.codekidlabs.storagechooser.adapters.SecondaryChooserAdapter;
 import com.codekidlabs.storagechooser.filters.UniversalFileFilter;
 import com.codekidlabs.storagechooser.models.Config;
@@ -61,7 +61,7 @@ import java.util.List;
 
 import at.markushi.ui.CircleButton;
 
-import static com.codekidlabs.storagechooser.StorageChooser.Theme;
+import static com.codekidlabs.storagechooser.OldStorageChooser.Theme;
 
 
 public class SecondaryChooserFragment extends DialogFragment {
@@ -112,10 +112,10 @@ public class SecondaryChooserFragment extends DialogFragment {
             if (mConfig.isActionSave()) {
                 DiskUtil.saveChooserPathPreference(mConfig.getPreference(), theSelectedPath);
             } else {
-                Log.d("StorageChooser", "Chosen path: " + theSelectedPath);
+                Log.d("OldStorageChooser", "Chosen path: " + theSelectedPath);
             }
 
-            StorageChooser.onSelectListener.onSelect(theSelectedPath);
+            OldStorageChooser.onSelectListener.onSelect(theSelectedPath);
             dissmissDialog(FLAG_DISSMISS_NORMAL);
         }
 
@@ -134,7 +134,7 @@ public class SecondaryChooserFragment extends DialogFragment {
         }
     };
     private boolean keyboardToggle;
-    private final String TAG = "StorageChooser";
+    private final String TAG = "OldStorageChooser";
     private boolean isFilePicker;
     private View.OnClickListener mCreateButtonClickListener = new View.OnClickListener() {
         @Override
@@ -162,7 +162,7 @@ public class SecondaryChooserFragment extends DialogFragment {
                     if (FileUtil.isDir(jointPath)) {
                         populateList("/" + customStoragesList.get(i));
                     } else {
-                        StorageChooser.onSelectListener.onSelect(jointPath);
+                        OldStorageChooser.onSelectListener.onSelect(jointPath);
                         dissmissDialog(FLAG_DISSMISS_NORMAL);
                     }
                 }
@@ -197,7 +197,7 @@ public class SecondaryChooserFragment extends DialogFragment {
     private View.OnClickListener mMultipleModeDoneButtonClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            StorageChooser.onMultipleSelectListener.onDone(mMultipleModeList);
+            OldStorageChooser.onMultipleSelectListener.onDone(mMultipleModeList);
             bringBackSingleMode();
             dissmissDialog(FLAG_DISSMISS_NORMAL);
         }
@@ -294,7 +294,7 @@ public class SecondaryChooserFragment extends DialogFragment {
                         }, 200);
                     } else {
                         theSelectedPath = theSelectedPath.substring(0, slashIndex);
-                        StorageChooser.LAST_SESSION_PATH = theSelectedPath;
+                        OldStorageChooser.LAST_SESSION_PATH = theSelectedPath;
                         populateList("");
                     }
                 } else {
@@ -307,7 +307,7 @@ public class SecondaryChooserFragment extends DialogFragment {
             // we set it to bundle path until the issue is totally investigated
             // TODO - dig deep about this condition !
             theSelectedPath = mBundlePath;
-            StorageChooser.LAST_SESSION_PATH = theSelectedPath;
+            OldStorageChooser.LAST_SESSION_PATH = theSelectedPath;
             populateList("");
         }
 
@@ -321,7 +321,7 @@ public class SecondaryChooserFragment extends DialogFragment {
                 c.show(mConfig.getFragmentManager(), "storagechooser_dialog");
                 break;
             case FLAG_DISSMISS_NORMAL:
-                StorageChooser.LAST_SESSION_PATH = theSelectedPath;
+                OldStorageChooser.LAST_SESSION_PATH = theSelectedPath;
                 this.dismiss();
                 break;
         }
@@ -339,7 +339,7 @@ public class SecondaryChooserFragment extends DialogFragment {
     }
 
     private View getLayout(LayoutInflater inflater, ViewGroup container) {
-        mConfig = StorageChooser.sConfig;
+        mConfig = OldStorageChooser.sConfig;
         scheme = mConfig.getScheme();
         mHandler = new Handler();
 
@@ -425,7 +425,7 @@ public class SecondaryChooserFragment extends DialogFragment {
         mCreateButton.setOnClickListener(mCreateButtonClickListener);
         mMultipleOnSelectButton.setOnClickListener(mMultipleModeDoneButtonClickListener);
 
-        if (mConfig.getSecondaryAction().equals(StorageChooser.FILE_PICKER)) {
+        if (mConfig.getSecondaryAction().equals(OldStorageChooser.FILE_PICKER)) {
             mSelectButton.setVisibility(View.GONE);
             setBottomNewFolderView();
         }
@@ -627,11 +627,11 @@ public class SecondaryChooserFragment extends DialogFragment {
      * to change the main working directory of chooser.
      */
     public void setBundlePathOnUpdate() {
-        if (mConfig.isResumeSession() && StorageChooser.LAST_SESSION_PATH != null) {
-            if (StorageChooser.LAST_SESSION_PATH.startsWith(Environment.getExternalStorageDirectory().getAbsolutePath())) {
+        if (mConfig.isResumeSession() && OldStorageChooser.LAST_SESSION_PATH != null) {
+            if (OldStorageChooser.LAST_SESSION_PATH.startsWith(Environment.getExternalStorageDirectory().getAbsolutePath())) {
                 mBundlePath = Environment.getExternalStorageDirectory().getAbsolutePath();
             } else {
-                mBundlePath = StorageChooser.LAST_SESSION_PATH.substring(StorageChooser.LAST_SESSION_PATH.indexOf("/", 16), StorageChooser.LAST_SESSION_PATH.length());
+                mBundlePath = OldStorageChooser.LAST_SESSION_PATH.substring(OldStorageChooser.LAST_SESSION_PATH.indexOf("/", 16), OldStorageChooser.LAST_SESSION_PATH.length());
             }
         }
     }
@@ -744,7 +744,7 @@ public class SecondaryChooserFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog d = StorageChooser.dialog;
+        Dialog d = OldStorageChooser.dialog;
         if(getActivity() != null) {
             d.setContentView(getLayout(LayoutInflater.from(getActivity().getApplicationContext()), mContainer));
         }
@@ -843,11 +843,11 @@ public class SecondaryChooserFragment extends DialogFragment {
     @Override
     public void onCancel(DialogInterface dialog) {
         super.onCancel(dialog);
-        StorageChooser.LAST_SESSION_PATH = theSelectedPath;
+        OldStorageChooser.LAST_SESSION_PATH = theSelectedPath;
         theSelectedPath = "";
         mAddressClippedPath = "";
 
-        StorageChooser.onCancelListener.onCancel();
+        OldStorageChooser.onCancelListener.onCancel();
     }
 
     private int getSlashCount(String path) {

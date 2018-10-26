@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Environment;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentManager;
-import androidx.core.content.ContextCompat;
 import android.util.Log;
 
 import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
@@ -18,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class StorageChooser {
+public class OldStorageChooser {
 
     public static final String NONE = "none";
     public static final String DIRECTORY_CHOOSER = "dir";
@@ -33,20 +32,20 @@ public class StorageChooser {
     private Activity chooserActivity;
 
     /**
-     * basic constructor of StorageChooser
+     * basic constructor of OldStorageChooser
      *
      * @param config to use with dialog window addition
      */
-    StorageChooser(Activity activity, Config config) {
+    OldStorageChooser(Activity activity, Config config) {
         setsConfig(config);
         setChooserActivity(activity);
     }
 
     /**
-     * blank constructor of StorageChooser
+     * blank constructor of OldStorageChooser
      * no params used only for internal library use
      */
-    public StorageChooser() {
+    public OldStorageChooser() {
     }
 
     public static Config getsConfig() {
@@ -54,7 +53,7 @@ public class StorageChooser {
     }
 
     public static void setsConfig(Config sConfig) {
-        StorageChooser.sConfig = sConfig;
+        OldStorageChooser.sConfig = sConfig;
     }
 
     private static Dialog getStorageChooserDialog(Activity activity) {
@@ -85,8 +84,8 @@ public class StorageChooser {
             onMultipleSelectListener = getDefaultMultipleSelectionListener();
         }
 
-        if (sConfig.isResumeSession() && StorageChooser.LAST_SESSION_PATH != null) {
-            DiskUtil.showSecondaryChooser(StorageChooser.LAST_SESSION_PATH, sConfig);
+        if (sConfig.isResumeSession() && OldStorageChooser.LAST_SESSION_PATH != null) {
+            DiskUtil.showSecondaryChooser(OldStorageChooser.LAST_SESSION_PATH, sConfig);
         } else {
 
             // if dev needs to skip overview and the primary path is not mentioned the directory
@@ -111,16 +110,16 @@ public class StorageChooser {
     }
 
     public void setOnSelectListener(OnSelectListener onSelectListener) {
-        StorageChooser.onSelectListener = onSelectListener;
+        OldStorageChooser.onSelectListener = onSelectListener;
     }
 
 
     public void setOnCancelListener(OnCancelListener onCancelListener) {
-        StorageChooser.onCancelListener = onCancelListener;
+        OldStorageChooser.onCancelListener = onCancelListener;
     }
 
     public void setOnMultipleSelectListener(OnMultipleSelectListener onMultipleSelectListener) {
-        StorageChooser.onMultipleSelectListener = onMultipleSelectListener;
+        OldStorageChooser.onMultipleSelectListener = onMultipleSelectListener;
     }
 
     private Activity getChooserActivity() {
@@ -179,11 +178,11 @@ public class StorageChooser {
     /**
      * @class Builder
      * - as the name suggests it gets all the configurations provided by the developer and
-     * passes them to the StorageChooser class using the constructor.
+     * passes them to the OldStorageChooser class using the constructor.
      * <p>
      * NOTE: The dialog is still not yet show even though the builder instance is present.
      * show() is called seperately on the builder because it does not return a builder but
-     * triggers init() inside the StorageChooser class.
+     * triggers init() inside the OldStorageChooser class.
      */
     public static class Builder {
 
@@ -204,9 +203,9 @@ public class StorageChooser {
         private float mMemorybarHeight = 2f;
         private String type;
         private Content content;
-        private StorageChooser.Theme theme;
-        private StorageChooser.FileType filter;
-        private ArrayList<StorageChooser.FileType> multipleFilter;
+        private OldStorageChooser.Theme theme;
+        private OldStorageChooser.FileType filter;
+        private ArrayList<OldStorageChooser.FileType> multipleFilter;
 
         public Builder() {
             devConfig = new Config();
@@ -293,7 +292,7 @@ public class StorageChooser {
             return this;
         }
 
-        public Builder setTheme(StorageChooser.Theme theme) {
+        public Builder setTheme(OldStorageChooser.Theme theme) {
             this.theme = theme;
             return this;
         }
@@ -314,7 +313,7 @@ public class StorageChooser {
             return this;
         }
 
-        public Builder filter(@Nullable StorageChooser.FileType filter) {
+        public Builder filter(@Nullable OldStorageChooser.FileType filter) {
             this.filter = filter;
             return this;
         }
@@ -359,7 +358,7 @@ public class StorageChooser {
         }
 
 
-        public StorageChooser build() {
+        public OldStorageChooser build() {
             devConfig.setActionSave(mActionSave);
             devConfig.setShowMemoryBar(mShowMemoryBar);
             devConfig.setHideFreeSpaceLabel(mHideFreeSpaceLabel);
@@ -376,7 +375,7 @@ public class StorageChooser {
             devConfig.setHeadingFromAssets(mHeadingFromAssets);
             devConfig.setListFromAssets(mListFromAssets);
 
-            type = (type == null) ? StorageChooser.NONE : type;
+            type = (type == null) ? OldStorageChooser.NONE : type;
             devConfig.setSecondaryAction(type);
 
             if (theme == null || theme.getScheme() == null) {
@@ -386,7 +385,7 @@ public class StorageChooser {
                 devConfig.setScheme(theme.getScheme());
             }
 
-            return new StorageChooser(mActivity, devConfig);
+            return new OldStorageChooser(mActivity, devConfig);
         }
 
     }

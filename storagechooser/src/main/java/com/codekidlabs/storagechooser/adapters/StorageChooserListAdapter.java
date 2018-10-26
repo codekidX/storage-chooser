@@ -26,9 +26,9 @@ import com.codekidlabs.storagechooser.utils.MemoryUtil;
 
 import java.util.List;
 
-import static com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_INDICATOR_INDEX;
-import static com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_MEMORYBAR_INDEX;
-import static com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_STORAGE_TEXT_INDEX;
+import static com.codekidlabs.storagechooser.OldStorageChooser.Theme.OVERVIEW_INDICATOR_INDEX;
+import static com.codekidlabs.storagechooser.OldStorageChooser.Theme.OVERVIEW_MEMORYBAR_INDEX;
+import static com.codekidlabs.storagechooser.OldStorageChooser.Theme.OVERVIEW_STORAGE_TEXT_INDEX;
 
 public class StorageChooserListAdapter extends BaseAdapter {
 

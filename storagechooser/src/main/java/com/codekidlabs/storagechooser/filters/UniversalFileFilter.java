@@ -2,7 +2,7 @@ package com.codekidlabs.storagechooser.filters;
 
 import android.util.Log;
 
-import com.codekidlabs.storagechooser.StorageChooser;
+import com.codekidlabs.storagechooser.OldStorageChooser;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -17,11 +17,11 @@ public class UniversalFileFilter implements FileFilter {
     protected static final String TAG = "UniversalFileFilter";
     private final boolean allowDirectories = true;
 
-    private StorageChooser.FileType fileType;
+    private OldStorageChooser.FileType fileType;
     private boolean customEnumLock = false;
     private List<String> customEnum;
 
-    public UniversalFileFilter(StorageChooser.FileType fileType) {
+    public UniversalFileFilter(OldStorageChooser.FileType fileType) {
         this.fileType = fileType;
     }
 
