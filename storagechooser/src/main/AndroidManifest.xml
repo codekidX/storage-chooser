@@ -1,1 +1,12 @@
-<manifest package="com.codekidlabs.storagechooser" />
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.codekidlabs.storagechooser">
+
+    <application>
+        <activity
+            android:name=".ChooserActivity"
+            android:label="@string/title_activity_chooser"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+    </application>
+
+</manifest>

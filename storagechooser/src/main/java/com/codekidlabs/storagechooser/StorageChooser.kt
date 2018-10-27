@@ -1,6 +1,9 @@
 package com.codekidlabs.storagechooser
 
 import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import java.io.Serializable
 
 /**
  * Main Builder for storage-chooser
@@ -9,10 +12,24 @@ import android.app.Activity
 class StorageChooser(private val activity: Activity, private val config: Config) {
 
     fun show() {
-        when (this.config.type) {
-            ChooserType.DIRECTORY -> "hello"
-            else -> {
-            }
-        }
+//        when (this.config.type) {
+//            else -> {
+//
+//            }
+//        }
+        val intent = Intent(activity, ChooserActivity::class.java)
+        val bundle = Bundle()
+        bundle.putParcelable("test", config)
+        intent.putExtra("configBundle", bundle)
+        activity.startActivity(intent)
+    }
+
+    interface Selection: Serializable {
+        fun onSingleSelection(path: String)
+        fun onMultipleSelection(paths: List<String>)
+    }
+
+    interface Cancellation: Serializable {
+        fun onCancel(lastOpenedPath: String)
     }
 }
