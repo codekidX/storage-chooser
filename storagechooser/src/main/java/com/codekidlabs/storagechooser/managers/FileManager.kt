@@ -17,17 +17,20 @@ internal class FileManager(private val chooser: ChooserActivity) : CoroutineScop
     override val coroutineContext: CoroutineContext
         get() = job + Dispatchers.IO
 
-    private var masterPath: String = "/storage/"
+    private var masterPath: String = "/storage/emulated/0"
+    private val initialPath = masterPath.substring(0, masterPath.lastIndexOf("/"))
     var onlyDirectories = false
+    var chooserType: DisplayType = DisplayType.BASE
+    private val fileUtil = FileUtil()
 
-    private suspend fun loadFiles(): MutableList<File> {
+    suspend fun loadFiles(): MutableList<File> {
         return async(context = coroutineContext) {
-            if (onlyDirectories) {
-                FileUtil().listFilesAsDir(masterPath).toMutableList<File>()
-            } else {
-                FileUtil().listFilesInDir(masterPath).toMutableList()
-            }
+            File(masterPath).listFiles().toMutableList()
         }.await()
+    }
+
+    fun getSegues(): MutableList<String> {
+        return masterPath.substring(1, masterPath.count()).split("/").toMutableList()
     }
 
     private fun getSlashIndex() : Int {
@@ -43,13 +46,25 @@ internal class FileManager(private val chooser: ChooserActivity) : CoroutineScop
         }
         // change master path to previous directory
         masterPath = masterPath.substring(0, slashIndex)
+        if (!shouldExit()) {
+            // TODO - start some loading view
+            launch {
+                chooser.updateFileRecyclerView(loadFiles(), type)
+                // TODO - stop some loading view
+            }
+        }
+    }
+
+    fun goForward(toFolder: String) {
+        masterPath = "$masterPath/$toFolder"
         launch {
-            chooser.updateFileRecyclerView(loadFiles(), type)
+            val files = loadFiles()
+            chooser.updateFileRecyclerView(files)
         }
     }
 
     fun shouldExit() : Boolean {
-        return getSlashIndex() < 8
+        return this.masterPath == initialPath
     }
 }
 

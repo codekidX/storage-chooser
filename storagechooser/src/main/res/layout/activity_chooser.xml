@@ -44,7 +44,16 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="match_parent">
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/segueRecyclerView"
+                            android:layout_marginStart="@dimen/fab_margin"
+                            android:layout_marginLeft="@dimen/fab_margin"
+                            android:layout_marginEnd="@dimen/fab_margin"
+                            android:layout_marginRight="@dimen/fab_margin"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"/>
+                    </RelativeLayout>
 
                 </androidx.cardview.widget.CardView>
 
