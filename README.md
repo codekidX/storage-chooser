@@ -72,7 +72,7 @@ You can have the following configuration of builder.
 | hideFreeSpaceLabel | boolean | No |
 | withPreference | SharedPreferences | actionSave(true) |
 | withPredefinedPath | String | No |
-| **setType** | StoragChooser.DIRECTORY_CHOOSER **_or_** StorageChooser.FILE_PICKER| allowCustomPath(true) |
+| **setType** | StorageChooser.DIRECTORY_CHOOSER **_or_** StorageChooser.FILE_PICKER| allowCustomPath(true) |
 | showHidden | boolean | No |
 | setTheme | StorageChooser.Theme | No |
 | skipOverview | boolean, String | No |
