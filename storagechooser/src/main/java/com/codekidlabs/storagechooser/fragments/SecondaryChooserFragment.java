@@ -13,6 +13,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.TypedValue;
@@ -51,7 +52,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import at.markushi.ui.CircleButton;
 
 import static com.codekidlabs.storagechooser.StorageChooser.Theme;
 
@@ -74,7 +74,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     private Button mCreateButton;
     private ImageView mNewFolderImageView;
     private EditText mFolderNameEditText;
-    private CircleButton mMultipleOnSelectButton;
+    private FloatingActionButton mMultipleOnSelectButton;
     private RelativeLayout mNewFolderView;
     private ProgressBar mFilesProgress;
     private String mBundlePath;
@@ -410,7 +410,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
             mNewFolderImageView.setImageTintList(ColorStateList.valueOf(scheme[Theme.SEC_ADDRESS_TINT_INDEX]));
             mBackButton.setImageTintList(ColorStateList.valueOf(scheme[Theme.SEC_ADDRESS_TINT_INDEX]));
         }
-        mMultipleOnSelectButton.setColor(scheme[Theme.SEC_DONE_FAB_INDEX]);
+        mMultipleOnSelectButton.setBackgroundTintList(ColorStateList.valueOf(scheme[Theme.SEC_DONE_FAB_INDEX]));
         mLayout.findViewById(R.id.custom_path_header).setBackgroundColor(scheme[Theme.SEC_ADDRESS_BAR_BG]);
 
         // ----
