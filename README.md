@@ -41,7 +41,7 @@ Add this to your root build.gradle file under repositories:
 
 Add this to your app level build.gradle as dependency:
 
-    com.github.codekidX:storage-chooser:2.0.4.2
+    com.github.codekidX:storage-chooser:2.0.4.4
 
 
 Notes
