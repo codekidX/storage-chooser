@@ -11,10 +11,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextThemeWrapper;
@@ -45,6 +41,7 @@ import com.codekidlabs.storagechooser.models.Config;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
 import com.codekidlabs.storagechooser.utils.FileUtil;
 import com.codekidlabs.storagechooser.utils.ResourceUtil;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,6 +49,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import static com.codekidlabs.storagechooser.StorageChooser.Theme;
 
@@ -724,7 +725,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
     private void playTheMultipleButtonAnimation() {
         Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_multiple_button);
-        mMultipleOnSelectButton.setVisibility(View.VISIBLE);
+        mMultipleOnSelectButton.show();
         mMultipleOnSelectButton.startAnimation(animation);
     }
 
@@ -732,7 +733,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
     private void playTheMultipleButtonEndAnimation() {
         Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_multiple_button_end);
         mMultipleOnSelectButton.startAnimation(animation);
-        mMultipleOnSelectButton.setVisibility(View.INVISIBLE);
+        mMultipleOnSelectButton.hide();
     }
 
 
