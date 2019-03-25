@@ -58,7 +58,9 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
                     android:layout_marginStart="16dp"
+                    android:layout_marginLeft="16dp"
                     android:fontFamily="sans-serif-condensed"
                     android:text="blahblahblah"
                     android:textColor="@android:color/white"
@@ -153,10 +155,11 @@
             android:layout_below="@id/custom_path_header"
             android:background="@color/inactiveGradientColor" />
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/multiple_selection_done_fab"
-            android:layout_width="72dip"
-            android:layout_height="72dip"
+            app:fabSize="normal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"

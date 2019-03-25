@@ -2,7 +2,7 @@ package com.codekidlabs.storagechooser.utils;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.widget.ImageView;
 
 import com.codekidlabs.storagechooser.R;

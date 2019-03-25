@@ -4,18 +4,17 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.os.Environment;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment;
 import com.codekidlabs.storagechooser.models.Config;
 import com.codekidlabs.storagechooser.utils.DiskUtil;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 
 public class StorageChooser {
