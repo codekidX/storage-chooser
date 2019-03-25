@@ -153,7 +153,7 @@
             android:layout_below="@id/custom_path_header"
             android:background="@color/inactiveGradientColor" />
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/multiple_selection_done_fab"
             android:layout_width="72dip"
             android:layout_height="72dip"

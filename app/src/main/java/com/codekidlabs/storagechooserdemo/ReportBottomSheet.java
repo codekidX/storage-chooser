@@ -1,8 +1,8 @@
 package com.codekidlabs.storagechooserdemo;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetDialogFragment;
+
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.codekidlabs.storagechooserdemo.utils.TypefaceUtil;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 /**
  * report any issue using logboard api
