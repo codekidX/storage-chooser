@@ -16,7 +16,6 @@ import java.util.List;
 
 import androidx.annotation.Nullable;
 
-
 public class StorageChooser {
 
     public static final String NONE = "none";
