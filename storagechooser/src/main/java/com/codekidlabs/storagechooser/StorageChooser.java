@@ -256,7 +256,7 @@ public class StorageChooser {
             return this;
         }
 
-        public Builder actionSave(boolean save) {
+        public Builder actionSave(boolean save) { //moved
             mActionSave = save;
             return this;
         }
@@ -291,7 +291,7 @@ public class StorageChooser {
             return this;
         }
 
-        public Builder setTheme(StorageChooser.Theme theme) {
+        public Builder setTheme(StorageChooser.Theme theme) { //moved as SCTheme
             this.theme = theme;
             return this;
         }
@@ -333,7 +333,7 @@ public class StorageChooser {
             return this;
         }
 
-        public Builder shouldResumeSession(boolean resumeSession) {
+        public Builder shouldResumeSession(boolean resumeSession) { // moved
             this.mResumeSession = resumeSession;
             return this;
         }

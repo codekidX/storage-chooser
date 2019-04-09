@@ -7,7 +7,7 @@ import java.io.Serializable
  * Main Builder for storage-chooser
  */
 
-class StorageChooser(private val activity: Activity, private val config: Config) {
+class StorageChooser2(private val activity: Activity, private val config: Config) {
 
 //    fun show() {
 //        when (this.config.type) {

@@ -9,17 +9,27 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Config(var memoryBarHeight: Float,
                   var type: ChooserType,
-                  var selection: StorageChooser.Selection,
-                  var cancellation: StorageChooser.Cancellation) : Parcelable {
+                  var selection: StorageChooser2.Selection,
+                  var cancellation: StorageChooser2.Cancellation,
+                  var theme: SCTheme,
+                  var saveSelection: Boolean,
+                  var sessionable: Boolean,
+                  internal var sessionPath: String) : Parcelable {
 
-    constructor() : this(memoryBarHeight = 1.0f,
+
+
+    constructor() : this(sessionPath = "",
+            memoryBarHeight = 1.0f,
             type = ChooserType.BASIC,
             selection = ActionWireFrame(),
-            cancellation = ActionWireFrame())
+            cancellation = ActionWireFrame(),
+            theme = SCTheme(),
+            saveSelection = false,
+            sessionable = false)
 
 }
 
-internal class ActionWireFrame : StorageChooser.Selection, StorageChooser.Cancellation {
+internal class ActionWireFrame : StorageChooser2.Selection, StorageChooser2.Cancellation {
     override fun onCancel(lastOpenedPath: String) {
         return
     }
