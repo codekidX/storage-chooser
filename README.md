@@ -44,9 +44,15 @@ android.useAndroidX=true
 
 ## Notes
 
+In order to save state between orientation, storage-chooser requires you to add this to AndroidManifest.xml `activity` tag
+
 Before you implement this library here are some notes that you can follow to avoid errors.
 
-> **Confirm:**
+```xml
+android:configChanges="orientation|screenSize"
+```
+
+**Confirm:**
 
 > - You have asked for **Runtime Permission** from the user in the past to avoid read errors.
 > - Permissions with "READ_EXTERNAL_STORAGE" and "WRITE_EXTERNAL_STORAGE" is enough for this library to work.
