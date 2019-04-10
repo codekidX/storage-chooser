@@ -1,6 +1,10 @@
-# Storage Chooser 2.0 ! - [Changes and Snippets](https://ashishshekar.com/projects/sc/)
+# Storage Chooser
 
-[![](https://jitpack.io/v/codekidX/storage-chooser.svg)](https://jitpack.io/#codekidX/storage-chooser) [![](https://img.shields.io/badge/last--stable-da21db4-yellow.svg?style=flat-square)](https://github.com/codekidX/storage-chooser/commit/da21db4e5c46e0c3a8b513112ff093448a23754b) ![GitHub issues](https://img.shields.io/github/issues/codekidX/storage-chooser.svg?style=flat-square) [![demo](https://img.shields.io/badge/download-demo-blue.svg?style=flat-square)](https://raw.githubusercontent.com/android-arsenal/apk22/master/5336/app.apk) [![javadoc](https://img.shields.io/badge/Jitpack-javadoc-blue.svg?style=flat-square)](https://jitpack.io/com/github/codekidX/storage-chooser/1.0.33/javadoc/)
+![SC Features](http://i.imgur.com/nmqPJok.gif)
+
+| **`Documentation`** | **`Version`** |
+|-----------------| --------------|
+| [![Documentation](https://img.shields.io/badge/api-reference-blue.svg)](https://ashishshekar.com/projects/sc/) | [![](https://jitpack.io/v/codekidX/storage-chooser.svg)](https://jitpack.io/#codekidX/storage-chooser)
 
 A pretty and simple directory chooser and file picker library for 4.4+ devices. This library was created to be included in [OpenGApps App](https://play.google.com/store/apps/details?id=org.opengapps.app). There are too many storage chooser out there but this one is too materially :stuck_out_tongue: . Easy to implement and does not take a lot of your valueable time in setting-up all the other necessary things that every developer seeks, like
 
@@ -16,10 +20,6 @@ There are also some really nice features that I thought would come in handy:
 - Full localization. I mean literally every strings can be localized to your desired language.
 - Memory thresholding - a restriction or a toast that it shows when user's memory is less than your defined memory for operations.
 - and more will be added soon.
-
-## Preview
-
-![SC Features](http://i.imgur.com/nmqPJok.gif)
 
 ## Installation
 
@@ -59,31 +59,6 @@ android:configChanges="orientation|screenSize"
 > - This library follows same color scheme as that of the parent app to maintain the aesthetic of the parent app. _See the color scheme section below_
 
 ## Implementation
-
-## List of configuration for StorageChooser.Builder
-
-You can have the following configuration of builder.
-
-| methods             | parameters                                                               | compulsary?           |
-| ------------------- | ------------------------------------------------------------------------ | --------------------- |
-| withActivity        | Activity                                                                 | Yes                   |
-| withFragmentManager | FragmentManager _(legacy)_                                               | Yes                   |
-| withMemoryBar       | boolean                                                                  | No                    |
-| hideFreeSpaceLabel  | boolean                                                                  | No                    |
-| withPreference      | SharedPreferences                                                        | actionSave(true)      |
-| withPredefinedPath  | String                                                                   | No                    |
-| **setType**         | StoragChooser.DIRECTORY*CHOOSER \*\*\_or*\*\* StorageChooser.FILE_PICKER | allowCustomPath(true) |
-| showHidden          | boolean                                                                  | No                    |
-| setTheme            | StorageChooser.Theme                                                     | No                    |
-| skipOverview        | boolean, String                                                          | No                    |
-| skipOverview        | boolean                                                                  | No                    |
-| withContent         | com.codekidlabs.storagechooser.Content                                   | No                    |
-| customFilter        | ArrayList<String>                                                        | No                    |
-| filter              | StorageChooser.FileType                                                  | No                    |
-| shouldResumeSession | boolean                                                                  | No                    |
-| setHeadingTypeface  | String, boolean                                                          | No                    |
-| setListTypeface     | String, boolean                                                          | No                    |
-| disableMultiSelect  | NONE                                                                     | No                    |
 
 ### Simple Type
 
@@ -158,26 +133,11 @@ chooser.setOnSelectListener(new StorageChooser.OnSelectListener() {
 String path = sharedPreferences.getString(DiskUtil.SC_PREFERENCE_KEY,"");
 ```
 
-### (2.0) Theme
+### (2.0+) Theme
 
-A guide on how to set a theme is posted [here](https://github.com/codekidX/storage-chooser/wiki/A-Look-at-Storage-Chooser.Theme)
+A guide on how to set a theme is posted in this [wiki](https://github.com/codekidX/storage-chooser/wiki/A-Look-at-Storage-Chooser.Theme).
 
-### (2.0) File Filter
-
-File filters are good and when your app is made for a specific purpose like choosing songs to be added in a playlist you might not want the user to go into the folders where there are no songs. Now you can add filter to builder instance like this
-`builder.filter(StorageChooser.FileType.AUDIO);`
-this will filter out all folders containing audio files for you and thereby reducing some effort from user side.
-
-In version _2.0.3_+, there is a support for custom file filters, all you need to do is create an `ArrayList<String>` of all the extensions without the `.` before it and send it to `builder.customFilter` function.
-
-| filter                         | extensions                 |
-| ------------------------------ | -------------------------- |
-| StorageChooser.FileType.AUDIO  | .mp3 .ogg                  |
-| StorageChooser.FileType.VIDEO  | .mp4 .ts .mkv .avi .flv    |
-| StorageChooser.FileType.IMAGES | .jpg .jpeg .png .gif .tiff |
-| StorageChooser.FileType.DOCS   | .pdf .doc .docx .ppt .xls  |
-
-### (2.0) Multiselect
+### (2.0+) Multiselect
 
 It's already in there you don't need to write any special code for it. Just make sure your type of chooser is of type FILE_PICKER.
 `builder.setType(StorageChooser.FILE_PICKER);`
@@ -194,6 +154,12 @@ This project is licensed with the Mozilla Public License v2.
 
 In practice, you can use this library as-is, with a notification of it being used. If you make any changes, you are required to publish your changes under a compatible license.
 
-### Support Storage Chooser
+### CONTRIBUTING
+
+Branch status:
+
+| **`Production`** | **`Development`** |
+|------------------|-------------------|
+| master | inline-3.0 |
 
 This is a community based project so help fixing bugs by adding your fixes to it by [Create pull request](https://github.com/codekidX/storage-chooser/pull/new/master)
