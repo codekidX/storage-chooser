@@ -18,7 +18,7 @@ There are also some really nice features that I thought would come in handy:
 - you can choose between _sheet and sleek_ layouts.
 - Inline create folder view _(not another dialog to handle)_
 - Full localization. I mean literally every strings can be localized to your desired language.
-- Memory thresholding - a restriction or a toast that it shows when user's memory is less than your defined memory for operations.
+- Memory thresholding - a restriction or a toast that it shows when user's memory is less than your defined memory of operations.
 - and more will be added soon.
 
 ## Installation
@@ -64,9 +64,7 @@ android:configChanges="orientation|screenSize"
 
 - Let's you toggle between inernal/external root directory.
 
-```
-// ~
-
+```java
 // Initialize Builder
 StorageChooser chooser = new StorageChooser.Builder()
 .withActivity(MainActivity.this)
@@ -92,7 +90,7 @@ chooser.setOnSelectListener(new StorageChooser.OnSelectListener() {
 
 - Let's you append a specific path to the root of internal or external directory.
 
-```
+```java
 // --- ADD --
 .withPredefinedPath(STATIC_PATH)
 ```
@@ -105,7 +103,7 @@ chooser.setOnSelectListener(new StorageChooser.OnSelectListener() {
 
 #### Directory Chooser
 
-```
+```java
 // --- ADD ---
 .allowCustomPath(true)
 .setType(StorageChooser.DIRECTORY_CHOOSER)
@@ -113,7 +111,7 @@ chooser.setOnSelectListener(new StorageChooser.OnSelectListener() {
 
 #### File Picker
 
-```
+```java
 // --- ADD ---
 .allowCustomPath(true)
 .setType(StorageChooser.FILE_PICKER)
@@ -121,7 +119,7 @@ chooser.setOnSelectListener(new StorageChooser.OnSelectListener() {
 
 ### Save directly to preference
 
-```
+```java
 // --- ADD ---
 .actionSave(true)
 .withPreference(sharedPreferences)
@@ -129,7 +127,7 @@ chooser.setOnSelectListener(new StorageChooser.OnSelectListener() {
 
 ### Get path from preference
 
-```
+```java
 String path = sharedPreferences.getString(DiskUtil.SC_PREFERENCE_KEY,"");
 ```
 
@@ -148,13 +146,15 @@ It's already in there you don't need to write any special code for it. Just make
 
 A seperate localization wiki is posted [here](https://github.com/codekidX/storage-chooser/wiki/Localizing-your-chooser-using-Content)
 
-## LICENSE
+## License
 
 This project is licensed with the Mozilla Public License v2.
 
 In practice, you can use this library as-is, with a notification of it being used. If you make any changes, you are required to publish your changes under a compatible license.
 
-### CONTRIBUTING
+
+
+### Contributing
 
 Branch status:
 
