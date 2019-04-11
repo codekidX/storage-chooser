@@ -131,10 +131,6 @@ chooser.setOnSelectListener(new StorageChooser.OnSelectListener() {
 String path = sharedPreferences.getString(DiskUtil.SC_PREFERENCE_KEY,"");
 ```
 
-### (2.0+) Theme
-
-A guide on how to set a theme is posted in this [wiki](https://github.com/codekidX/storage-chooser/wiki/A-Look-at-Storage-Chooser.Theme).
-
 ### (2.0+) Multiselect
 
 It's already in there you don't need to write any special code for it. Just make sure your type of chooser is of type FILE_PICKER.
@@ -142,16 +138,19 @@ It's already in there you don't need to write any special code for it. Just make
 
 ![](https://media.giphy.com/media/7AWKkgm9Nozw4/giphy.gif)
 
-## Localization
 
-A seperate localization wiki is posted [here](https://github.com/codekidX/storage-chooser/wiki/Localizing-your-chooser-using-Content)
+### More information
+
+[A Look at StorageChooser.Theme](https://github.com/codekidX/storage-chooser/wiki/A-Look-at-Storage-Chooser.Theme).
+
+[Localizing your chooser with Content](https://github.com/codekidX/storage-chooser/wiki/Localizing-your-chooser-using-Content)
+
 
 ## License
 
 This project is licensed with the Mozilla Public License v2.
 
 In practice, you can use this library as-is, with a notification of it being used. If you make any changes, you are required to publish your changes under a compatible license.
-
 
 
 ### Contributing
