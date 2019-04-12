@@ -141,9 +141,8 @@ It's already in there you don't need to write any special code for it. Just make
 
 ### More information
 
-[A Look at StorageChooser.Theme](https://github.com/codekidX/storage-chooser/wiki/A-Look-at-Storage-Chooser.Theme).
-
-[Localizing your chooser with Content](https://github.com/codekidX/storage-chooser/wiki/Localizing-your-chooser-using-Content)
+- [A Look at StorageChooser.Theme](https://github.com/codekidX/storage-chooser/wiki/A-Look-at-Storage-Chooser.Theme).
+- [Localizing your chooser with Content](https://github.com/codekidX/storage-chooser/wiki/Localizing-your-chooser-using-Content)
 
 
 ## License
