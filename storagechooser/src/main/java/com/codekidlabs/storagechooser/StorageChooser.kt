@@ -1,13 +1,24 @@
 package com.codekidlabs.storagechooser
 
 import android.app.Activity
+import android.app.Dialog
 import java.io.Serializable
 
 /**
  * Main Builder for storage-chooser
  */
 
-class StorageChooser2(private val activity: Activity, private val config: Config) {
+class StorageChooser2(private val activity: Activity, private var config: Config) {
+
+    private lateinit var dialog: Dialog
+
+    fun reset() {
+        this.config = Config()
+    }
+
+    fun show() {
+        dialog = Dialog(activity, R.style.DialogTheme)
+    }
 
 //    fun show() {
 //        when (this.config.type) {

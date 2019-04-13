@@ -8,10 +8,17 @@ import kotlinx.android.parcel.Parcelize
  */
 @Parcelize
 data class Config(var memoryBarHeight: Float,
+                  var canAddFolder: Boolean,
+                  var showHidden: Boolean,
+                  var skipOverview: Boolean,
+                  var threshold: String,
                   var type: ChooserType,
+                  var content: Content,
+                  var filterExtensions: String,
                   var selection: StorageChooser2.Selection,
                   var cancellation: StorageChooser2.Cancellation,
                   var theme: SCTheme,
+                  var multiSelect: Boolean,
                   var saveSelection: Boolean,
                   var sessionable: Boolean,
                   internal var sessionPath: String) : Parcelable {
@@ -19,7 +26,14 @@ data class Config(var memoryBarHeight: Float,
 
 
     constructor() : this(sessionPath = "",
-            memoryBarHeight = 1.0f,
+            memoryBarHeight = 0.0f,
+            skipOverview = false,
+            canAddFolder = false,
+            showHidden = false,
+            threshold = "",
+            multiSelect = true,
+            filterExtensions = "",
+            content = Content(),
             type = ChooserType.BASIC,
             selection = ActionWireFrame(),
             cancellation = ActionWireFrame(),

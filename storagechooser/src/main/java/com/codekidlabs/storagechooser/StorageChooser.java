@@ -220,7 +220,7 @@ public class StorageChooser {
             return this;
         }
 
-        public Builder withMemoryBar(boolean memoryBarBoolean) {
+        public Builder withMemoryBar(boolean memoryBarBoolean) { // moved
             mShowMemoryBar = memoryBarBoolean;
             return this;
         }
@@ -230,12 +230,13 @@ public class StorageChooser {
             return this;
         }
 
-        public Builder setMemoryBarHeight(float height) {
+        public Builder setMemoryBarHeight(float height) { // moved
             this.mMemorybarHeight = height;
             return this;
         }
 
-        public Builder withPredefinedPath(String path) {
+        @Deprecated
+        public Builder withPredefinedPath(String path) { // will not be moved
             devConfig.setPredefinedPath(path);
             return this;
         }
@@ -245,7 +246,7 @@ public class StorageChooser {
             return this;
         }
 
-        public Builder withThreshold(int size, String suffix) {
+        public Builder withThreshold(int size, String suffix) { //moved
             devConfig.setMemoryThreshold(size);
             devConfig.setThresholdSuffix(suffix);
             return this;
@@ -261,7 +262,7 @@ public class StorageChooser {
             return this;
         }
 
-        public Builder setDialogTitle(String title) {
+        public Builder setDialogTitle(String title) { //moved to content
             devConfig.setDialogTitle(title);
             return this;
         }
@@ -271,22 +272,22 @@ public class StorageChooser {
             return this;
         }
 
-        public Builder allowCustomPath(boolean allowCustomPath) {
+        public Builder allowCustomPath(boolean allowCustomPath) { // moved
             mAllowCustomPath = allowCustomPath;
             return this;
         }
 
-        public Builder allowAddFolder(boolean addFolder) {
+        public Builder allowAddFolder(boolean addFolder) { // moved
             mAllowAddFolder = addFolder;
             return this;
         }
 
-        public Builder showHidden(boolean showHiddenFolders) {
+        public Builder showHidden(boolean showHiddenFolders) { // moved
             mShowHidden = showHiddenFolders;
             return this;
         }
 
-        public Builder setType(String action) {
+        public Builder setType(String action) { // moved
             type = action;
             return this;
         }
@@ -296,18 +297,18 @@ public class StorageChooser {
             return this;
         }
 
-        public Builder skipOverview(boolean skip, String primaryPath) {
+        public Builder skipOverview(boolean skip, String primaryPath) { // moved
             mSkipOverview = skip;
             devConfig.setPrimaryPath(primaryPath);
             return this;
         }
 
-        public Builder skipOverview(boolean skip) {
+        public Builder skipOverview(boolean skip) { // moved
             mSkipOverview = skip;
             return this;
         }
 
-        public Builder withContent(Content content) {
+        public Builder withContent(Content content) { // moved
             this.content = content;
             return this;
         }
@@ -322,12 +323,13 @@ public class StorageChooser {
             return this;
         }
 
-        public Builder customFilter(List<String> formats) {
+        public Builder customFilter(List<String> formats) { // moved (comma separated extension stirng)
             devConfig.setCustomFilter(true);
             devConfig.setCustomEnum(formats);
             return this;
         }
 
+        @Deprecated
         public Builder showFoldersInGrid(boolean showInGrid) {
             devConfig.setGridView(showInGrid);
             return this;
@@ -339,19 +341,19 @@ public class StorageChooser {
         }
 
         // typefaces
-        public Builder setHeadingTypeface(String path, boolean fromAssets) {
+        public Builder setHeadingTypeface(String path, boolean fromAssets) { // moved to sc theme
             devConfig.setHeadingFont(path);
             mHeadingFromAssets = fromAssets;
             return this;
         }
 
-        public Builder setListTypeface(String path, boolean fromAssets) {
+        public Builder setListTypeface(String path, boolean fromAssets) { // moved to sc theme
             devConfig.setListFont(path);
             mListFromAssets = fromAssets;
             return this;
         }
 
-        public Builder disableMultiSelect() {
+        public Builder disableMultiSelect() { // moved
             devConfig.setMultiSelect(false);
             return this;
         }
