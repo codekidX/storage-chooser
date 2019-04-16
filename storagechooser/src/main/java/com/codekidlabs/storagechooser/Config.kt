@@ -23,8 +23,6 @@ data class Config(var memoryBarHeight: Float,
                   var sessionable: Boolean,
                   internal var sessionPath: String) : Parcelable {
 
-
-
     constructor() : this(sessionPath = "",
             memoryBarHeight = 0.0f,
             skipOverview = false,

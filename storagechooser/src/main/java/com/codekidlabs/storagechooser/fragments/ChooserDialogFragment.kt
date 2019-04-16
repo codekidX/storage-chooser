@@ -16,6 +16,7 @@ import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.DialogFragment
 
 import com.codekidlabs.storagechooser.Content
 import com.codekidlabs.storagechooser.R
@@ -35,13 +36,13 @@ import com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_HEADER_INDEX
 import com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_TEXT_INDEX
 
 
-class ChooserDialogFragment : android.app.DialogFragment() {
+class ChooserDialogFragment : DialogFragment() {
     private var mLayout: View? = null
     private var mContainer: ViewGroup? = null
 
     private var storagesList: MutableList<Storages>? = null
     private val customStoragesList: List<String>? = null
-    private val TAG = "StorageChooser"
+    private val TAG = javaClass.name
     private val memoryUtil = MemoryUtil()
     private val fileUtil = FileUtil()
 
@@ -55,8 +56,7 @@ class ChooserDialogFragment : android.app.DialogFragment() {
     // delaying secondary chooser
     private var mHandler: Handler? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mContainer = container
         return if (showsDialog) {
             super.onCreateView(inflater, container, savedInstanceState)
@@ -73,7 +73,7 @@ class ChooserDialogFragment : android.app.DialogFragment() {
             mContent = mConfig!!.content
         }
         mLayout = inflater.inflate(R.layout.storage_list, container, false)
-        initListView(activity.applicationContext, mLayout!!, mConfig!!.isShowMemoryBar)
+        initListView(activity!!.applicationContext, mLayout!!, mConfig!!.isShowMemoryBar)
 
         if (mContent!!.overviewHeading != null) {
             val dialogTitle = mLayout!!.findViewById<TextView>(R.id.dialog_title)
@@ -82,7 +82,7 @@ class ChooserDialogFragment : android.app.DialogFragment() {
 
             // set heading typeface
             if (mConfig!!.headingFont != null) {
-                dialogTitle.typeface = getSCTypeface(activity.applicationContext,
+                dialogTitle.typeface = getSCTypeface(activity!!.applicationContext,
                         mConfig!!.headingFont,
                         mConfig!!.isHeadingFromAssets)
             }
@@ -185,7 +185,7 @@ class ChooserDialogFragment : android.app.DialogFragment() {
                 DiskUtil.showSecondaryChooser(dirPath, mConfig!!)
             } else {
                 val suffixedAvailableMem = memoryUtil.suffixedSize(availableMem, thresholdSuffix).toString() + " " + thresholdSuffix
-                Toast.makeText(activity.applicationContext, getString(R.string.toast_threshold_breached, suffixedAvailableMem), Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity!!.applicationContext, getString(R.string.toast_threshold_breached, suffixedAvailableMem), Toast.LENGTH_SHORT).show()
             }
         } else {
             // THROW: error in log
@@ -265,9 +265,9 @@ class ChooserDialogFragment : android.app.DialogFragment() {
         StorageChooser.onCancelListener.onCancel()
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle): Dialog {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val d = StorageChooser.dialog
-        d.setContentView(getLayout(LayoutInflater.from(activity.applicationContext), mContainer))
+        d.setContentView(getLayout(LayoutInflater.from(activity!!.applicationContext), mContainer))
         val lp = WindowManager.LayoutParams()
         lp.copyFrom(d.window!!.attributes)
         lp.width = WindowManager.LayoutParams.WRAP_CONTENT

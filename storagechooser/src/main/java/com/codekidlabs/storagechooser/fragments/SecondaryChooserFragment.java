@@ -403,7 +403,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
 
         // set addressbar typeface
         if (mConfig.getHeadingFont() != null) {
-            mPathChosen.setTypeface(ChooserDialogFragment.getSCTypeface(mContext,
+            mPathChosen.setTypeface(ChooserDialogFragment.Companion.getSCTypeface(mContext,
                     mConfig.getHeadingFont(), mConfig.isHeadingFromAssets()));
         }
 

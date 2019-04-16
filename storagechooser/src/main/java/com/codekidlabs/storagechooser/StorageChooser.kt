@@ -1,14 +1,16 @@
 package com.codekidlabs.storagechooser
 
-import android.app.Activity
 import android.app.Dialog
+import android.os.Bundle
+import androidx.fragment.app.FragmentManager
+import com.codekidlabs.storagechooser.fragments.ChooserDialogFragment
 import java.io.Serializable
 
 /**
  * Main Builder for storage-chooser
  */
 
-class StorageChooser2(private val activity: Activity, private var config: Config) {
+class StorageChooser2(private val fragmentManager: FragmentManager, private var config: Config) {
 
     private lateinit var dialog: Dialog
 
@@ -17,7 +19,17 @@ class StorageChooser2(private val activity: Activity, private var config: Config
     }
 
     fun show() {
-        dialog = Dialog(activity, R.style.DialogTheme)
+        if (!config.skipOverview) {
+            val overview = ChooserDialogFragment()
+            val b = Bundle()
+            b.putParcelable("test", config)
+            overview.arguments = b
+            overview.show(fragmentManager, "OVERVIEW")
+            return
+        }
+        // TODO: write this part of the code
+//        val secondaryChooser = SecondaryChooserFragment()
+        return
     }
 
 //    fun show() {
