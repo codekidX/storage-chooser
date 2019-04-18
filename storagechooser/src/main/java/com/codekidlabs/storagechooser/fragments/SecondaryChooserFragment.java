@@ -53,11 +53,12 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 
 import static com.codekidlabs.storagechooser.StorageChooser.Theme;
 
 
-public class SecondaryChooserFragment extends android.app.DialogFragment {
+public class SecondaryChooserFragment extends DialogFragment {
 
     private static final String INTERNAL_STORAGE_TITLE = "Internal Storage";
     private static final String EXTERNAL_STORAGE_TITLE = "ExtSD";
@@ -311,7 +312,7 @@ public class SecondaryChooserFragment extends android.app.DialogFragment {
         switch (flag) {
             case FLAG_DISSMISS_INIT_DIALOG:
                 ChooserDialogFragment c = new ChooserDialogFragment();
-                c.show(mConfig.getFragmentManager(), "storagechooser_dialog");
+                c.show(getActivity().getSupportFragmentManager(), "storagechooser_dialog");
                 break;
             case FLAG_DISSMISS_NORMAL:
                 StorageChooser.LAST_SESSION_PATH = theSelectedPath;
