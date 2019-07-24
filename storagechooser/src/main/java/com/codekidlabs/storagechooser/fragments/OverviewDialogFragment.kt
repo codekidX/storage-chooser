@@ -7,36 +7,25 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import com.codekidlabs.storagechooser.*
+import com.codekidlabs.storagechooser.adapters.OverviewAdapter
 
-import com.codekidlabs.storagechooser.Content
-import com.codekidlabs.storagechooser.R
-import com.codekidlabs.storagechooser.StorageChooser
-import com.codekidlabs.storagechooser.adapters.StorageChooserListAdapter
-import com.codekidlabs.storagechooser.models.Config
 import com.codekidlabs.storagechooser.models.Storages
-import com.codekidlabs.storagechooser.utils.DiskUtil
 import com.codekidlabs.storagechooser.utils.FileUtil
 import com.codekidlabs.storagechooser.utils.MemoryUtil
 
 import java.io.File
 import java.util.ArrayList
 
-import com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_BG_INDEX
-import com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_HEADER_INDEX
-import com.codekidlabs.storagechooser.StorageChooser.Theme.OVERVIEW_TEXT_INDEX
 
-
-class ChooserDialogFragment : DialogFragment() {
+class OverviewDialogFragment : DialogFragment() {
     private var mLayout: View? = null
     private var mContainer: ViewGroup? = null
 
@@ -46,7 +35,7 @@ class ChooserDialogFragment : DialogFragment() {
     private val memoryUtil = MemoryUtil()
     private val fileUtil = FileUtil()
 
-    private var mConfig: Config? = null
+    private lateinit var mConfig: Config
     private var mContent: Content? = null
 
     // day night flag
@@ -64,7 +53,14 @@ class ChooserDialogFragment : DialogFragment() {
     }
 
     private fun getLayout(inflater: LayoutInflater, container: ViewGroup?): View {
-        mConfig = StorageChooser.sConfig
+        // safe check if config from parcelable is accessible
+        mConfig = arguments.let {
+            if(it == null) {
+                it?.getParcelable("test") as Config
+            } else {
+                Config()
+            }
+        }
         mHandler = Handler()
         // init storage-chooser content [localization]
         if (mConfig!!.content == null) {
@@ -73,25 +69,25 @@ class ChooserDialogFragment : DialogFragment() {
             mContent = mConfig!!.content
         }
         mLayout = inflater.inflate(R.layout.storage_list, container, false)
-        initListView(activity!!.applicationContext, mLayout!!, mConfig!!.isShowMemoryBar)
+        initListView(activity!!.applicationContext, mLayout!!, mConfig!!.showMemoryBar)
 
         if (mContent!!.overviewHeading != null) {
             val dialogTitle = mLayout!!.findViewById<TextView>(R.id.dialog_title)
-            dialogTitle.setTextColor(mConfig!!.scheme[OVERVIEW_TEXT_INDEX])
+//            dialogTitle.setTextColor(mConfig!!.scheme[OVERVIEW_TEXT_INDEX])
             dialogTitle.text = mContent!!.overviewHeading
 
             // set heading typeface
-            if (mConfig!!.headingFont != null) {
-                dialogTitle.typeface = getSCTypeface(activity!!.applicationContext,
-                        mConfig!!.headingFont,
-                        mConfig!!.isHeadingFromAssets)
-            }
+//            if (mConfig!!.headingFont != null) {
+//                dialogTitle.typeface = getSCTypeface(activity!!.applicationContext,
+//                        mConfig!!.headingFont,
+//                        mConfig!!.isHeadingFromAssets)
+//            }
         }
 
-        mLayout!!.findViewById<View>(R.id.header_container).setBackgroundColor(
-                mConfig!!.scheme[OVERVIEW_HEADER_INDEX])
-        mLayout!!.findViewById<View>(R.id.overview_container).setBackgroundColor(
-                mConfig!!.scheme[OVERVIEW_BG_INDEX])
+//        mLayout!!.findViewById<View>(R.id.header_container).setBackgroundColor(
+//                mConfig!!.scheme[OVERVIEW_HEADER_INDEX])
+//        mLayout!!.findViewById<View>(R.id.overview_container).setBackgroundColor(
+//                mConfig!!.scheme[OVERVIEW_BG_INDEX])
 
         return mLayout!!
     }
@@ -105,64 +101,62 @@ class ChooserDialogFragment : DialogFragment() {
         // we need to populate before to get the internal storage path in list
         populateList()
 
-        listView.adapter = StorageChooserListAdapter(storagesList, context,
-                shouldShowMemoryBar, mConfig!!.isHideFreeSpaceLabel, mConfig!!.scheme,
-                mConfig!!.memorybarHeight, mConfig!!.listFont, mConfig!!.isListFromAssets,
-                mContent)
+        // TODO this adapter params can be improved
+        listView.adapter = OverviewAdapter(storagesList!!, this.activity!!.applicationContext, this.mConfig)
 
 
-        listView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
-            val dirPath = evaluatePath(i)
-
-            if (File(dirPath).canRead()) {
-                // if allowCustomPath is called then directory chooser will be the default secondary dialog
-                if (mConfig!!.isAllowCustomPath) {
-                    // if developer wants to apply threshold
-                    if (mConfig!!.isApplyThreshold) {
-                        startThresholdTest(i)
-                    } else {
-
-                        if (BUILD_DEBUG) {
-                            mHandler!!.postDelayed({ DiskUtil.showSecondaryChooser(dirPath, mConfig!!) }, 250)
-                        } else {
-                            DiskUtil.showSecondaryChooser(dirPath, mConfig!!)
-                        }
-
-
-                    }
-                } else {
-                    if (mConfig!!.isActionSave) {
-                        var preDef: String? = mConfig!!.predefinedPath
-                        // if dev forgot or did not add '/' at start add it to avoid errors
-                        var preDirPath: String? = null
-
-                        if (preDef != null) {
-                            if (!preDef.startsWith("/")) {
-                                preDef = "/$preDef"
-                            }
-                            preDirPath = dirPath + preDef
-                            DiskUtil.saveChooserPathPreference(mConfig!!.preference, preDirPath)
-                        } else {
-                            Log.w(TAG, "Predefined path is null set it by .withPredefinedPath() to builder. Saving root directory")
-                            DiskUtil.saveChooserPathPreference(mConfig!!.preference, preDirPath)
-                        }
-                    } else {
-                        //Log.d("StorageChooser", "Chosen path: " + dirPath);
-                        if (mConfig!!.isApplyThreshold) {
-                            startThresholdTest(i)
-                        } else {
-                            if (StorageChooser.onSelectListener != null) {
-                                StorageChooser.onSelectListener.onSelect(dirPath)
-                            }
-                        }
-                    }
-                }
-                this@ChooserDialogFragment.dismiss()
-            } else {
-                Toast.makeText(activity, R.string.toast_not_readable, Toast.LENGTH_SHORT)
-                        .show()
-            }
-        }
+//        listView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
+//            val dirPath = evaluatePath(i)
+//
+//            if (File(dirPath).canRead()) {
+//                // if allowCustomPath is called then directory chooser will be the default secondary dialog
+//                if (mConfig!!.type != ChooserType.BASIC) {
+//                    // if developer wants to apply threshold
+//                    if (mConfig!!.isApplyThreshold) {
+//                        startThresholdTest(i)
+//                    } else {
+//
+//                        if (BUILD_DEBUG) {
+//                            mHandler!!.postDelayed({ DiskUtil.showSecondaryChooser(dirPath, mConfig!!) }, 250)
+//                        } else {
+//                            DiskUtil.showSecondaryChooser(dirPath, mConfig!!)
+//                        }
+//
+//
+//                    }
+//                } else {
+//                    if (mConfig!!.saveSelection) {
+//                        var preDef: String? = mConfig!!.predefinedPath
+//                        // if dev forgot or did not add '/' at start add it to avoid errors
+//                        var preDirPath: String? = null
+//
+//                        if (preDef != null) {
+//                            if (!preDef.startsWith("/")) {
+//                                preDef = "/$preDef"
+//                            }
+//                            preDirPath = dirPath + preDef
+//                            DiskUtil.saveChooserPathPreference(mConfig!!.preference, preDirPath)
+//                        } else {
+//                            Log.w(TAG, "Predefined path is null set it by .withPredefinedPath() to builder. Saving root directory")
+//                            DiskUtil.saveChooserPathPreference(mConfig!!.preference, preDirPath)
+//                        }
+//                    } else {
+//                        //Log.d("StorageChooser", "Chosen path: " + dirPath);
+//                        if (mConfig!!.isApplyThreshold) {
+//                            startThresholdTest(i)
+//                        } else {
+//                            if (StorageChooser.onSelectListener != null) {
+//                                StorageChooser.onSelectListener.onSelect(dirPath)
+//                            }
+//                        }
+//                    }
+//                }
+//                this@OverviewDialogFragment.dismiss()
+//            } else {
+//                Toast.makeText(activity, R.string.toast_not_readable, Toast.LENGTH_SHORT)
+//                        .show()
+//            }
+//        }
 
     }
 
@@ -173,24 +167,24 @@ class ChooserDialogFragment : DialogFragment() {
      */
 
     private fun startThresholdTest(position: Int) {
-        val thresholdSuffix = mConfig!!.thresholdSuffix
+//        val thresholdSuffix = mConfig!!.thresholdSuffix
 
         // if threshold suffix is null then memory threshold is also null
-        if (thresholdSuffix != null) {
-            val availableMem = memoryUtil.getAvailableMemorySize(evaluatePath(position))
-
-
-            if (doesPassThresholdTest(mConfig!!.memoryThreshold.toLong(), thresholdSuffix, availableMem)) {
-                val dirPath = evaluatePath(position)
-                DiskUtil.showSecondaryChooser(dirPath, mConfig!!)
-            } else {
-                val suffixedAvailableMem = memoryUtil.suffixedSize(availableMem, thresholdSuffix).toString() + " " + thresholdSuffix
-                Toast.makeText(activity!!.applicationContext, getString(R.string.toast_threshold_breached, suffixedAvailableMem), Toast.LENGTH_SHORT).show()
-            }
-        } else {
-            // THROW: error in log
-            Log.e(TAG, "add .withThreshold(int size, String suffix) to your StorageChooser.Builder instance")
-        }
+//        if (thresholdSuffix != null) {
+//            val availableMem = memoryUtil.getAvailableMemorySize(evaluatePath(position))
+//
+//
+//            if (doesPassThresholdTest(mConfig!!.memoryThreshold.toLong(), thresholdSuffix, availableMem)) {
+//                val dirPath = evaluatePath(position)
+//                DiskUtil.showSecondaryChooser(dirPath, mConfig!!)
+//            } else {
+//                val suffixedAvailableMem = memoryUtil.suffixedSize(availableMem, thresholdSuffix).toString() + " " + thresholdSuffix
+//                Toast.makeText(activity!!.applicationContext, getString(R.string.toast_threshold_breached, suffixedAvailableMem), Toast.LENGTH_SHORT).show()
+//            }
+//        } else {
+//            // THROW: error in log
+//            Log.e(TAG, "add .withThreshold(int size, String suffix) to your StorageChooser.Builder instance")
+//        }
     }
 
 
@@ -260,20 +254,24 @@ class ChooserDialogFragment : DialogFragment() {
 
     }
 
-    override fun onCancel(dialog: DialogInterface) {
-        super.onCancel(dialog)
-        StorageChooser.onCancelListener.onCancel()
-    }
+//    override fun onCancel(dialog: DialogInterface) {
+//        super.onCancel(dialog)
+//        StorageChooser.onCancelListener.onCancel()
+//    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val d = StorageChooser.dialog
-        d.setContentView(getLayout(LayoutInflater.from(activity!!.applicationContext), mContainer))
-        val lp = WindowManager.LayoutParams()
-        lp.copyFrom(d.window!!.attributes)
-        lp.width = WindowManager.LayoutParams.WRAP_CONTENT
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-        d.window!!.attributes = lp
-        return d
+        this.activity?.let {
+            it.applicationContext
+            val d = Dialog(it, R.style.DialogTheme)
+            d.setContentView(getLayout(LayoutInflater.from(activity!!.applicationContext), mContainer))
+            val lp = WindowManager.LayoutParams()
+            lp.copyFrom(d.window!!.attributes)
+            lp.width = WindowManager.LayoutParams.WRAP_CONTENT
+            lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+            d.window!!.attributes = lp
+            return  d
+        }
+        return Dialog(this.activity!!.applicationContext, R.style.DialogTheme)
     }
 
     companion object {
