@@ -6,15 +6,23 @@ import kotlinx.android.parcel.Parcelize
 
 
 @Parcelize
-class SCTheme(
+class ChooserStyle(
+        // colors
         @ColorRes var accentColor: Int,
+        @ColorRes var overviewTextColor: Int,
+
+
+        // fonts
         var headingTypeface: String,
-        var listTypeface: String
+        var listTypeface: String,
+        var loadFontFromAssets: Boolean
 ) : Parcelable {
 
     constructor() : this(
             accentColor = R.color.colorAccent,
+            overviewTextColor = android.R.color.white,
             headingTypeface = "",
-            listTypeface = ""
+            listTypeface = "",
+            loadFontFromAssets = false
     )
 }

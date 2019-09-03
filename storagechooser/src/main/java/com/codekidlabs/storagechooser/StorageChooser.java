@@ -292,7 +292,7 @@
 //            return this;
 //        }
 //
-//        public Builder setTheme(StorageChooser.Theme theme) { //moved as SCTheme
+//        public Builder setTheme(StorageChooser.Theme theme) { //moved as ChooserStyle
 //            this.theme = theme;
 //            return this;
 //        }

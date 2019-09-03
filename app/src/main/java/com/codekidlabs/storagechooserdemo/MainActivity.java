@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 
 
+import com.codekidlabs.storagechooser.ChooserType;
 import com.codekidlabs.storagechooser.Config;
 import com.codekidlabs.storagechooser.StorageChooser2;
 import com.google.android.material.snackbar.Snackbar;
@@ -218,8 +219,9 @@ public class MainActivity extends AppCompatActivity {
 //                chooser.show();
 
                 Config config = new Config();
+                config.setType(ChooserType.FILE);
                 config.setShowMemoryBar(true);
-                config.setMemoryBarHeight(3.0f);
+                config.setMemoryBarHeight(1.0f);
                 StorageChooser2 chooser2 = new StorageChooser2(getSupportFragmentManager(), config);
                 chooser2.show();
             }

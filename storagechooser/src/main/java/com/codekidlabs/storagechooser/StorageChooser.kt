@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import com.codekidlabs.storagechooser.fragments.OverviewDialogFragment
+import com.codekidlabs.storagechooser.fragments.SecondaryChooserFragment
 import java.io.Serializable
 
 /**
@@ -23,16 +24,18 @@ class StorageChooser2(private val fragmentManager: FragmentManager, private var 
     }
 
     fun show() {
+        val b = Bundle()
+        b.putParcelable("config", config)
         if (!config.skipOverview) {
             val overview = OverviewDialogFragment()
-            val b = Bundle()
-            b.putParcelable("test", config)
             overview.arguments = b
             overview.show(fragmentManager, ChooserType.BASIC.toString())
             return
         }
         // TODO: write this part of the code
-//        val secondaryChooser = SecondaryChooserFragment()
+        val secondaryChooser = SecondaryChooserFragment()
+        secondaryChooser.arguments = b
+        secondaryChooser.show(fragmentManager, ChooserType.DIRECTORY.toString())
         return
     }
 

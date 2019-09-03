@@ -3,30 +3,30 @@
     android:id="@+id/overview_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/rounded_corner_view"
     android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/header_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary">
+        android:layout_height="84dp">
 
         <TextView
             android:id="@+id/dialog_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_marginBottom="32dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
-            android:fontFamily="sans-serif-condensed"
+            android:textStyle="bold"
             android:text="@string/choose_storage"
             android:textAlignment="center"
-            android:textColor="@android:color/white"
+            android:textColor="@android:color/black"
             android:textSize="17sp" />
+
+        <View
+            android:layout_alignParentBottom="true"
+            android:background="#B5CCCCCC"
+            android:layout_width="match_parent"
+            android:layout_height="0.8dp" />
 
     </RelativeLayout>
 
@@ -34,7 +34,7 @@
         android:id="@+id/storage_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@drawable/divider"
+        android:divider="@null"
         android:dividerHeight="0.5dp" />
 
 </LinearLayout>
