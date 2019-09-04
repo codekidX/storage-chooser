@@ -1,1 +1,13 @@
-<manifest package="com.codekidlabs.storagechooser" />
+<manifest package="com.codekidlabs.storagechooser"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <provider
+            android:authorities="com.codekidlabs.storagechooser.fileprovider"
+            android:name=".SCFileProvider"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
+    </application>
+</manifest>

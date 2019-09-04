@@ -1,11 +1,27 @@
 package com.codekidlabs.storagechooser.utils;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import androidx.core.content.ContextCompat;
-import android.widget.ImageView;
+import androidx.core.content.FileProvider;
 
+import android.media.ThumbnailUtils;
+import android.net.Uri;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.codekidlabs.storagechooser.R;
+
+import java.io.File;
 
 public class ThumbnailUtil {
 
@@ -53,11 +69,11 @@ public class ThumbnailUtil {
         this.mContext = mContext;
     }
 
-    public void init(ImageView imageView, String filePath) {
-        thumbnailPipe(imageView, filePath);
+    public void init(ImageView imageView, ImageView videoPlayIcon, String filePath) {
+        thumbnailPipe(imageView, videoPlayIcon, filePath);
     }
 
-    private void thumbnailPipe(ImageView imageView, String filePath) {
+    private void thumbnailPipe(ImageView imageView, ImageView videoPlayIcon, final String filePath) {
         String extension = getExtension(filePath);
 
 
@@ -67,13 +83,13 @@ public class ThumbnailUtil {
             case DOC_FILE:
             case PROP_FILE:
             case LOG_FILE:
-                imageView.setImageDrawable(getDrawableFromRes(R.drawable.doc));
+                imageView.setImageDrawable(getDrawableFromRes(R.drawable.ic_ic_unknown_file));
                 break;
             case VIDEO_FILE:
             case VIDEO_AVI_FILE:
             case VIDEO_MOV_FILE:
             case VIDEO_MKV_FILE:
-                imageView.setImageDrawable(getDrawableFromRes(R.drawable.mov));
+                this.loadMedia(imageView, videoPlayIcon, filePath, true);
                 break;
             case APK_FILE:
                 imageView.setImageDrawable(getDrawableFromRes(R.drawable.apk));
@@ -91,7 +107,7 @@ public class ThumbnailUtil {
             case JPG_FILE:
             case PNG_FILE:
             case GIF_FILE:
-                imageView.setImageDrawable(getDrawableFromRes(R.drawable.pic));
+                this.loadMedia(imageView, videoPlayIcon, filePath, false);
                 break;
             case TTF_FILE:
             case OTF_FILE:
@@ -110,6 +126,34 @@ public class ThumbnailUtil {
                 imageView.setImageDrawable(getDrawableFromRes(R.drawable.pdf));
                 break;
         }
+    }
+
+    private void loadMedia(ImageView imageView, ImageView videoPlayIcon, final String filePath, boolean isVideo) {
+        Glide.with(this.mContext)
+                .load(Uri.fromFile(new File(filePath)))
+                .transform(new CenterCrop(), new RoundedCorners(32))
+                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
+                .into(imageView);
+
+        if(isVideo) {
+            videoPlayIcon.setVisibility(View.VISIBLE);
+        }
+
+        imageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Intent intent = new Intent(
+                        Intent.ACTION_VIEW,
+                        FileProvider.getUriForFile(
+                                ThumbnailUtil.this.mContext,
+                                "com.codekidlabs.storagechooser.fileprovider",
+                                new File(filePath)));
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                ThumbnailUtil.this.mContext.startActivity(intent);
+                return true;
+            }
+        });
     }
 
     private Drawable getDrawableFromRes(int id) {

@@ -48,6 +48,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.codekidlabs.storagechooser.Config
 import com.codekidlabs.storagechooser.adapters.SecondaryChooserAdapter
+import com.codekidlabs.storagechooser.utils.DiskUtil
 
 //import com.codekidlabs.storagechooser.StorageChooser.Theme
 
@@ -394,22 +395,21 @@ class SecondaryChooserFragment : DialogFragment() {
         listView = view.findViewById(R.id.storage_list_view)
         mPathChosen = view.findViewById(R.id.path_chosen)
         mFilesProgress = mLayout!!.findViewById(R.id.files_loader)
-        mFilesProgress!!.isIndeterminate = true
+//        mFilesProgress!!.isIndeterminate = true
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            mFilesProgress!!.indeterminateTintList = ColorStateList.valueOf(scheme!![Theme.OVERVIEW_MEMORYBAR_INDEX])
 //        }
 //
-//        mBundlePath = this.arguments!!.getString(DiskUtil.SC_PREFERENCE_KEY)
+        mBundlePath = this.arguments!!.getString(DiskUtil.SC_PREFERENCE_KEY)
 //        isFilePicker = this.arguments!!.getBoolean(DiskUtil.SC_CHOOSER_FLAG, false)
-//        populateList(mBundlePath)
-//        secondaryChooserAdapter = SecondaryChooserAdapter(customStoragesList, context, scheme,
-//                mConfig!!.getListFont(), mConfig!!.isListFromAssets())
-//        secondaryChooserAdapter!!.setPrefixPath(theSelectedPath)
+        populateList(mBundlePath)
+        secondaryChooserAdapter = SecondaryChooserAdapter(customStoragesList!!, activity!!.applicationContext)
+        secondaryChooserAdapter!!.prefixPath = theSelectedPath!!
 
         listView!!.adapter = secondaryChooserAdapter
         //listview should be clickable at first
 //        SecondaryChooserAdapter.shouldEnable = true
-        listView!!.onItemClickListener = mSingleModeClickListener
+//        listView!!.onItemClickListener = mSingleModeClickListener
 
 //        if (isFilePicker && mConfig!!.isMultiSelect()) {
 //            listView!!.onItemLongClickListener = mLongClickListener
@@ -529,8 +529,10 @@ class SecondaryChooserFragment : DialogFragment() {
         }
 
         val volumeList: Array<File>
+        volumeList = fileUtil!!.listFilesInDir(theSelectedPath)
+        setAdapterList(volumeList)
 
-        if (isFilePicker) {
+//        if (isFilePicker) {
 //            if (mConfig!!.isCustomFilter()) {
 //                // we need to start a async task here because the filter loops through all files
 //                // and if the files are more it'll take ages and it'll cause ANR as this is
@@ -546,14 +548,14 @@ class SecondaryChooserFragment : DialogFragment() {
 //                    setBundlePathOnUpdate()
 //                }
 //            }
-        } else {
-            volumeList = fileUtil!!.listFilesAsDir(theSelectedPath)
-            setAdapterList(volumeList)
-            refreshList()
-            setBundlePathOnUpdate()
-        }
+//        } else {
+//            volumeList = fileUtil!!.listFilesAsDir(theSelectedPath)
+//            setAdapterList(volumeList)
+//            refreshList()
+//            setBundlePathOnUpdate()
+//        }
 
-        playTheAddressBarAnimation()
+//        playTheAddressBarAnimation()
     }
 
     /**
@@ -588,16 +590,16 @@ class SecondaryChooserFragment : DialogFragment() {
     fun setAdapterList(volumeList: Array<File>?) {
         if (volumeList != null) {
             for (f in volumeList) {
-//                if (mConfig!!.isShowHidden()) {
-//                    customStoragesList!!.add(f.name)
-//                } else {
-//                    if (!f.name.startsWith(".")) {
-//                        customStoragesList!!.add(f.name)
-//                    }
-//                }
+                if (mConfig!!.showHidden) {
+                    customStoragesList!!.add(f.name)
+                } else {
+                    if (!f.name.startsWith(".")) {
+                        customStoragesList!!.add(f.name)
+                    }
+                }
             }
 
-            Collections.sort(customStoragesList!!) { s1, s2 -> s1.compareTo(s2, ignoreCase = true) }
+            customStoragesList!!.sortWith(Comparator { s1, s2 -> s1.compareTo(s2, ignoreCase = true) })
         } else {
             customStoragesList!!.clear()
         }
@@ -638,7 +640,7 @@ class SecondaryChooserFragment : DialogFragment() {
 
 
         if (secondaryChooserAdapter != null) {
-//            secondaryChooserAdapter!!.setPrefixPath(s)
+            secondaryChooserAdapter!!.prefixPath = s!!
             secondaryChooserAdapter!!.notifyDataSetChanged()
         }
     }

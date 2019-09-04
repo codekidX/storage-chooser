@@ -18,8 +18,7 @@ import com.codekidlabs.storagechooser.utils.ThumbnailUtil
 
 import java.util.ArrayList
 
-class SecondaryChooserAdapter(private val storagesList: List<String>, private val mContext: Context, private val scheme: IntArray,
-                              private val listTypeface: String?, private val fromAssets: Boolean) : BaseAdapter() {
+class SecondaryChooserAdapter(private val storagesList: MutableList<String>, private val mContext: Context) : BaseAdapter() {
     var selectedPaths: ArrayList<Int>
     var prefixPath: String = ""
     private val thumbnailUtil: ThumbnailUtil
@@ -46,25 +45,28 @@ class SecondaryChooserAdapter(private val storagesList: List<String>, private va
         return i.toLong()
     }
 
-    override fun getView(i: Int, view: View, viewGroup: ViewGroup): View {
+    override fun getView(i: Int, view: View?, viewGroup: ViewGroup): View? {
+        val currentFile = prefixPath + "/" + storagesList[i]
         val inflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
         val rootView = inflater.inflate(R.layout.row_custom_paths, viewGroup, false)
 
         val pathFolderIcon = rootView.findViewById<ImageView>(R.id.path_folder_icon)
-        if (FileUtil.isDir(prefixPath + "/" + storagesList[i])) {
+        val videoPlayIcon = rootView.findViewById<ImageView>(R.id.video_play_icon)
+
+        if (FileUtil.isDir(currentFile)) {
             applyFolderTint(pathFolderIcon)
         }
 
-        thumbnailUtil.init(pathFolderIcon, storagesList[i])
+        thumbnailUtil.init(pathFolderIcon, videoPlayIcon, currentFile)
 
         val storageName = rootView.findViewById<TextView>(R.id.storage_name)
         storageName.text = storagesList[i]
 
-        if (listTypeface != null) {
-            storageName.typeface = OverviewDialogFragment.getSCTypeface(mContext, listTypeface,
-                    fromAssets)
-        }
+//        if (listTypeface != null) {
+//            storageName.typeface = OverviewDialogFragment.getSCTypeface(mContext, listTypeface,
+//                    fromAssets)
+//        }
 
 
 //        storageName.setTextColor(scheme[StorageChooser.Theme.SEC_TEXT_INDEX])

@@ -1,29 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/path_folder_icon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_centerVertical="true"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:src="@drawable/ic_folder_icon" />
+        app:srcCompat="@drawable/ic_folder_full" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/video_play_icon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="28dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="16dp"
+        app:tint="@android:color/white"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/ic_video_play_icon" />
 
     <TextView
         android:id="@+id/storage_name"
+        android:text="Test folder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_alignTop="@+id/path_folder_icon"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="6dp"
+        android:fontFamily="sans-serif-medium"
         android:layout_toEndOf="@id/path_folder_icon"
         android:layout_toRightOf="@id/path_folder_icon"
-        android:textSize="16sp" />
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/storage_desc"
+        android:text="Test desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/storage_name"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:textColor="#5C5C5C"
+        android:layout_toEndOf="@id/path_folder_icon"
+        android:layout_toRightOf="@id/path_folder_icon"
+        android:textSize="12sp" />
 
 </RelativeLayout>
