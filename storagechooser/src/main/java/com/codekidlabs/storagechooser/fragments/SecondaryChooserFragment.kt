@@ -5,6 +5,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.ColorDrawable
@@ -15,11 +16,7 @@ import android.os.Environment
 import android.os.Handler
 import android.util.Log
 import android.util.TypedValue
-import android.view.ContextThemeWrapper
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
@@ -33,6 +30,7 @@ import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.AppCompatImageButton
 
 import com.codekidlabs.storagechooser.Content
 import com.codekidlabs.storagechooser.R
@@ -54,6 +52,7 @@ import com.codekidlabs.storagechooser.utils.DiskUtil
 
 
 class SecondaryChooserFragment : DialogFragment() {
+    private lateinit var mAddFolderButton: AppCompatImageButton
     private var mLayout: View? = null
     private var mInactiveGradient: View? = null
     private var mContainer: ViewGroup? = null
@@ -84,6 +83,7 @@ class SecondaryChooserFragment : DialogFragment() {
     // multiple mode stuffs
     private val mMultipleModeList = ArrayList<String>()
 
+
     /**
      * THE HOLY PLACE OF CLICK LISTENERS
      */
@@ -99,12 +99,12 @@ class SecondaryChooserFragment : DialogFragment() {
     }
     private val mNewFolderButtonCloseListener = View.OnClickListener {
         hideAddFolderView()
-        hideKeyboard()
     }
     private val mNewFolderButtonClickListener = View.OnClickListener { showAddFolderView() }
     private val keyboardToggle: Boolean = false
     private val TAG = "StorageChooser"
     private var isFilePicker: Boolean = false
+
     private val mCreateButtonClickListener = View.OnClickListener {
         if (validateFolderName()) {
             val success = FileUtil.createDirectory(mFolderNameEditText!!.text.toString().trim { it <= ' ' }, theSelectedPath)
@@ -118,6 +118,7 @@ class SecondaryChooserFragment : DialogFragment() {
             }
         }
     }
+
     private val mSingleModeClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
         mHandler!!.postDelayed({
             val jointPath = theSelectedPath + "/" + customStoragesList!![i]
@@ -129,6 +130,7 @@ class SecondaryChooserFragment : DialogFragment() {
             }
         }, 300)
     }
+
     private val mLongClickListener = AdapterView.OnItemLongClickListener { adapterView, view, i, l ->
         val jointPath = theSelectedPath + "/" + customStoragesList!![i]
 
@@ -145,6 +147,7 @@ class SecondaryChooserFragment : DialogFragment() {
 
 
     private val mBackButtonClickListener = View.OnClickListener { performBackAction() }
+
     private val mMultipleModeDoneButtonClickListener = View.OnClickListener {
 //        StorageChooser.onMultipleSelectListener.onDone(mMultipleModeList)
         bringBackSingleMode()
@@ -161,15 +164,18 @@ class SecondaryChooserFragment : DialogFragment() {
         }
     }
 
-    private val isFolderViewVisible: Boolean
-        get() = mNewFolderView!!.visibility == View.VISIBLE
+    private var isFolderViewVisible: Boolean = false
 
     // ================ CLICK LISTENER END ==================
 
     private fun showAddFolderView() {
+        isFolderViewVisible = true
         mNewFolderView!!.visibility = View.VISIBLE
-        val anim = AnimationUtils.loadAnimation(mContext, R.anim.anim_new_folder_view)
-        mNewFolderView!!.startAnimation(anim)
+        val anim = AnimationUtils.loadAnimation(mContext, R.anim.anim_inactive_show)
+        val animFolderView = AnimationUtils.loadAnimation(mContext, R.anim.anim_new_folder_view)
+        mNewFolderView!!.startAnimation(animFolderView)
+
+        mInactiveGradient!!.visibility = View.VISIBLE
         mInactiveGradient!!.startAnimation(anim)
 
 
@@ -179,40 +185,48 @@ class SecondaryChooserFragment : DialogFragment() {
 //            val animatable = mNewFolderImageView!!.drawable as Animatable
 //            animatable.start()
 //        }
-        mNewFolderImageView!!.setOnClickListener(mNewFolderButtonCloseListener)
+        mFolderNameEditText!!.isEnabled = true
+        mCreateButton!!.isEnabled = true
+        mAddFolderButton.setOnClickListener(mNewFolderButtonCloseListener)
 
         // OLD---       mNewFolderButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.window_close));
 
         //listview should not be clickable
+        // TODO this must not be static
 //        SecondaryChooserAdapter.shouldEnable = false
     }
 
     private fun hideAddFolderView() {
-        val anim = AnimationUtils.loadAnimation(mContext, R.anim.anim_close_folder_view)
-        mNewFolderView!!.startAnimation(anim)
-        mNewFolderView!!.visibility = View.INVISIBLE
 
+        isFolderViewVisible = false
+        val anim = AnimationUtils.loadAnimation(mContext, R.anim.anim_inactive_hide)
+        mNewFolderView!!.startAnimation(anim)
+        mNewFolderView!!.visibility = View.GONE
+
+        mFolderNameEditText!!.isEnabled = false
+        mFolderNameEditText!!.error = null
+        mCreateButton!!.isEnabled = false
 //        if (DiskUtil.isLollipopAndAbove()) {
 //            mNewFolderImageView!!.setImageDrawable(ContextCompat.getDrawable(mContext!!, R.drawable.drawable_close_to_plus))
 //            // image button animation
 //            val animatable = mNewFolderImageView!!.drawable as Animatable
 //            animatable.start()
 //        }
-        mNewFolderImageView!!.setOnClickListener(mNewFolderButtonClickListener)
+        mAddFolderButton.setOnClickListener(mNewFolderButtonClickListener)
 
         //listview should be clickable
+        // TODO this must not be static
 //        SecondaryChooserAdapter.shouldEnable = true
 
         mInactiveGradient!!.startAnimation(anim)
-        mInactiveGradient!!.visibility = View.INVISIBLE
+        mInactiveGradient!!.visibility = View.GONE
 
         //   OLD --     mNewFolderButton.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.plus));
     }
 
-    fun hideKeyboard() {
+    private fun hideKeyboard() {
         val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(mFolderNameEditText!!.windowToken, 0)
-
     }
 
     private fun performBackAction() {
@@ -305,7 +319,7 @@ class SecondaryChooserFragment : DialogFragment() {
 //        mSelectButton = mLayout!!.findViewById(R.id.select_button)
         mMultipleOnSelectButton = mLayout!!.findViewById(R.id.multiple_selection_done_fab)
 
-//        mCreateButton = mLayout!!.findViewById(R.id.create_folder_button)
+        mCreateButton = mLayout!!.findViewById(R.id.create_folder_button)
 
         mNewFolderView = mLayout!!.findViewById(R.id.new_folder_view)
 //        mNewFolderView!!.setBackgroundColor(scheme!![Theme.SEC_FOLDER_CREATION_BG_INDEX])
@@ -320,8 +334,8 @@ class SecondaryChooserFragment : DialogFragment() {
     private fun updateUI() {
 
         //at start dont show the new folder view unless user clicks on the add/plus button
-        mNewFolderView!!.visibility = View.INVISIBLE
-        mInactiveGradient!!.visibility = View.INVISIBLE
+        mNewFolderView!!.visibility = View.GONE
+        mInactiveGradient!!.visibility = View.GONE
 
 
 //        mFolderNameEditText!!.setHint(mContent!!.getTextfieldHintText())
@@ -357,7 +371,7 @@ class SecondaryChooserFragment : DialogFragment() {
 
 //        mBackButton!!.setOnClickListener(mBackButtonClickListener)
 //        mSelectButton!!.setOnClickListener(mSelectButtonClickListener)
-//        mCreateButton!!.setOnClickListener(mCreateButtonClickListener)
+        mCreateButton!!.setOnClickListener(mCreateButtonClickListener)
         mMultipleOnSelectButton!!.setOnClickListener(mMultipleModeDoneButtonClickListener)
 //
 //        if (mConfig!!.getSecondaryAction().equals(StorageChooser.FILE_PICKER)) {
@@ -376,6 +390,8 @@ class SecondaryChooserFragment : DialogFragment() {
 
     private fun initNewFolderView() {
 
+        mAddFolderButton = mLayout!!.findViewById<AppCompatImageButton>(R.id.ib_add_folder)
+        mAddFolderButton.setOnClickListener(mNewFolderButtonClickListener)
 //        val mNewFolderButtonHolder = mLayout!!.findViewById<RelativeLayout>(R.id.new_folder_button_holder)
 //
 //        mNewFolderImageView = mLayout!!.findViewById(R.id.new_folder_iv)
@@ -384,8 +400,9 @@ class SecondaryChooserFragment : DialogFragment() {
 //        if (!mConfig!!.isAllowAddFolder()) {
 //            mNewFolderButtonHolder.visibility = View.GONE
 //        }
-
     }
+
+
 
 
     /**

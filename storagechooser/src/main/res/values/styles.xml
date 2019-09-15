@@ -24,4 +24,14 @@
         <item name="colorControlActivated">@color/pathLayoutBgColor</item>
     </style>
 
+    <style name="SCTextInputOutlineStyle" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxStrokeColor">@color/colorPrimaryDark</item>
+        <item name="boxStrokeWidth">2dp</item>
+        <item name="hintTextAppearance">@style/SCTextInputHintAppearance</item>
+    </style>
+
+    <style name="SCTextInputHintAppearance" parent="TextAppearance.MaterialComponents.Overline">
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
 </resources>

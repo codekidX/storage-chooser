@@ -3,21 +3,22 @@ package com.codekidlabs.storagechooser.fragments
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
+import android.os.storage.StorageManager
+import android.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.AdapterView
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.codekidlabs.storagechooser.*
@@ -33,27 +34,25 @@ import java.util.ArrayList
 
 
 class OverviewDialogFragment : DialogFragment() {
+    private lateinit var dialogTitle: TextView
     private var mLayout: View? = null
     private var mContainer: ViewGroup? = null
 
-    private var storagesList: MutableList<Storages>? = null
-    private val customStoragesList: List<String>? = null
+    private var storagesList: MutableList<Storages> = mutableListOf()
+    private lateinit var viewDivider: View
     private val TAG = javaClass.name
     private val memoryUtil = MemoryUtil()
-    private val fileUtil = FileUtil()
 
     private lateinit var mConfig: Config
-    private var mContent: Content? = null
+    private lateinit var mHolderView: LinearLayout
 
-    // day night flag
-    // TODO: provide a default day and night theme for storage chooser
-    private val mChooserMode: Int = 0
-
-    // delaying secondary chooser
-    private var mHandler: Handler? = null
+    private lateinit var pref: SharedPreferences
+    private lateinit var mContext: Context
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mContainer = container
+        pref = PreferenceManager.getDefaultSharedPreferences(mContext)
+
         return if (showsDialog) {
             super.onCreateView(inflater, container, savedInstanceState)
         } else getLayout(inflater, container)
@@ -62,24 +61,16 @@ class OverviewDialogFragment : DialogFragment() {
     private fun getLayout(inflater: LayoutInflater, container: ViewGroup?): View {
         // safe check if config from parcelable is accessible
         mConfig = arguments!!.getParcelable("config") as Config
-        mHandler = Handler()
         // init storage-chooser content [localization]
         mLayout = inflater.inflate(R.layout.storage_list, container, false)
-        initListView(activity!!.applicationContext, mLayout!!, mConfig.showMemoryBar)
+        mHolderView = mLayout!!.findViewById(R.id.overview_container)
+        initListView(mLayout!!, mConfig.showMemoryBar)
 
-        val dialogTitle = mLayout!!.findViewById<TextView>(R.id.dialog_title)
-//        dialogTitle.setTextColor(ContextCompat.getColor(activity!!.applicationContext, mConfig.style.overviewTextColor))
+        dialogTitle = mLayout!!.findViewById<TextView>(R.id.dialog_title)
+        viewDivider = mLayout!!.findViewById(R.id.storage_view_divider)
         dialogTitle.text = mConfig.content.overviewHeading
 
-        // set heading typeface
-//        dialogTitle.typeface = getSCTypeface(activity!!.applicationContext,
-//                mConfig.style.headingTypeface,
-//                mConfig.style.loadFontFromAssets)
-
-//        mLayout!!.findViewById<View>(R.id.header_container).setBackgroundColor(
-//                mConfig!!.scheme[OVERVIEW_HEADER_INDEX])
-//        mLayout!!.findViewById<View>(R.id.overview_container).setBackgroundColor(
-//                mConfig!!.scheme[OVERVIEW_BG_INDEX])
+        applyDarkModeColors()
 
         return mLayout!!
     }
@@ -87,97 +78,33 @@ class OverviewDialogFragment : DialogFragment() {
     /**
      * storage listView related code in this block
      */
-    private fun initListView(context: Context, view: View, shouldShowMemoryBar: Boolean) {
+    private fun initListView(view: View, shouldShowMemoryBar: Boolean) {
         val listView = view.findViewById<ListView>(R.id.storage_list_view)
 
         // we need to populate before to get the internal storage path in list
         populateList()
 
         // TODO this adapter params can be improved
-        listView.adapter = OverviewAdapter(storagesList!!, this.activity!!.applicationContext, this.mConfig)
+        listView.adapter = OverviewAdapter(storagesList, mContext, mConfig)
 
 
-        listView.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
+        listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, i, _ ->
             val dirPath = evaluatePath(i)
 
-            DiskUtil.showSecondaryChooser(dirPath, mConfig, activity!!.supportFragmentManager)
-            this@OverviewDialogFragment.dismiss()
 
-//            if (File(dirPath).canRead()) {
-//                // if allowCustomPath is called then directory chooser will be the default secondary dialog
-//                if (mConfig.type != ChooserType.BASIC) {
-//                    // if developer wants to apply threshold
-//                    if (false) {
-//                        startThresholdTest(i)
-//                    } else {
-//
-//                        if (BUILD_DEBUG) {
-//                            mHandler!!.postDelayed({ DiskUtil.showSecondaryChooser(dirPath, mConfig, fragmentManager) }, 250)
-//                        } else {
-//                            DiskUtil.showSecondaryChooser(dirPath, mConfig, fragmentManager)
-//                        }
-//
-//
-//                    }
-//                } else {
-//                    if (mConfig.saveSelection) {
-//                        var preDef: String? = ""
-//                        // if dev forgot or did not add '/' at start add it to avoid errors
-//                        var preDirPath: String? = null
-//
-//                        if (preDef != null) {
-//                            if (!preDef.startsWith("/")) {
-//                                preDef = "/$preDef"
-//                            }
-//                            preDirPath = dirPath + preDef
-////                            DiskUtil.saveChooserPathPreference(mConfig!!.preference, preDirPath)
-//                        } else {
-//                            Log.w(TAG, "Predefined path is null set it by .withPredefinedPath() to builder. Saving root directory")
-////                            DiskUtil.saveChooserPathPreference(mConfig!!.preference, preDirPath)
-//                        }
-//                    } else {
-//                        //Log.d("StorageChooser", "Chosen path: " + dirPath);
-//                        if (false) {
-//                            startThresholdTest(i)
-//                        } else {
-//                            mConfig.selection.onSingleSelection(dirPath)
-//                        }
-//                    }
-//                }
-//                this@OverviewDialogFragment.dismiss()
-//            } else {
-//                Toast.makeText(activity, R.string.toast_not_readable, Toast.LENGTH_SHORT)
-//                        .show()
-//            }
+            if(File(dirPath).canRead()) {
+                if(mConfig.type == ChooserType.BASIC && mConfig.saveSelection) {
+                    pref.edit().putString(StorageChooser2.SC_SAVED_PATH, dirPath).apply()
+                    this@OverviewDialogFragment.dismiss()
+                } else {
+                    DiskUtil.showSecondaryChooser(dirPath, mConfig, activity!!.supportFragmentManager)
+                    this@OverviewDialogFragment.dismiss()
+                }
+            } else {
+                Toast.makeText(activity, R.string.toast_not_readable, Toast.LENGTH_SHORT).show()
+            }
         }
 
-    }
-
-    /**
-     * initiate to take threshold test
-     *
-     * @param position list click index
-     */
-
-    private fun startThresholdTest(position: Int) {
-//        val thresholdSuffix = mConfig!!.thresholdSuffix
-
-        // if threshold suffix is null then memory threshold is also null
-//        if (thresholdSuffix != null) {
-//            val availableMem = memoryUtil.getAvailableMemorySize(evaluatePath(position))
-//
-//
-//            if (doesPassThresholdTest(mConfig!!.memoryThreshold.toLong(), thresholdSuffix, availableMem)) {
-//                val dirPath = evaluatePath(position)
-//                DiskUtil.showSecondaryChooser(dirPath, mConfig!!)
-//            } else {
-//                val suffixedAvailableMem = memoryUtil.suffixedSize(availableMem, thresholdSuffix).toString() + " " + thresholdSuffix
-//                Toast.makeText(activity!!.applicationContext, getString(R.string.toast_threshold_breached, suffixedAvailableMem), Toast.LENGTH_SHORT).show()
-//            }
-//        } else {
-//            // THROW: error in log
-//            Log.e(TAG, "add .withThreshold(int size, String suffix) to your StorageChooser.Builder instance")
-//        }
     }
 
 
@@ -191,28 +118,14 @@ class OverviewDialogFragment : DialogFragment() {
         return if (i == 0) {
             Environment.getExternalStorageDirectory().absolutePath
         } else {
-            "/storage/" + storagesList!![i].storageTitle
+            "/storage/" + storagesList[i].storageTitle
         }
-    }
-
-    /**
-     * checks if available space in user's device is greater than the developer defined threshold
-     *
-     * @param threshold      defined by the developer using Config.withThreshold()
-     * @param memorySuffix   also defined in Config.withThreshold() - check in GB, MB, KB ?
-     * @param availableSpace statfs available mem in bytes (long)
-     * @return if available memory is more than threshold
-     */
-    private fun doesPassThresholdTest(threshold: Long, memorySuffix: String, availableSpace: Long): Boolean {
-        return memoryUtil.suffixedSize(availableSpace, memorySuffix) > threshold
     }
 
     /**
      * populate storageList with necessary storages with filter applied
      */
     private fun populateList() {
-        storagesList = ArrayList()
-
         val storageDir = File("/storage")
         val internalStoragePath = Environment.getExternalStorageDirectory().absolutePath
 
@@ -221,12 +134,12 @@ class OverviewDialogFragment : DialogFragment() {
         val storages = Storages()
 
         // just add the internal storage and avoid adding emulated henceforth
-//        storages.storageTitle = mContent!!.internalStorageText
+        storages.storageTitle = mConfig.content.internalStorageText
 
         storages.storagePath = internalStoragePath
         storages.memoryTotalSize = memoryUtil.formatSize(memoryUtil.getTotalMemorySize(internalStoragePath))
         storages.memoryAvailableSize = memoryUtil.formatSize(memoryUtil.getAvailableMemorySize(internalStoragePath))
-        storagesList!!.add(storages)
+        storagesList.add(storages)
 
 
         for (f in volumeList) {
@@ -241,23 +154,31 @@ class OverviewDialogFragment : DialogFragment() {
                 sharedStorage.memoryTotalSize = memoryUtil.formatSize(memoryUtil.getTotalMemorySize(fPath))
                 sharedStorage.memoryAvailableSize = memoryUtil.formatSize(memoryUtil.getAvailableMemorySize(fPath))
                 sharedStorage.storagePath = fPath
-                storagesList!!.add(sharedStorage)
+                storagesList.add(sharedStorage)
             }
         }
 
     }
 
-//    override fun onCancel(dialog: DialogInterface) {
-//        super.onCancel(dialog)
-//        StorageChooser.onCancelListener.onCancel()
-//    }
+    private fun applyDarkModeColors() {
+        if (mConfig.darkMode) {
+            mHolderView.setBackgroundColor(ContextCompat.getColor(mContext, mConfig.style.darkModeBgColor))
+            viewDivider.setBackgroundColor(ContextCompat.getColor(mContext, R.color.dark_mode_divider))
+            dialogTitle.setTextColor(ContextCompat.getColor(mContext, R.color.dark_mode_text))
+        }
+    }
+
+    override fun onCancel(dialog: DialogInterface) {
+        super.onCancel(dialog)
+        mConfig.cancellation.onOverviewCancel()
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         this.activity?.let {
-            it.applicationContext
+            mContext = it.applicationContext
             val d = Dialog(it, R.style.DialogTheme)
-            d.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
-            d.setContentView(getLayout(LayoutInflater.from(activity!!.applicationContext), mContainer))
+            val layout = getLayout(LayoutInflater.from(activity!!.applicationContext), mContainer)
+            d.setContentView(layout)
             val lp = WindowManager.LayoutParams()
             lp.copyFrom(d.window!!.attributes)
             lp.width = WindowManager.LayoutParams.WRAP_CONTENT
@@ -265,20 +186,7 @@ class OverviewDialogFragment : DialogFragment() {
             d.window!!.attributes = lp
             return  d
         }
+        mContext = this.activity!!.applicationContext
         return Dialog(this.activity!!.applicationContext, R.style.DialogTheme)
-    }
-
-    companion object {
-
-        private val BUILD_DEBUG = true
-
-        // Convinience methods
-
-        fun getSCTypeface(context: Context, path: String, assets: Boolean): Typeface {
-            return if (assets) {
-                Typeface.createFromAsset(context.assets,
-                        path)
-            } else Typeface.createFromFile(path)
-        }
     }
 }

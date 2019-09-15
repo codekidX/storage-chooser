@@ -100,43 +100,57 @@
             android:visibility="invisible"
             />
 
+        <!-- gradient view -->
+        <View
+            android:id="@+id/inactive_gradient"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/bottom_bar"
+            android:background="@color/inactiveGradientColor" />
 
         <!-- create folder view -->
         <RelativeLayout
             android:id="@+id/new_folder_view"
             android:layout_width="match_parent"
             android:layout_height="80dp"
-            android:background="@color/colorPrimary">
+            android:layout_above="@+id/bottom_bar"
+            android:background="@android:color/white">
 
-            <EditText
-                android:id="@+id/et_folder_name"
+            <View
+                android:background="#B75E5E5E"
+                android:layout_alignParentTop="true"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:layout_margin="16dp"
-                android:layout_toStartOf="@+id/create_folder_button"
-                android:backgroundTint="@color/pathLayoutBgColor"
-                android:maxLength="50"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:textColor="@android:color/white"
-                android:textColorHint="@color/chevronBgColor"
-                android:textSize="16sp" />
+                android:layout_height="0.7dp" />
 
-            <Button
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/SCTextInputOutlineStyle"
+                android:hint="Enter folder name"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/create_folder_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/et_folder_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLength="30"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textSize="16sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/create_folder_button"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginBottom="16dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="16dp"
-                android:background="@null"
-                android:textColor="@android:color/white" />
+                android:text="create" />
 
         </RelativeLayout>
 
@@ -175,6 +189,7 @@
                 android:layout_height="match_parent">
 
                 <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/ib_add_folder"
                     android:layout_marginEnd="16dp"
                     android:tint="#5C5C5C"
                     android:layout_toStartOf="@+id/more_menu"
@@ -198,14 +213,6 @@
             </RelativeLayout>
         </RelativeLayout>
 
-
-        <!-- gradient view -->
-        <View
-            android:id="@+id/inactive_gradient"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/new_folder_view"
-            android:background="@color/inactiveGradientColor" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/multiple_selection_done_fab"

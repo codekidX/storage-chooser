@@ -2,6 +2,7 @@ package com.codekidlabs.storagechooserdemo;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -15,8 +16,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
 
+import com.codekidlabs.storagechooser.ChooserStyle;
 import com.codekidlabs.storagechooser.ChooserType;
 import com.codekidlabs.storagechooser.Config;
 import com.codekidlabs.storagechooser.StorageChooser2;
@@ -30,6 +33,14 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox dirCheckBox, fileCheckBox;
 
     private String TAG = getClass().getName();
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if(newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) {
+            Toast.makeText(getApplicationContext(), "Somethign", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -219,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
 //                chooser.show();
 
                 Config config = new Config();
+                config.setDarkMode(true);
                 config.setType(ChooserType.FILE);
                 config.setShowMemoryBar(true);
                 config.setMemoryBarHeight(1.0f);

@@ -12,16 +12,16 @@ data class Config(var memoryBarHeight: Float,
                   var canAddFolder: Boolean,
                   var showHidden: Boolean,
                   var skipOverview: Boolean,
-                  var threshold: String,
                   var type: ChooserType,
                   var content: Content,
-                  var filterExtensions: String,
+                  var filterExtensions: MutableList<String>,
                   var selection: StorageChooser2.Selection,
                   var cancellation: StorageChooser2.Cancellation,
                   var style: ChooserStyle,
                   var multiSelect: Boolean,
                   var saveSelection: Boolean,
                   var sessionable: Boolean,
+                  var darkMode: Boolean,
                   internal var sessionPath: String) : Parcelable {
 
     constructor() : this(1.0f,
@@ -29,13 +29,13 @@ data class Config(var memoryBarHeight: Float,
             false,
             false,
             false,
-            "",
             ChooserType.BASIC,
             Content(),
-            "",
+            mutableListOf(),
             ActionWireFrame(),
             ActionWireFrame(),
             ChooserStyle(),
+            false,
             false,
             false,
             false,
@@ -45,7 +45,11 @@ data class Config(var memoryBarHeight: Float,
 }
 
 internal class ActionWireFrame : StorageChooser2.Selection, StorageChooser2.Cancellation {
-    override fun onCancel(lastOpenedPath: String) {
+    override fun onOverviewCancel() {
+        return
+    }
+
+    override fun onCancel() {
         return
     }
 

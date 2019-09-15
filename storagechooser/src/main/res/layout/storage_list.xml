@@ -3,7 +3,6 @@
     android:id="@+id/overview_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/rounded_corner_view"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -23,6 +22,7 @@
             android:textSize="17sp" />
 
         <View
+            android:id="@+id/storage_view_divider"
             android:layout_alignParentBottom="true"
             android:background="#B5CCCCCC"
             android:layout_width="match_parent"

@@ -13,6 +13,11 @@ import java.io.Serializable
 
 class StorageChooser2(private val fragmentManager: FragmentManager, private var config: Config) {
 
+    companion object {
+        const val SC_PROVIDER_AUTHORITY: String = "com.codekidlabs.storagechooser.fileprovider"
+        const val SC_SAVED_PATH: String = "storage_chooser_path"
+    }
+
     private lateinit var dialog: Dialog
 
     fun reset() {
@@ -58,6 +63,7 @@ class StorageChooser2(private val fragmentManager: FragmentManager, private var 
     }
 
     interface Cancellation: Serializable {
-        fun onCancel(lastOpenedPath: String)
+        fun onOverviewCancel()
+        fun onCancel()
     }
 }

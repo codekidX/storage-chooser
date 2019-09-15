@@ -18,6 +18,13 @@
     <color name="select_color">#6b3fa1</color>
     <color name="cancel_color">#3fa19f</color>
 
+    <!-- dark mode colors -->
+    <color name="dark_mode_bg">#121212</color>
+    <color name="dark_mode_divider">#222222</color>
+    <color name="dark_mode_secondary_bg">#1D1D1D</color>
+    <color name="dark_mode_text">#E2E2E2</color>
+    <color name="dark_mode_secondary_text">#A5A5A5</color>
+
     <array name="default_light">
         <!-- Overview -->
         <item>@color/colorPrimary</item> <!--  Top Header bg -->

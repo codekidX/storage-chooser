@@ -20,6 +20,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.codekidlabs.storagechooser.R;
+import com.codekidlabs.storagechooser.StorageChooser2;
 
 import java.io.File;
 
@@ -131,7 +132,7 @@ public class ThumbnailUtil {
     private void loadMedia(ImageView imageView, ImageView videoPlayIcon, final String filePath, boolean isVideo) {
         Glide.with(this.mContext)
                 .load(Uri.fromFile(new File(filePath)))
-                .transform(new CenterCrop(), new RoundedCorners(32))
+                .transform(new CenterCrop(), new RoundedCorners(24))
                 .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.AUTOMATIC))
                 .into(imageView);
 
@@ -139,19 +140,18 @@ public class ThumbnailUtil {
             videoPlayIcon.setVisibility(View.VISIBLE);
         }
 
-        imageView.setOnLongClickListener(new View.OnLongClickListener() {
+        imageView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View view) {
+            public void onClick(View view) {
                 Intent intent = new Intent(
                         Intent.ACTION_VIEW,
                         FileProvider.getUriForFile(
                                 ThumbnailUtil.this.mContext,
-                                "com.codekidlabs.storagechooser.fileprovider",
+                                StorageChooser2.SC_PROVIDER_AUTHORITY,
                                 new File(filePath)));
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 ThumbnailUtil.this.mContext.startActivity(intent);
-                return true;
             }
         });
     }

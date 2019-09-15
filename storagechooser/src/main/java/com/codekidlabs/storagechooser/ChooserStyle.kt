@@ -10,19 +10,13 @@ class ChooserStyle(
         // colors
         @ColorRes var accentColor: Int,
         @ColorRes var overviewTextColor: Int,
+        @ColorRes var darkModeBgColor: Int
 
-
-        // fonts
-        var headingTypeface: String,
-        var listTypeface: String,
-        var loadFontFromAssets: Boolean
 ) : Parcelable {
 
     constructor() : this(
             accentColor = R.color.colorAccent,
             overviewTextColor = android.R.color.white,
-            headingTypeface = "",
-            listTypeface = "",
-            loadFontFromAssets = false
+            darkModeBgColor = R.color.dark_mode_bg
     )
 }

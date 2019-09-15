@@ -6,6 +6,7 @@
     android:padding="16dp">
 
     <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/storage_icon"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginTop="20dp"
@@ -31,7 +32,7 @@
             style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="2dp" />
 
         <TextView
             android:id="@+id/memory_status"

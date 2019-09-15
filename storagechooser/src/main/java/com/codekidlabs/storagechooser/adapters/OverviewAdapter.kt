@@ -1,6 +1,7 @@
 package com.codekidlabs.storagechooser.adapters
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.graphics.Typeface
 
 import androidx.core.content.ContextCompat
@@ -9,7 +10,6 @@ import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import android.util.Log
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,27 +17,32 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.BaseAdapter
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatImageView
 
 import com.codekidlabs.storagechooser.Config
-import com.codekidlabs.storagechooser.Content
 import com.codekidlabs.storagechooser.R
 import com.codekidlabs.storagechooser.animators.MemorybarAnimation
 import com.codekidlabs.storagechooser.exceptions.MemoryNotAccessibleException
-import com.codekidlabs.storagechooser.fragments.OverviewDialogFragment
 import com.codekidlabs.storagechooser.models.Storages
 import com.codekidlabs.storagechooser.utils.MemoryUtil
 
-class OverviewAdapter(private val storagesList: MutableList<Storages>, private val mContext: Context, private val config: Config) : BaseAdapter() {
-    private var memoryBar: ProgressBar? = null
+class OverviewAdapter(private val storageList: MutableList<Storages>, private val mContext: Context, private val mConfig: Config) : BaseAdapter() {
 
-    private val mContent: Content = config.content
+    // VIEWS
+    private lateinit var memoryStatus: TextView
+    private lateinit var storageName: TextView
+    private lateinit var memoryBar: ProgressBar
+    private lateinit var storageIcon: AppCompatImageView
+
+    // VARS
+    private var memoryPercentile: Int = -1
 
     override fun getCount(): Int {
-        return storagesList.size
+        return storageList.size
     }
 
     override fun getItem(i: Int): Any {
-        return storagesList[i]
+        return storageList[i]
     }
 
     override fun getItemId(i: Int): Long {
@@ -45,60 +50,68 @@ class OverviewAdapter(private val storagesList: MutableList<Storages>, private v
     }
 
     override fun getView(i: Int, view: View?, viewGroup: ViewGroup): View {
-        memoryPercentile = -1
         val inflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         val rootView = inflater.inflate(R.layout.row_storage, viewGroup, false)
 
         //for animation set current position to provide animation delay
-        val storageName = rootView.findViewById<TextView>(R.id.storage_name)
-        val memoryStatus = rootView.findViewById<TextView>(R.id.memory_status)
+        storageName = rootView.findViewById(R.id.storage_name)
+        storageIcon = rootView.findViewById(R.id.storage_icon)
+        memoryStatus = rootView.findViewById<TextView>(R.id.memory_status)
         memoryBar = rootView.findViewById(R.id.memory_bar)
 
         // new scaled memorybar - following the new google play update!
-        memoryBar!!.scaleY = config.memoryBarHeight
+        memoryBar.scaleY = mConfig.memoryBarHeight
 
-        val storages = storagesList[i]
+        val storages = storageList[i]
         val str = SpannableStringBuilder(storages.storageTitle + " (" + storages.memoryTotalSize + ")")
 
         str.setSpan(StyleSpan(Typeface.ITALIC), getSpannableIndex(str), str.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        val availableText = String.format(mContent.freeSpaceText, storages.memoryAvailableSize)
+        val availableText = String.format(mConfig.content.freeSpaceText, storages.memoryAvailableSize)
         storageName.text = str
-
-        storageName.setTextColor(ContextCompat.getColor(this.mContext, android.R.color.black))
         memoryStatus.text = availableText
 
-//        if (listTypeface != null) {
-//            storageName.typeface = OverviewDialogFragment.getSCTypeface(mContext, listTypeface,
-//                    fromAssets)
-//            memoryStatus.typeface = OverviewDialogFragment.getSCTypeface(mContext, listTypeface,
-//                    fromAssets)
-//        }
+        DrawableCompat.setTint(memoryBar.progressDrawable, ContextCompat.getColor(this.mContext, R.color.colorAccent))
 
-        memoryStatus.setTextColor(ContextCompat.getColor(this.mContext, android.R.color.black))
-        DrawableCompat.setTint(memoryBar!!.progressDrawable, ContextCompat.getColor(this.mContext, R.color.colorAccent))
-
-        try {
-            memoryPercentile = getPercentile(storages.storagePath)
-        } catch (e: MemoryNotAccessibleException) {
-            e.printStackTrace()
-        }
-
-        // THE ONE AND ONLY MEMORY BAR
-        if (this.config.showMemoryBar && memoryPercentile != -1) {
-            memoryBar!!.max = 100
-            memoryBar!!.progress = memoryPercentile
-            runMemorybarAnimation(i)
+        // if don't show memory bar then hide memory bar
+        if(!mConfig.showMemoryBar) {
+            memoryStatus.visibility = View.GONE
         } else {
-            memoryBar!!.visibility = View.GONE
+            // try getting remaining percentage of memory bar
+            try {
+                memoryPercentile = getPercentile(storages.storagePath)
+                // if it is a valid percentage run animation
+                if (memoryPercentile != -1) {
+                    memoryBar.max = 100
+                    memoryBar.progress = memoryPercentile
+                    runMemorybarAnimation(i)
+                } else {
+                    // hide
+                    memoryBar.visibility = View.GONE
+                }
+            } catch (e: MemoryNotAccessibleException) {
+                e.printStackTrace()
+                memoryStatus.visibility = View.GONE
+            }
         }
 
-//        if (false) {
-//            memoryStatus.visibility = View.GONE
-//            storageName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f)
-//        }
+        applyDarkModeColors()
 
         return rootView
 
+    }
+
+    private fun applyDarkModeColors() {
+        if(mConfig.darkMode) {
+            val white = ContextCompat.getColor(mContext, R.color.dark_mode_text)
+            storageName.setTextColor(white)
+            storageIcon.setColorFilter(white, PorterDuff.Mode.SRC_IN)
+            memoryStatus.setTextColor(ContextCompat.getColor(mContext, R.color.dark_mode_secondary_text))
+        } else {
+            val black = ContextCompat.getColor(mContext, android.R.color.black)
+            storageName.setTextColor(black)
+            storageIcon.setColorFilter(black, PorterDuff.Mode.SRC_IN)
+            memoryStatus.setTextColor(black)
+        }
     }
 
     private fun runMemorybarAnimation(pos: Int) {
@@ -110,7 +123,7 @@ class OverviewAdapter(private val storagesList: MutableList<Storages>, private v
             animation.startOffset = 300
         }
 
-        memoryBar!!.startAnimation(animation)
+        memoryBar.startAnimation(animation)
     }
 
     /**
@@ -166,10 +179,5 @@ class OverviewAdapter(private val storagesList: MutableList<Storages>, private v
 
         Log.d("TAG", "Memory:$mem")
         return mem
-    }
-
-    companion object {
-
-        private var memoryPercentile: Int = 0
     }
 }
