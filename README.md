@@ -1,10 +1,10 @@
-# Storage Chooser
+# Storage Chooser [!News](https://github.com/codekidX/storage-chooser/tree/inline-3.0#android-10-news)
 
 ![SC Features](http://i.imgur.com/nmqPJok.gif)
 
 | **`Documentation`** | **`Version`** |
 |-----------------| --------------|
-| [![Documentation](https://img.shields.io/badge/api-reference-blue.svg)](https://ashishshekar.com/projects/sc/) | [![](https://jitpack.io/v/codekidX/storage-chooser.svg)](https://jitpack.io/#codekidX/storage-chooser)
+| [![Documentation](https://img.shields.io/badge/api-reference-blue.svg)](https://ashishshekar.com/projects/sc/) | [![](https://jitpack.io/v/codekidX/storage-chooser.svg)](https://jitpack.io/#codekidX/storage-chooser) |
 
 A pretty and simple directory chooser and file picker library for 4.4+ devices. This library was created to be included in [OpenGApps App](https://play.google.com/store/apps/details?id=org.opengapps.app). There are too many storage chooser out there but this one is too materially :stuck_out_tongue: . Easy to implement and does not take a lot of your valueable time in setting-up all the other necessary things that every developer seeks, like
 
@@ -41,6 +41,15 @@ Add this to your gradle.properties file:
 android.enableJetifier=true
 android.useAndroidX=true
 ```
+
+## Android 10 News
+
+You can currently use this library on Android 10 devices by adding `android:requestLegacyExternalStorage="true"` to your AndroidManifest.xml.
+The release of 3.0 was to happen by December 2019 but was put to hold in light of new situations and re-evaluation of what is more important to this library, features? stability? future-ready?.
+
+There is an implementation of [SAF](https://developer.android.com/guide/topics/providers/document-provider) going on in [inline-3.0](https://github.com/codekidX/storage-chooser/tree/inline-3.0)
+branch and would surface in this release as a **breaking change**.
+
 
 ## Notes
 
@@ -160,4 +169,5 @@ Branch status:
 |------------------|-------------------|
 | master | inline-3.0 |
 
-This is a community based project so help fixing bugs by adding your fixes to it by [Create pull request](https://github.com/codekidX/storage-chooser/pull/new/master)
+
+You can contribute to this library by [creating a pull request](https://github.com/codekidX/storage-chooser/pull/new/master).
