@@ -1,6 +1,7 @@
 package com.codekidlabs.storagechooser
 
 import android.os.Parcelable
+import androidx.documentfile.provider.DocumentFile
 import kotlinx.android.parcel.Parcelize
 
 /**
@@ -20,7 +21,7 @@ data class Config(var memoryBarHeight: Float,
                   var style: ChooserStyle,
                   var multiSelect: Boolean,
                   var saveSelection: Boolean,
-                  var sessionable: Boolean,
+                  var storeSession: Boolean,
                   var darkMode: Boolean,
                   internal var sessionPath: String) : Parcelable {
 

@@ -16,6 +16,7 @@ class StorageChooser2(private val fragmentManager: FragmentManager, private var 
     companion object {
         const val SC_PROVIDER_AUTHORITY: String = "com.codekidlabs.storagechooser.fileprovider"
         const val SC_SAVED_PATH: String = "storage_chooser_path"
+        const val SC_SESSION_PATH: String = "storage_chooser_session"
     }
 
     private lateinit var dialog: Dialog
@@ -41,21 +42,7 @@ class StorageChooser2(private val fragmentManager: FragmentManager, private var 
         val secondaryChooser = SecondaryChooserFragment()
         secondaryChooser.arguments = b
         secondaryChooser.show(fragmentManager, ChooserType.DIRECTORY.toString())
-        return
     }
-
-//    fun show() {
-//        when (this.config.type) {
-//            else -> {
-//
-//            }
-//        }
-//        val intent = Intent(activity, ChooserActivity::class.java)
-//        val bundle = Bundle()
-//        bundle.putParcelable("test", config)
-//        intent.putExtra("configBundle", bundle)
-//        activity.startActivity(intent)
-//    }
 
     interface Selection: Serializable {
         fun onSingleSelection(path: String)

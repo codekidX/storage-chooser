@@ -1,6 +1,7 @@
 package com.codekidlabs.storagechooserdemo;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -230,12 +231,14 @@ public class MainActivity extends AppCompatActivity {
 //                chooser.show();
 
                 Config config = new Config();
-                config.setDarkMode(true);
+//                config.setDarkMode(true);
                 config.setType(ChooserType.FILE);
                 config.setShowMemoryBar(true);
                 config.setMemoryBarHeight(1.0f);
                 StorageChooser2 chooser2 = new StorageChooser2(getSupportFragmentManager(), config);
                 chooser2.show();
+//                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+//                startActivityForResult(intent, 998);
             }
 
         });

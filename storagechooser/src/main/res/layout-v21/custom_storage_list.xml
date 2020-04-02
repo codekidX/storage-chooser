@@ -163,12 +163,14 @@
             android:layout_height="60dp">
 
             <View
+                android:id="@+id/picker_divider"
                 android:background="#81DDDDDD"
                 android:layout_alignParentTop="true"
                 android:layout_width="match_parent"
                 android:layout_height="0.7dp" />
 
             <androidx.cardview.widget.CardView
+                android:id="@+id/address_bar_card"
                 app:cardBackgroundColor="#eee"
                 app:cardElevation="0dp"
                 app:cardCornerRadius="20dp"

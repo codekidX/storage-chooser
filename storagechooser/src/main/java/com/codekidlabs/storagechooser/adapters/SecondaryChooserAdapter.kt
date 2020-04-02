@@ -8,17 +8,27 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import com.codekidlabs.storagechooser.Config
 
 import com.codekidlabs.storagechooser.R
 //import com.codekidlabs.storagechooser.StorageChooser
 import com.codekidlabs.storagechooser.fragments.OverviewDialogFragment
 import com.codekidlabs.storagechooser.utils.FileUtil
+import com.codekidlabs.storagechooser.utils.MemoryUtil
 import com.codekidlabs.storagechooser.utils.ResourceUtil
 import com.codekidlabs.storagechooser.utils.ThumbnailUtil
+import java.io.File
 
 import java.util.ArrayList
 
-class SecondaryChooserAdapter(private val storagesList: MutableList<String>, private val mContext: Context) : BaseAdapter() {
+class SecondaryChooserAdapter(
+        private val storagesList: MutableList<File>,
+        private val mContext: Context,
+        private val mConfig: Config) : BaseAdapter() {
+
+    private lateinit var storageDesc: TextView
+    private lateinit var storageName: TextView
     var selectedPaths: ArrayList<Int>
     var prefixPath: String = ""
     private val thumbnailUtil: ThumbnailUtil
@@ -46,7 +56,7 @@ class SecondaryChooserAdapter(private val storagesList: MutableList<String>, pri
     }
 
     override fun getView(i: Int, view: View?, viewGroup: ViewGroup): View? {
-        val currentFile = prefixPath + "/" + storagesList[i]
+        val currentFile = prefixPath + "/" + storagesList[i].name
         val inflater = mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
         val rootView = inflater.inflate(R.layout.row_custom_paths, viewGroup, false)
@@ -60,8 +70,10 @@ class SecondaryChooserAdapter(private val storagesList: MutableList<String>, pri
 
         thumbnailUtil.init(pathFolderIcon, videoPlayIcon, currentFile)
 
-        val storageName = rootView.findViewById<TextView>(R.id.storage_name)
-        storageName.text = storagesList[i]
+        storageName = rootView.findViewById(R.id.storage_name)
+        storageDesc = rootView.findViewById(R.id.storage_desc)
+        storageName.text = storagesList[i].name
+        storageDesc.text = getDescription(storagesList[i])
 
 //        if (listTypeface != null) {
 //            storageName.typeface = OverviewDialogFragment.getSCTypeface(mContext, listTypeface,
@@ -75,8 +87,24 @@ class SecondaryChooserAdapter(private val storagesList: MutableList<String>, pri
             rootView.setBackgroundColor(resourceUtil.primaryColorWithAlpha)
         }
 
+        applyDarkModeColors()
+
         return rootView
     }
+
+    private fun getDescription(f: File): String {
+        if (f.isDirectory) {
+            val childCount = f.listFiles().size
+            if (childCount > 1) {
+                return "Directory • $childCount files"
+            } else if(childCount == 1) {
+                return "Directory • $childCount file"
+            }
+            return "Directory"
+        }
+        return MemoryUtil().formatSize(f.length())
+    }
+
 
 
     /**
@@ -87,6 +115,13 @@ class SecondaryChooserAdapter(private val storagesList: MutableList<String>, pri
      */
     private fun getSpannableIndex(str: SpannableStringBuilder): Int {
         return str.toString().indexOf("(") + 1
+    }
+
+    private fun applyDarkModeColors() {
+        if(mConfig.darkMode) {
+            storageName.setTextColor(ContextCompat.getColor(mContext, R.color.dark_mode_text))
+            storageDesc.setTextColor(ContextCompat.getColor(mContext, R.color.dark_mode_secondary_text))
+        }
     }
 
     private fun applyFolderTint(im: ImageView) {

@@ -85,16 +85,18 @@ public class MemoryUtil {
         String suffix = null;
 
         if (size >= 1024) {
-            suffix = "KiB";
+            suffix = " KB";
             size /= 1024;
             if (size >= 1024) {
-                suffix = "MiB";
+                suffix = " MB";
                 size /= 1024;
                 if (size >= 1024) {
-                    suffix = "GiB";
+                    suffix = " GB";
                     size /= 1024;
                 }
             }
+        } else {
+            suffix = " B";
         }
 
         StringBuilder resultBuffer = new StringBuilder(Long.toString(size));
@@ -105,7 +107,7 @@ public class MemoryUtil {
             commaOffset -= 3;
         }
 
-        if (suffix != null) resultBuffer.append(suffix);
+        resultBuffer.append(suffix);
         return resultBuffer.toString();
     }
 

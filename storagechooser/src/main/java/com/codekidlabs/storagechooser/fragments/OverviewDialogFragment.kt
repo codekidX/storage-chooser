@@ -64,9 +64,9 @@ class OverviewDialogFragment : DialogFragment() {
         // init storage-chooser content [localization]
         mLayout = inflater.inflate(R.layout.storage_list, container, false)
         mHolderView = mLayout!!.findViewById(R.id.overview_container)
-        initListView(mLayout!!, mConfig.showMemoryBar)
+        initListView(mLayout!!)
 
-        dialogTitle = mLayout!!.findViewById<TextView>(R.id.dialog_title)
+        dialogTitle = mLayout!!.findViewById(R.id.dialog_title)
         viewDivider = mLayout!!.findViewById(R.id.storage_view_divider)
         dialogTitle.text = mConfig.content.overviewHeading
 
@@ -78,7 +78,7 @@ class OverviewDialogFragment : DialogFragment() {
     /**
      * storage listView related code in this block
      */
-    private fun initListView(view: View, shouldShowMemoryBar: Boolean) {
+    private fun initListView(view: View) {
         val listView = view.findViewById<ListView>(R.id.storage_list_view)
 
         // we need to populate before to get the internal storage path in list
@@ -91,15 +91,20 @@ class OverviewDialogFragment : DialogFragment() {
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, i, _ ->
             val dirPath = evaluatePath(i)
 
-
             if(File(dirPath).canRead()) {
-                if(mConfig.type == ChooserType.BASIC && mConfig.saveSelection) {
+
+                if (mConfig.saveSelection) {
                     pref.edit().putString(StorageChooser2.SC_SAVED_PATH, dirPath).apply()
+                }
+
+                if(mConfig.type == ChooserType.BASIC) {
+                    mConfig.selection.onSingleSelection(dirPath)
                     this@OverviewDialogFragment.dismiss()
                 } else {
                     DiskUtil.showSecondaryChooser(dirPath, mConfig, activity!!.supportFragmentManager)
                     this@OverviewDialogFragment.dismiss()
                 }
+
             } else {
                 Toast.makeText(activity, R.string.toast_not_readable, Toast.LENGTH_SHORT).show()
             }
@@ -162,7 +167,7 @@ class OverviewDialogFragment : DialogFragment() {
 
     private fun applyDarkModeColors() {
         if (mConfig.darkMode) {
-            mHolderView.setBackgroundColor(ContextCompat.getColor(mContext, mConfig.style.darkModeBgColor))
+            mHolderView.setBackgroundColor(ContextCompat.getColor(mContext, mConfig.style.overviewStyle.backgroundColor))
             viewDivider.setBackgroundColor(ContextCompat.getColor(mContext, R.color.dark_mode_divider))
             dialogTitle.setTextColor(ContextCompat.getColor(mContext, R.color.dark_mode_text))
         }

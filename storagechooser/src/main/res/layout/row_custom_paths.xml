@@ -54,6 +54,6 @@
         android:textColor="#5C5C5C"
         android:layout_toEndOf="@id/path_folder_icon"
         android:layout_toRightOf="@id/path_folder_icon"
-        android:textSize="12sp" />
+        android:textSize="10sp" />
 
 </RelativeLayout>

@@ -4,20 +4,13 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
-import android.content.res.ColorStateList
-import android.content.res.Configuration
-import android.graphics.Color
-import android.graphics.drawable.Animatable
-import android.graphics.drawable.ColorDrawable
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
-import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
@@ -31,8 +24,9 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.AppCompatImageButton
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 
-import com.codekidlabs.storagechooser.Content
 import com.codekidlabs.storagechooser.R
 import com.codekidlabs.storagechooser.utils.FileUtil
 import com.codekidlabs.storagechooser.utils.ResourceUtil
@@ -42,7 +36,6 @@ import java.io.File
 import java.util.ArrayList
 import java.util.Collections
 import java.util.Comparator
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import com.codekidlabs.storagechooser.Config
 import com.codekidlabs.storagechooser.adapters.SecondaryChooserAdapter
@@ -52,8 +45,15 @@ import com.codekidlabs.storagechooser.utils.DiskUtil
 
 
 class SecondaryChooserFragment : DialogFragment() {
+
+    private lateinit var mHolderView: RelativeLayout
+
+
+    private lateinit var mPickerDivider: View
+    private lateinit var mAddressBarCard: CardView
+    private lateinit var mBottomBar: RelativeLayout
     private lateinit var mAddFolderButton: AppCompatImageButton
-    private var mLayout: View? = null
+    private lateinit var mLayout: View
     private var mInactiveGradient: View? = null
     private var mContainer: ViewGroup? = null
     private var mPathChosen: TextView? = null
@@ -68,15 +68,13 @@ class SecondaryChooserFragment : DialogFragment() {
     private var mBundlePath: String? = null
     private var listView: ListView? = null
     private val isOpen: Boolean = false
-    private var customStoragesList: MutableList<String>? = null
+    private var customStoragesList: MutableList<File>? = null
     private var secondaryChooserAdapter: SecondaryChooserAdapter? = null
 
     private var fileUtil: FileUtil? = null
 
-    private var scheme: IntArray? = null
-    private var mConfig: Config? = null
-    private var mContent: Content? = null
-    private var mContext: Context? = null
+    private lateinit var mConfig: Config
+    private lateinit var mContext: Context
     private var mHandler: Handler? = null
     private var mResourceUtil: ResourceUtil? = null
 
@@ -88,14 +86,14 @@ class SecondaryChooserFragment : DialogFragment() {
      * THE HOLY PLACE OF CLICK LISTENERS
      */
     private val mSelectButtonClickListener = View.OnClickListener {
-        if (mConfig!!.saveSelection) {
+        if (mConfig.saveSelection) {
 //            DiskUtil.saveChooserPathPreference(mConfig!!.getPreference(), theSelectedPath)
         } else {
             Log.d("StorageChooser", "Chosen path: " + theSelectedPath!!)
         }
 
 //        StorageChooser.onSelectListener.onSelect(theSelectedPath)
-        dissmissDialog(FLAG_DISSMISS_NORMAL)
+        dismissDialog(FLAG_DISSMISS_NORMAL)
     }
     private val mNewFolderButtonCloseListener = View.OnClickListener {
         hideAddFolderView()
@@ -109,12 +107,12 @@ class SecondaryChooserFragment : DialogFragment() {
         if (validateFolderName()) {
             val success = FileUtil.createDirectory(mFolderNameEditText!!.text.toString().trim { it <= ' ' }, theSelectedPath)
             if (success) {
-                Toast.makeText(mContext, mContent!!.folderCreatedToastText, Toast.LENGTH_SHORT).show()
+                Toast.makeText(mContext, mConfig.content.folderCreatedToastText, Toast.LENGTH_SHORT).show()
                 trimPopulate(theSelectedPath)
                 hideKeyboard()
                 hideAddFolderView()
             } else {
-                Toast.makeText(mContext, mContent!!.folderErrorToastText, Toast.LENGTH_SHORT).show()
+                Toast.makeText(mContext, mConfig.content.folderErrorToastText, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -126,7 +124,7 @@ class SecondaryChooserFragment : DialogFragment() {
                 populateList("/" + customStoragesList!![i])
             } else {
 //                StorageChooser.onSelectListener.onSelect(jointPath)
-                dissmissDialog(FLAG_DISSMISS_NORMAL)
+                dismissDialog(FLAG_DISSMISS_NORMAL)
             }
         }, 300)
     }
@@ -151,7 +149,7 @@ class SecondaryChooserFragment : DialogFragment() {
     private val mMultipleModeDoneButtonClickListener = View.OnClickListener {
 //        StorageChooser.onMultipleSelectListener.onDone(mMultipleModeList)
         bringBackSingleMode()
-        dissmissDialog(FLAG_DISSMISS_NORMAL)
+        dismissDialog(FLAG_DISSMISS_NORMAL)
     }
     private val mMultipleModeClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
         val jointPath = theSelectedPath + "/" + customStoragesList!![i]
@@ -243,14 +241,14 @@ class SecondaryChooserFragment : DialogFragment() {
 //                        this@SecondaryChooserFragment.dismiss()
 //
 //                        //delay until close animation ends
-//                        mHandler!!.postDelayed({ dissmissDialog(FLAG_DISSMISS_INIT_DIALOG) }, 200)
+//                        mHandler!!.postDelayed({ dismissDialog(FLAG_DISSMISS_INIT_DIALOG) }, 200)
 //                    } else {
 //                        theSelectedPath = theSelectedPath!!.substring(0, slashIndex)
 //                        StorageChooser.LAST_SESSION_PATH = theSelectedPath
 //                        populateList("")
 //                    }
 //                } else {
-//                    dissmissDialog(FLAG_DISSMISS_NORMAL)
+//                    dismissDialog(FLAG_DISSMISS_NORMAL)
 //                }
             }
         } else {
@@ -265,7 +263,7 @@ class SecondaryChooserFragment : DialogFragment() {
 
     }
 
-    private fun dissmissDialog(flag: Int) {
+    private fun dismissDialog(flag: Int) {
 
         when (flag) {
             FLAG_DISSMISS_INIT_DIALOG -> {
@@ -289,11 +287,7 @@ class SecondaryChooserFragment : DialogFragment() {
 
     private fun getLayout(inflater: LayoutInflater, container: ViewGroup?): View {
         mConfig = arguments!!.getParcelable("config") as Config
-//        scheme = mConfig!!.getScheme()
         mHandler = Handler()
-
-        // init storage-chooser content [localization]
-        mContent = mConfig!!.content
 
 
         val contextThemeWrapper = ContextThemeWrapper(activity, R.style.DialogTheme)
@@ -303,13 +297,13 @@ class SecondaryChooserFragment : DialogFragment() {
         mResourceUtil = ResourceUtil(mContext)
         mLayout = li.inflate(R.layout.custom_storage_list, container, false)
 
-        initListView(mContext, mLayout!!, mConfig!!.showMemoryBar)
+        initListView(mLayout)
 
         initUI()
         initNewFolderView()
         updateUI()
 
-        return mLayout!!
+        return mLayout
     }
 
 
@@ -317,16 +311,19 @@ class SecondaryChooserFragment : DialogFragment() {
 
 //        mBackButton = mLayout!!.findViewById(R.id.back_button)
 //        mSelectButton = mLayout!!.findViewById(R.id.select_button)
-        mMultipleOnSelectButton = mLayout!!.findViewById(R.id.multiple_selection_done_fab)
+        mMultipleOnSelectButton = mLayout.findViewById(R.id.multiple_selection_done_fab)
 
-        mCreateButton = mLayout!!.findViewById(R.id.create_folder_button)
+        mCreateButton = mLayout.findViewById(R.id.create_folder_button)
 
-        mNewFolderView = mLayout!!.findViewById(R.id.new_folder_view)
+        mNewFolderView = mLayout.findViewById(R.id.new_folder_view)
 //        mNewFolderView!!.setBackgroundColor(scheme!![Theme.SEC_FOLDER_CREATION_BG_INDEX])
-        mFolderNameEditText = mLayout!!.findViewById(R.id.et_folder_name)
+        mFolderNameEditText = mLayout.findViewById(R.id.et_folder_name)
 
-        mInactiveGradient = mLayout!!.findViewById(R.id.inactive_gradient)
-
+        mInactiveGradient = mLayout.findViewById(R.id.inactive_gradient)
+        mHolderView = mLayout.findViewById(R.id.secondary_container)
+        mBottomBar = mLayout.findViewById(R.id.bottom_bar)
+        mPickerDivider = mLayout.findViewById(R.id.picker_divider)
+        mAddressBarCard = mLayout.findViewById(R.id.address_bar_card)
 //        mLayout!!.findViewById<View>(R.id.secondary_container).setBackgroundColor(scheme!![Theme.SEC_BG_INDEX])
 
     }
@@ -379,6 +376,18 @@ class SecondaryChooserFragment : DialogFragment() {
 //            setBottomNewFolderView()
 //        }
 
+        applyDarkModeColors()
+
+    }
+
+    private fun applyDarkModeColors() {
+        if (mConfig.darkMode) {
+            val black = ContextCompat.getColor(mContext, mConfig.style.pickerStyle.backgroundColor)
+            mHolderView.setBackgroundColor(black)
+            mBottomBar.setBackgroundColor(ContextCompat.getColor(mContext, R.color.dark_mode_bg))
+            mAddressBarCard.setCardBackgroundColor(ContextCompat.getColor(mContext, R.color.dark_mode_secondary_bg))
+            mPickerDivider.setBackgroundColor(ContextCompat.getColor(mContext, R.color.dark_mode_divider))
+        }
     }
 
     private fun setBottomNewFolderView() {
@@ -390,7 +399,7 @@ class SecondaryChooserFragment : DialogFragment() {
 
     private fun initNewFolderView() {
 
-        mAddFolderButton = mLayout!!.findViewById<AppCompatImageButton>(R.id.ib_add_folder)
+        mAddFolderButton = mLayout.findViewById(R.id.ib_add_folder)
         mAddFolderButton.setOnClickListener(mNewFolderButtonClickListener)
 //        val mNewFolderButtonHolder = mLayout!!.findViewById<RelativeLayout>(R.id.new_folder_button_holder)
 //
@@ -408,10 +417,10 @@ class SecondaryChooserFragment : DialogFragment() {
     /**
      * storage listView related code in this block
      */
-    private fun initListView(context: Context?, view: View, shouldShowMemoryBar: Boolean) {
+    private fun initListView(view: View) {
         listView = view.findViewById(R.id.storage_list_view)
         mPathChosen = view.findViewById(R.id.path_chosen)
-        mFilesProgress = mLayout!!.findViewById(R.id.files_loader)
+        mFilesProgress = mLayout.findViewById(R.id.files_loader)
 //        mFilesProgress!!.isIndeterminate = true
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            mFilesProgress!!.indeterminateTintList = ColorStateList.valueOf(scheme!![Theme.OVERVIEW_MEMORYBAR_INDEX])
@@ -420,7 +429,7 @@ class SecondaryChooserFragment : DialogFragment() {
         mBundlePath = this.arguments!!.getString(DiskUtil.SC_PREFERENCE_KEY)
 //        isFilePicker = this.arguments!!.getBoolean(DiskUtil.SC_CHOOSER_FLAG, false)
         populateList(mBundlePath)
-        secondaryChooserAdapter = SecondaryChooserAdapter(customStoragesList!!, activity!!.applicationContext)
+        secondaryChooserAdapter = SecondaryChooserAdapter(customStoragesList!!, activity!!.applicationContext, mConfig)
         secondaryChooserAdapter!!.prefixPath = theSelectedPath!!
 
         listView!!.adapter = secondaryChooserAdapter
@@ -454,7 +463,6 @@ class SecondaryChooserFragment : DialogFragment() {
             //this item is selected before
             secondaryChooserAdapter!!.selectedPaths.remove(secondaryChooserAdapter!!.selectedPaths.indexOf(i))
             // reset bg to white
-//            view.setBackgroundColor(scheme!![Theme.SEC_BG_INDEX])
             mMultipleModeList.removeAt(mMultipleModeList.indexOf(jointPath))
         }
 
@@ -607,19 +615,34 @@ class SecondaryChooserFragment : DialogFragment() {
     fun setAdapterList(volumeList: Array<File>?) {
         if (volumeList != null) {
             for (f in volumeList) {
-                if (mConfig!!.showHidden) {
-                    customStoragesList!!.add(f.name)
+                if (mConfig.showHidden) {
+                    customStoragesList!!.add(f)
                 } else {
                     if (!f.name.startsWith(".")) {
-                        customStoragesList!!.add(f.name)
+                        customStoragesList!!.add(f)
                     }
                 }
             }
 
-            customStoragesList!!.sortWith(Comparator { s1, s2 -> s1.compareTo(s2, ignoreCase = true) })
+            customStoragesList = customStoragesList!!.sortedWith(FileTypeSorter().thenBy { it.name }).toMutableList()
         } else {
             customStoragesList!!.clear()
         }
+    }
+
+
+    private class FileTypeSorter: Comparator<File> {
+        override fun compare(f1: File?, f2: File?): Int {
+            return if (f1!!.isDirectory == f2!!.isDirectory)
+                0
+            else if (f1.isDirectory && !f2.isDirectory)
+                -1
+            else {
+                1
+            }
+
+        }
+
     }
 
     /**
@@ -646,11 +669,11 @@ class SecondaryChooserFragment : DialogFragment() {
         if (volumeList != null) {
             for (f in volumeList) {
                 if (!f.name.startsWith(".")) {
-                    customStoragesList!!.add(f.name)
+                    customStoragesList!!.add(f)
                 }
             }
 
-            Collections.sort(customStoragesList!!) { s1, s2 -> s1.compareTo(s2, ignoreCase = true) }
+            customStoragesList = customStoragesList!!.sortedWith(FileTypeSorter().thenBy { it.name }).toMutableList()
         } else {
             customStoragesList!!.clear()
         }
@@ -732,7 +755,7 @@ class SecondaryChooserFragment : DialogFragment() {
      */
     private fun validateFolderName(): Boolean {
         if (mFolderNameEditText!!.text.toString().trim { it <= ' ' }.isEmpty()) {
-            mFolderNameEditText!!.error = mContent!!.textFieldErrorText
+            mFolderNameEditText!!.error = mConfig.content.textFieldErrorText
             return false
         }
         return true

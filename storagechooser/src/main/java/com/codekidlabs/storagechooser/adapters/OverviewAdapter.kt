@@ -25,6 +25,7 @@ import com.codekidlabs.storagechooser.animators.MemorybarAnimation
 import com.codekidlabs.storagechooser.exceptions.MemoryNotAccessibleException
 import com.codekidlabs.storagechooser.models.Storages
 import com.codekidlabs.storagechooser.utils.MemoryUtil
+import java.io.File
 
 class OverviewAdapter(private val storageList: MutableList<Storages>, private val mContext: Context, private val mConfig: Config) : BaseAdapter() {
 
@@ -99,12 +100,11 @@ class OverviewAdapter(private val storageList: MutableList<Storages>, private va
         return rootView
 
     }
-
     private fun applyDarkModeColors() {
         if(mConfig.darkMode) {
-            val white = ContextCompat.getColor(mContext, R.color.dark_mode_text)
-            storageName.setTextColor(white)
-            storageIcon.setColorFilter(white, PorterDuff.Mode.SRC_IN)
+            val primary = ContextCompat.getColor(mContext, R.color.dark_mode_text)
+            storageName.setTextColor(primary)
+            storageIcon.setColorFilter(primary, PorterDuff.Mode.SRC_IN)
             memoryStatus.setTextColor(ContextCompat.getColor(mContext, R.color.dark_mode_secondary_text))
         } else {
             val black = ContextCompat.getColor(mContext, android.R.color.black)
@@ -169,12 +169,12 @@ class OverviewAdapter(private val storageList: MutableList<Storages>, private va
     private fun getMemoryFromString(size: String): Long {
         val mem: Long
 
-        if (size.contains("MiB")) {
-            mem = Integer.parseInt(size.replace(",", "").replace("MiB", "")).toLong()
-        } else if (size.contains("GiB")) {
-            mem = Integer.parseInt(size.replace(",", "").replace("GiB", "")).toLong()
+        if (size.contains("MB")) {
+            mem = Integer.parseInt(size.replace(",", "").replace("MB", "")).toLong()
+        } else if (size.contains("GB")) {
+            mem = Integer.parseInt(size.replace(",", "").replace("GB", "")).toLong()
         } else {
-            mem = Integer.parseInt(size.replace(",", "").replace("KiB", "")).toLong()
+            mem = Integer.parseInt(size.replace(",", "").replace("KB", "")).toLong()
         }
 
         Log.d("TAG", "Memory:$mem")
