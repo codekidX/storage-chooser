@@ -18,6 +18,8 @@
     <color name="select_color">#6b3fa1</color>
     <color name="cancel_color">#3fa19f</color>
 
+    <color name="common_divider_color">#66222222</color>
+
     <!-- dark mode colors -->
     <color name="dark_mode_bg">#121212</color>
     <color name="dark_mode_divider">#222222</color>

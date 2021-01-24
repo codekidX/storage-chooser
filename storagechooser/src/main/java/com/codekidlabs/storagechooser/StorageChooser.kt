@@ -38,6 +38,7 @@ class StorageChooser2(private val fragmentManager: FragmentManager, private var 
             overview.show(fragmentManager, ChooserType.BASIC.toString())
             return
         }
+
         // TODO: write this part of the code
         val secondaryChooser = SecondaryChooserFragment()
         secondaryChooser.arguments = b

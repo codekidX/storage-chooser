@@ -9,6 +9,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.documentfile.provider.DocumentFile
 import com.codekidlabs.storagechooser.Config
 
 import com.codekidlabs.storagechooser.R
@@ -23,7 +24,7 @@ import java.io.File
 import java.util.ArrayList
 
 class SecondaryChooserAdapter(
-        private val storagesList: MutableList<File>,
+        var storagesList: MutableList<DocumentFile>,
         private val mContext: Context,
         private val mConfig: Config) : BaseAdapter() {
 
@@ -80,19 +81,16 @@ class SecondaryChooserAdapter(
 //                    fromAssets)
 //        }
 
-
-//        storageName.setTextColor(scheme[StorageChooser.Theme.SEC_TEXT_INDEX])
+        storageName.setTextColor(ContextCompat.getColor(mContext, mConfig.style.textColor))
 
         if (selectedPaths.contains(i)) {
             rootView.setBackgroundColor(resourceUtil.primaryColorWithAlpha)
         }
 
-        applyDarkModeColors()
-
         return rootView
     }
 
-    private fun getDescription(f: File): String {
+    private fun getDescription(f: DocumentFile): String {
         if (f.isDirectory) {
             val childCount = f.listFiles().size
             if (childCount > 1) {
@@ -114,14 +112,7 @@ class SecondaryChooserAdapter(
      * @return index of '('
      */
     private fun getSpannableIndex(str: SpannableStringBuilder): Int {
-        return str.toString().indexOf("(") + 1
-    }
-
-    private fun applyDarkModeColors() {
-        if(mConfig.darkMode) {
-            storageName.setTextColor(ContextCompat.getColor(mContext, R.color.dark_mode_text))
-            storageDesc.setTextColor(ContextCompat.getColor(mContext, R.color.dark_mode_secondary_text))
-        }
+        return str.toString().indexOf('(') + 1
     }
 
     private fun applyFolderTint(im: ImageView) {

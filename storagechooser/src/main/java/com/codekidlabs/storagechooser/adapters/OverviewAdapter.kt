@@ -1,6 +1,7 @@
 package com.codekidlabs.storagechooser.adapters
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.PorterDuff
 import android.graphics.Typeface
 
@@ -23,11 +24,12 @@ import com.codekidlabs.storagechooser.Config
 import com.codekidlabs.storagechooser.R
 import com.codekidlabs.storagechooser.animators.MemorybarAnimation
 import com.codekidlabs.storagechooser.exceptions.MemoryNotAccessibleException
-import com.codekidlabs.storagechooser.models.Storages
+import com.codekidlabs.storagechooser.models.Storage
+import com.codekidlabs.storagechooser.models.StorageType
 import com.codekidlabs.storagechooser.utils.MemoryUtil
 import java.io.File
 
-class OverviewAdapter(private val storageList: MutableList<Storages>, private val mContext: Context, private val mConfig: Config) : BaseAdapter() {
+class OverviewAdapter(private val storageList: MutableList<Storage>, private val mContext: Context, private val mConfig: Config) : BaseAdapter() {
 
     // VIEWS
     private lateinit var memoryStatus: TextView
@@ -60,18 +62,34 @@ class OverviewAdapter(private val storageList: MutableList<Storages>, private va
         memoryStatus = rootView.findViewById<TextView>(R.id.memory_status)
         memoryBar = rootView.findViewById(R.id.memory_bar)
 
-        // new scaled memorybar - following the new google play update!
+        // scaling the memory bar height
         memoryBar.scaleY = mConfig.memoryBarHeight
 
-        val storages = storageList[i]
-        val str = SpannableStringBuilder(storages.storageTitle + " (" + storages.memoryTotalSize + ")")
-
-        str.setSpan(StyleSpan(Typeface.ITALIC), getSpannableIndex(str), str.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-        val availableText = String.format(mConfig.content.freeSpaceText, storages.memoryAvailableSize)
-        storageName.text = str
+        val s = storageList[i]
+        val availableText = String.format(mConfig.content.freeSpaceText, s.availHumanizedMemory)
+        storageName.text = s.storageName
         memoryStatus.text = availableText
 
-        DrawableCompat.setTint(memoryBar.progressDrawable, ContextCompat.getColor(this.mContext, R.color.colorAccent))
+        DrawableCompat.setTint(memoryBar.progressDrawable,
+                ContextCompat.getColor(this.mContext, mConfig.style.accentColor))
+
+        // set drawables for respective storage types
+        when (s.type) {
+            StorageType.INTERNAL-> {
+                storageIcon
+                        .setImageDrawable(ContextCompat.getDrawable(this.mContext,
+                                R.drawable.server))
+                storageIcon.imageTintList = ColorStateList.valueOf(
+                        ContextCompat.getColor(this.mContext, R.color.dark_mode_secondary_bg))
+            }
+            StorageType.EXTERNAL-> storageIcon
+                    .setImageDrawable(ContextCompat.getDrawable(this.mContext, R.drawable.sd))
+            StorageType.USB-> storageIcon
+                    .setImageDrawable(ContextCompat.getDrawable(this.mContext,
+                            R.drawable.usb_flash_drive))
+            else -> storageIcon
+                    .setImageDrawable(ContextCompat.getDrawable(this.mContext, R.drawable.server))
+        }
 
         // if don't show memory bar then hide memory bar
         if(!mConfig.showMemoryBar) {
@@ -79,7 +97,7 @@ class OverviewAdapter(private val storageList: MutableList<Storages>, private va
         } else {
             // try getting remaining percentage of memory bar
             try {
-                memoryPercentile = getPercentile(storages.storagePath)
+                memoryPercentile = getPercentile(s.absolutePath)
                 // if it is a valid percentage run animation
                 if (memoryPercentile != -1) {
                     memoryBar.max = 100
@@ -95,23 +113,8 @@ class OverviewAdapter(private val storageList: MutableList<Storages>, private va
             }
         }
 
-        applyDarkModeColors()
-
         return rootView
 
-    }
-    private fun applyDarkModeColors() {
-        if(mConfig.darkMode) {
-            val primary = ContextCompat.getColor(mContext, R.color.dark_mode_text)
-            storageName.setTextColor(primary)
-            storageIcon.setColorFilter(primary, PorterDuff.Mode.SRC_IN)
-            memoryStatus.setTextColor(ContextCompat.getColor(mContext, R.color.dark_mode_secondary_text))
-        } else {
-            val black = ContextCompat.getColor(mContext, android.R.color.black)
-            storageName.setTextColor(black)
-            storageIcon.setColorFilter(black, PorterDuff.Mode.SRC_IN)
-            memoryStatus.setTextColor(black)
-        }
     }
 
     private fun runMemorybarAnimation(pos: Int) {
@@ -124,16 +127,6 @@ class OverviewAdapter(private val storageList: MutableList<Storages>, private va
         }
 
         memoryBar.startAnimation(animation)
-    }
-
-    /**
-     * return the spannable index of character '('
-     *
-     * @param str SpannableStringBuilder to apply typeface changes
-     * @return index of '('
-     */
-    private fun getSpannableIndex(str: SpannableStringBuilder): Int {
-        return str.toString().indexOf("(") + 1
     }
 
     /**

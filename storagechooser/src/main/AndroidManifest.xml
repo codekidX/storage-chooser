@@ -1,10 +1,12 @@
 <manifest package="com.codekidlabs.storagechooser"
     xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
     <application>
         <provider
             android:authorities="com.codekidlabs.storagechooser.fileprovider"
             android:name=".SCFileProvider"
-            android:grantUriPermissions="true">
+            android:grantUriPermissions="true"
+            android:exported="false">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths"/>

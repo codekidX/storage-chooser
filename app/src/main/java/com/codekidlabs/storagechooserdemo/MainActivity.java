@@ -4,14 +4,18 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.provider.DocumentsContract;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -27,6 +31,9 @@ import com.codekidlabs.storagechooser.StorageChooser2;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import static android.provider.Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -234,9 +241,20 @@ public class MainActivity extends AppCompatActivity {
                 config.setType(ChooserType.FILE);
                 config.setShowMemoryBar(true);
                 config.setMemoryBarHeight(1.0f);
+                config.setSelection(new StorageChooser2.Selection() {
+                    @Override
+                    public void onSingleSelection(@NonNull  String path) {
+                        Log.d("from main!!", path);
+                    }
+
+                    @Override
+                    public void onMultipleSelection(List<String> paths) {
+
+                    }
+                });
                 StorageChooser2 chooser2 = new StorageChooser2(getSupportFragmentManager(), config);
                 chooser2.show();
-//                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+//                Intent intent = new Intent(ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
 //                startActivityForResult(intent, 998);
             }
 
@@ -248,6 +266,19 @@ public class MainActivity extends AppCompatActivity {
 //        theme.setScheme((isChecked) ? getResources().getIntArray(R.array.paranoid_theme) : theme.getDefaultScheme());
 //        return theme;
 //    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            Log.d("KK", data.getData().toString());
+            Log.d("KK2", Uri.parse(data.getData().toString()).toString());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Log.d("KK3", String.valueOf(DocumentsContract.isTreeUri(Uri.parse(data.getData().toString()))));
+            }
+        }
+    }
 
     @Override
     protected void onResume() {

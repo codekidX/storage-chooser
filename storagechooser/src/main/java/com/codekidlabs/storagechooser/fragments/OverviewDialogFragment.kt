@@ -4,14 +4,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.SharedPreferences
-import android.graphics.Color
-import android.graphics.Typeface
-import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.os.Handler
-import android.os.storage.StorageManager
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
@@ -21,16 +14,19 @@ import android.view.WindowManager
 import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import com.codekidlabs.storagechooser.*
+import com.codekidlabs.storagechooser.ChooserType
+import com.codekidlabs.storagechooser.Config
+import com.codekidlabs.storagechooser.R
+import com.codekidlabs.storagechooser.StorageChooser2
 import com.codekidlabs.storagechooser.adapters.OverviewAdapter
-
-import com.codekidlabs.storagechooser.models.Storages
+import com.codekidlabs.storagechooser.models.Storage
+import com.codekidlabs.storagechooser.models.StorageType
 import com.codekidlabs.storagechooser.utils.DiskUtil
-import com.codekidlabs.storagechooser.utils.FileUtil
 import com.codekidlabs.storagechooser.utils.MemoryUtil
-
 import java.io.File
-import java.util.ArrayList
+import java.io.InputStream
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class OverviewDialogFragment : DialogFragment() {
@@ -38,7 +34,7 @@ class OverviewDialogFragment : DialogFragment() {
     private var mLayout: View? = null
     private var mContainer: ViewGroup? = null
 
-    private var storagesList: MutableList<Storages> = mutableListOf()
+    private var storagesList: MutableList<Storage> = mutableListOf()
     private lateinit var viewDivider: View
     private val TAG = javaClass.name
     private val memoryUtil = MemoryUtil()
@@ -58,21 +54,23 @@ class OverviewDialogFragment : DialogFragment() {
         } else getLayout(inflater, container)
     }
 
-    private fun getLayout(inflater: LayoutInflater, container: ViewGroup?): View {
+    private fun getLayout(inflater: LayoutInflater, container: ViewGroup?): View? {
         // safe check if config from parcelable is accessible
-        mConfig = arguments!!.getParcelable("config") as Config
+        arguments?.getParcelable<Config>("config")?.let {
+            mConfig = it
+        }
         // init storage-chooser content [localization]
         mLayout = inflater.inflate(R.layout.storage_list, container, false)
-        mHolderView = mLayout!!.findViewById(R.id.overview_container)
-        initListView(mLayout!!)
+        mLayout?.findViewById<LinearLayout>(R.id.overview_container)?.let {
+            mHolderView = it
+            initListView(it)
 
-        dialogTitle = mLayout!!.findViewById(R.id.dialog_title)
-        viewDivider = mLayout!!.findViewById(R.id.storage_view_divider)
-        dialogTitle.text = mConfig.content.overviewHeading
+            dialogTitle = it.findViewById(R.id.dialog_title)
+            viewDivider = it.findViewById(R.id.storage_view_divider)
+            dialogTitle.text = mConfig.content.overviewHeading
+        }
 
-        applyDarkModeColors()
-
-        return mLayout!!
+        return mLayout
     }
 
     /**
@@ -80,31 +78,27 @@ class OverviewDialogFragment : DialogFragment() {
      */
     private fun initListView(view: View) {
         val listView = view.findViewById<ListView>(R.id.storage_list_view)
-
-        // we need to populate before to get the internal storage path in list
         populateList()
 
-        // TODO this adapter params can be improved
         listView.adapter = OverviewAdapter(storagesList, mContext, mConfig)
 
-
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, i, _ ->
-            val dirPath = evaluatePath(i)
-
-            if(File(dirPath).canRead()) {
-
+            val storage = storagesList.get(i)
+            if(storage.canRead()) {
                 if (mConfig.saveSelection) {
-                    pref.edit().putString(StorageChooser2.SC_SAVED_PATH, dirPath).apply()
+                    pref.edit()
+                            .putString(StorageChooser2.SC_SAVED_PATH, storage.absolutePath)
+                            .apply()
                 }
 
                 if(mConfig.type == ChooserType.BASIC) {
-                    mConfig.selection.onSingleSelection(dirPath)
+                    mConfig.selection.onSingleSelection(storage.absolutePath)
                     this@OverviewDialogFragment.dismiss()
                 } else {
-                    DiskUtil.showSecondaryChooser(dirPath, mConfig, activity!!.supportFragmentManager)
+                    DiskUtil.showSecondaryChooser(storage.absolutePath,
+                            mConfig, requireActivity().supportFragmentManager)
                     this@OverviewDialogFragment.dismiss()
                 }
-
             } else {
                 Toast.makeText(activity, R.string.toast_not_readable, Toast.LENGTH_SHORT).show()
             }
@@ -112,64 +106,87 @@ class OverviewDialogFragment : DialogFragment() {
 
     }
 
-
-    /**
-     * evaluates path with respect to the list click position
-     *
-     * @param i position in list
-     * @return String with the required path for developers
-     */
-    private fun evaluatePath(i: Int): String {
-        return if (i == 0) {
-            Environment.getExternalStorageDirectory().absolutePath
-        } else {
-            "/storage/" + storagesList[i].storageTitle
-        }
-    }
-
     /**
      * populate storageList with necessary storages with filter applied
      */
     private fun populateList() {
-        val storageDir = File("/storage")
-        val internalStoragePath = Environment.getExternalStorageDirectory().absolutePath
-
-        val volumeList = storageDir.listFiles()
-
-        val storages = Storages()
-
-        // just add the internal storage and avoid adding emulated henceforth
-        storages.storageTitle = mConfig.content.internalStorageText
-
-        storages.storagePath = internalStoragePath
-        storages.memoryTotalSize = memoryUtil.formatSize(memoryUtil.getTotalMemorySize(internalStoragePath))
-        storages.memoryAvailableSize = memoryUtil.formatSize(memoryUtil.getAvailableMemorySize(internalStoragePath))
-        storagesList.add(storages)
-
-
-        for (f in volumeList) {
-            if (f.name != MemoryUtil.SELF_DIR_NAME
-                    && f.name != MemoryUtil.EMULATED_DIR_KNOX
-                    && f.name != MemoryUtil.EMULATED_DIR_NAME
-                    && f.name != MemoryUtil.SDCARD0_DIR_NAME
-                    && f.name != MemoryUtil.CONTAINER) {
-                val sharedStorage = Storages()
-                val fPath = f.absolutePath
-                sharedStorage.storageTitle = f.name
-                sharedStorage.memoryTotalSize = memoryUtil.formatSize(memoryUtil.getTotalMemorySize(fPath))
-                sharedStorage.memoryAvailableSize = memoryUtil.formatSize(memoryUtil.getAvailableMemorySize(fPath))
-                sharedStorage.storagePath = fPath
-                storagesList.add(sharedStorage)
+        ContextCompat.getExternalFilesDirs(mContext, null).let {
+            it.forEach { f ->
+                val prefPath = f.absolutePath.split("/Android")[0]
+                if (!prefPath.endsWith("0")) {
+                    val extStorage = Storage(prefPath)
+                    extStorage.type = StorageType.EXTERNAL
+                    extStorage.storageName = "Ext: ${extStorage.name}"
+                    extStorage.totalHumanizedMemory = memoryUtil.formatSize(
+                            memoryUtil.getTotalMemorySize(prefPath)
+                    )
+                    extStorage.availHumanizedMemory = memoryUtil.formatSize(
+                            memoryUtil.getAvailableMemorySize(prefPath)
+                    )
+                    storagesList.add(extStorage)
+                } else {
+                    val intStorage = Storage(prefPath)
+                    intStorage.type = StorageType.INTERNAL
+                    intStorage.storageName = "Internal Storage"
+                    intStorage.totalHumanizedMemory = memoryUtil.formatSize(
+                            memoryUtil.getTotalMemorySize(prefPath))
+                    intStorage.availHumanizedMemory = memoryUtil.formatSize(
+                            memoryUtil.getAvailableMemorySize(prefPath))
+                    storagesList.add(intStorage)
+                }
             }
         }
 
-    }
+        // USB storages
+        val drives: ArrayList<String> = ArrayList()
+        val reg = "(?i).*vold.*(vfat|ntfs|exfat|fat32|ext3|ext4).*rw.*".toRegex()
+        var s = ""
+        try {
+            val process = ProcessBuilder().command("mount")
+                    .redirectErrorStream(true).start()
+            process.waitFor()
+            val `is`: InputStream = process.inputStream
+            val buffer = ByteArray(1024)
+            while (`is`.read(buffer) != -1) {
+                s += String(buffer)
+            }
+            `is`.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        val lines = s.split("\n".toRegex()).toTypedArray()
+        for (line in lines) {
+            if (!line.toLowerCase(Locale.US).contains("asec") && line.matches(reg)) {
+                val parts = line.split(" ".toRegex()).toTypedArray()
+                for (path in parts) {
+                    if (path.startsWith(File.separator) && !path.toLowerCase(Locale.US).contains("vold")) {
+                        drives.add(path)
+                    }
+                }
+            }
+        }
 
-    private fun applyDarkModeColors() {
-        if (mConfig.darkMode) {
-            mHolderView.setBackgroundColor(ContextCompat.getColor(mContext, mConfig.style.overviewStyle.backgroundColor))
-            viewDivider.setBackgroundColor(ContextCompat.getColor(mContext, R.color.dark_mode_divider))
-            dialogTitle.setTextColor(ContextCompat.getColor(mContext, R.color.dark_mode_text))
+        // Remove previously found storages
+        val ids: ArrayList<String> = ArrayList()
+        for (st in storagesList) {
+            val parts = st.path.split(File.separator.toRegex()).toTypedArray()
+            ids.add(parts[parts.size - 1])
+        }
+        for (i in drives.indices.reversed()) {
+            val parts = drives[i].split(File.separator.toRegex()).toTypedArray()
+            val id = parts[parts.size - 1]
+            if (ids.contains(id)) drives.removeAt(i)
+        }
+
+
+        drives.forEach { drivePath ->
+            val usb = Storage(drivePath)
+            usb.type = StorageType.USB
+            usb.storageName = "USB: ${usb.name}"
+            usb.availHumanizedMemory = memoryUtil.formatSize(
+                    memoryUtil.getAvailableMemorySize(drivePath))
+            usb.totalHumanizedMemory = memoryUtil.formatSize(
+                    memoryUtil.getTotalMemorySize(drivePath))
         }
     }
 
@@ -179,19 +196,16 @@ class OverviewDialogFragment : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        this.activity?.let {
-            mContext = it.applicationContext
-            val d = Dialog(it, R.style.DialogTheme)
-            val layout = getLayout(LayoutInflater.from(activity!!.applicationContext), mContainer)
-            d.setContentView(layout)
+        mContext = requireContext()
+        val d = Dialog(requireActivity(), R.style.DialogTheme)
+        getLayout(LayoutInflater.from(mContext), mContainer)?.let {
+            d.setContentView(it)
             val lp = WindowManager.LayoutParams()
-            lp.copyFrom(d.window!!.attributes)
+            lp.copyFrom(d.window?.attributes)
             lp.width = WindowManager.LayoutParams.WRAP_CONTENT
             lp.height = WindowManager.LayoutParams.WRAP_CONTENT
-            d.window!!.attributes = lp
-            return  d
+            d.window?.attributes = lp
         }
-        mContext = this.activity!!.applicationContext
-        return Dialog(this.activity!!.applicationContext, R.style.DialogTheme)
+        return  d
     }
 }

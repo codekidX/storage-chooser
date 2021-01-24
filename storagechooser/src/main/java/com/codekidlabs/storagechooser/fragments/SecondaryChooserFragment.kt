@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.UriPermission
 import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
@@ -13,38 +14,79 @@ import android.util.TypedValue
 import android.view.*
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
-import android.widget.AdapterView
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-
+import androidx.core.content.FileProvider
+import androidx.documentfile.provider.DocumentFile
+import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.codekidlabs.storagechooser.Config
 import com.codekidlabs.storagechooser.R
+import com.codekidlabs.storagechooser.StorageChooser2
+import com.codekidlabs.storagechooser.adapters.SecondaryChooserAdapter
+import com.codekidlabs.storagechooser.utils.DiskUtil
 import com.codekidlabs.storagechooser.utils.FileUtil
 import com.codekidlabs.storagechooser.utils.ResourceUtil
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-
 import java.io.File
-import java.util.ArrayList
-import java.util.Collections
-import java.util.Comparator
-import androidx.fragment.app.DialogFragment
-import com.codekidlabs.storagechooser.Config
-import com.codekidlabs.storagechooser.adapters.SecondaryChooserAdapter
-import com.codekidlabs.storagechooser.utils.DiskUtil
+import java.util.*
 
 //import com.codekidlabs.storagechooser.StorageChooser.Theme
 
 
 class SecondaryChooserFragment : DialogFragment() {
+
+    companion object {
+        private val INTERNAL_STORAGE_TITLE = "Internal Storage"
+        private val EXTERNAL_STORAGE_TITLE = "ExtSD"
+        private val FLAG_DISSMISS_NORMAL = 0
+        private val FLAG_DISSMISS_INIT_DIALOG = 1
+        private var MODE_MULTIPLE = false
+        private var theSelectedPath: String = ""
+    }
+
+    // TODO: move this to an adapter file
+    class AddressListAdapter(var addresses: MutableList<String>, private val context: Context, private val onClick: (Int, Int) -> Unit): RecyclerView.Adapter<AddressListAdapter.AddressHolder>() {
+        class AddressHolder(private val v: View): RecyclerView.ViewHolder(v) {
+            private var pathTextView: TextView? = null
+
+            init {
+                pathTextView = v.findViewById(R.id.storage_name)
+            }
+            fun bindName(name: String) {
+                pathTextView?.text = name
+            }
+
+        }
+
+        fun <T : RecyclerView.ViewHolder> T.listen(event: (position: Int, type: Int) -> Unit): T {
+            itemView.setOnClickListener {
+                event.invoke(adapterPosition, itemViewType)
+            }
+            return this
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddressHolder {
+            val inflated = LayoutInflater
+                    .from(context)
+                    .inflate(R.layout.row_paths, parent, false)
+            val viewHolder = AddressHolder(inflated)
+            viewHolder.listen { pos, type ->
+             onClick(pos, type)
+            }
+            return viewHolder
+        }
+
+        override fun getItemCount(): Int = addresses.size
+
+        override fun onBindViewHolder(holder: AddressHolder, position: Int) {
+            holder.itemView.requestLayout()
+            holder.bindName(addresses[position])
+        }
+    }
 
     private lateinit var mHolderView: RelativeLayout
 
@@ -65,10 +107,15 @@ class SecondaryChooserFragment : DialogFragment() {
     private var mMultipleOnSelectButton: FloatingActionButton? = null
     private var mNewFolderView: RelativeLayout? = null
     private var mFilesProgress: ProgressBar? = null
-    private var mBundlePath: String? = null
+    private var mBundlePath: String = ""
+    private var mBundlePathCount: Int = 0
     private var listView: ListView? = null
+    private var addressRecyclerView: RecyclerView? = null
+    private var addressListLayoutManager: LinearLayoutManager? = null
+    private var addressListAdapter: AddressListAdapter? = null
     private val isOpen: Boolean = false
-    private var customStoragesList: MutableList<File>? = null
+    private var customStoragesList: MutableList<DocumentFile>? = null
+    private var mPathList: MutableList<String>? = null
     private var secondaryChooserAdapter: SecondaryChooserAdapter? = null
 
     private var fileUtil: FileUtil? = null
@@ -82,6 +129,9 @@ class SecondaryChooserFragment : DialogFragment() {
     private val mMultipleModeList = ArrayList<String>()
 
 
+    fun buildClickedPath(pos: Int) {
+
+    }
     /**
      * THE HOLY PLACE OF CLICK LISTENERS
      */
@@ -89,7 +139,7 @@ class SecondaryChooserFragment : DialogFragment() {
         if (mConfig.saveSelection) {
 //            DiskUtil.saveChooserPathPreference(mConfig!!.getPreference(), theSelectedPath)
         } else {
-            Log.d("StorageChooser", "Chosen path: " + theSelectedPath!!)
+            Log.d("StorageChooser", "Chosen path: $theSelectedPath")
         }
 
 //        StorageChooser.onSelectListener.onSelect(theSelectedPath)
@@ -119,11 +169,10 @@ class SecondaryChooserFragment : DialogFragment() {
 
     private val mSingleModeClickListener = AdapterView.OnItemClickListener { adapterView, view, i, l ->
         mHandler!!.postDelayed({
-            val jointPath = theSelectedPath + "/" + customStoragesList!![i]
-            if (FileUtil.isDir(jointPath)) {
-                populateList("/" + customStoragesList!![i])
+            if (customStoragesList!![i].isDirectory) {
+                populateList("/" + customStoragesList!![i].name, false)
             } else {
-//                StorageChooser.onSelectListener.onSelect(jointPath)
+                mConfig.selection.onSingleSelection("$theSelectedPath/${customStoragesList!![i].name}")
                 dismissDialog(FLAG_DISSMISS_NORMAL)
             }
         }, 300)
@@ -223,12 +272,12 @@ class SecondaryChooserFragment : DialogFragment() {
     }
 
     private fun hideKeyboard() {
-        val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(mFolderNameEditText!!.windowToken, 0)
     }
 
     private fun performBackAction() {
-        val slashIndex = theSelectedPath!!.lastIndexOf("/")
+        val slashIndex = theSelectedPath.lastIndexOf("/")
 
         if (slashIndex != -1) {
             if (MODE_MULTIPLE) {
@@ -243,7 +292,7 @@ class SecondaryChooserFragment : DialogFragment() {
 //                        //delay until close animation ends
 //                        mHandler!!.postDelayed({ dismissDialog(FLAG_DISSMISS_INIT_DIALOG) }, 200)
 //                    } else {
-//                        theSelectedPath = theSelectedPath!!.substring(0, slashIndex)
+//                        theSelectedPath = theSelectedPath.substring(0, slashIndex)
 //                        StorageChooser.LAST_SESSION_PATH = theSelectedPath
 //                        populateList("")
 //                    }
@@ -268,7 +317,7 @@ class SecondaryChooserFragment : DialogFragment() {
         when (flag) {
             FLAG_DISSMISS_INIT_DIALOG -> {
                 val c = OverviewDialogFragment()
-                c.show(activity!!.supportFragmentManager, "storagechooser_dialog")
+                c.show(requireActivity().supportFragmentManager, "storagechooser_dialog")
             }
             FLAG_DISSMISS_NORMAL -> {
 //                StorageChooser.LAST_SESSION_PATH = theSelectedPath
@@ -286,22 +335,27 @@ class SecondaryChooserFragment : DialogFragment() {
     }
 
     private fun getLayout(inflater: LayoutInflater, container: ViewGroup?): View {
-        mConfig = arguments!!.getParcelable("config") as Config
+        arguments?.getParcelable<Config>("config")?.let {
+            mConfig = it
+        }
         mHandler = Handler()
 
 
         val contextThemeWrapper = ContextThemeWrapper(activity, R.style.DialogTheme)
         val li = inflater.cloneInContext(contextThemeWrapper)
 
-        mContext = activity!!.applicationContext
-        mResourceUtil = ResourceUtil(mContext)
-        mLayout = li.inflate(R.layout.custom_storage_list, container, false)
+        activity?.applicationContext?.let {
+            mContext = it
 
-        initListView(mLayout)
+            mResourceUtil = ResourceUtil(mContext)
+            mLayout = li.inflate(R.layout.custom_storage_list, container, false)
 
-        initUI()
-        initNewFolderView()
-        updateUI()
+            initListView(mLayout)
+
+            initUI()
+            initNewFolderView()
+            updateUI()
+        }
 
         return mLayout
     }
@@ -375,19 +429,6 @@ class SecondaryChooserFragment : DialogFragment() {
 //            mSelectButton!!.visibility = View.GONE
 //            setBottomNewFolderView()
 //        }
-
-        applyDarkModeColors()
-
-    }
-
-    private fun applyDarkModeColors() {
-        if (mConfig.darkMode) {
-            val black = ContextCompat.getColor(mContext, mConfig.style.pickerStyle.backgroundColor)
-            mHolderView.setBackgroundColor(black)
-            mBottomBar.setBackgroundColor(ContextCompat.getColor(mContext, R.color.dark_mode_bg))
-            mAddressBarCard.setCardBackgroundColor(ContextCompat.getColor(mContext, R.color.dark_mode_secondary_bg))
-            mPickerDivider.setBackgroundColor(ContextCompat.getColor(mContext, R.color.dark_mode_divider))
-        }
     }
 
     private fun setBottomNewFolderView() {
@@ -419,23 +460,51 @@ class SecondaryChooserFragment : DialogFragment() {
      */
     private fun initListView(view: View) {
         listView = view.findViewById(R.id.storage_list_view)
-        mPathChosen = view.findViewById(R.id.path_chosen)
+        addressRecyclerView = view.findViewById(R.id.address_list)
+
+        mBundlePath = requireArguments().getString(DiskUtil.SC_PREFERENCE_KEY).toString()
+        mBundlePathCount = mBundlePath.split("/").toMutableList().filter {
+            it != ""
+        }.count()
+        mPathList = mBundlePath.split("/").toMutableList().filter {
+            it != ""
+        }.toMutableList()
+        Log.e("aa", mPathList.toString())
+        addressListAdapter = AddressListAdapter(mPathList!!, requireContext()) { pos, type ->
+            val pathClickedSubList = addressListAdapter?.addresses!!
+                    .subList(0, pos+1)
+                    .toMutableList()
+            Log.e("cc", "${pos+1}  -- ${addressListAdapter!!.addresses.count()}")
+            if (pos+1 != addressListAdapter!!.addresses!!.count()) {
+                if (pathClickedSubList.count() < mBundlePathCount) {
+                    Toast.makeText(mContext, "Cannot read root directory", Toast.LENGTH_SHORT)
+                            .show()
+                } else {
+                    addressListAdapter?.addresses = pathClickedSubList
+                    theSelectedPath = addressListAdapter?.addresses!!.fold(
+                            "/", { acc, next -> "$acc$next/" })
+
+                    populateList(theSelectedPath, true)
+                }
+            }
+        }
+        addressRecyclerView?.adapter = addressListAdapter
+//        mPathChosen = view.findViewById(R.id.path_chosen)
         mFilesProgress = mLayout.findViewById(R.id.files_loader)
 //        mFilesProgress!!.isIndeterminate = true
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            mFilesProgress!!.indeterminateTintList = ColorStateList.valueOf(scheme!![Theme.OVERVIEW_MEMORYBAR_INDEX])
 //        }
 //
-        mBundlePath = this.arguments!!.getString(DiskUtil.SC_PREFERENCE_KEY)
 //        isFilePicker = this.arguments!!.getBoolean(DiskUtil.SC_CHOOSER_FLAG, false)
-        populateList(mBundlePath)
-        secondaryChooserAdapter = SecondaryChooserAdapter(customStoragesList!!, activity!!.applicationContext, mConfig)
-        secondaryChooserAdapter!!.prefixPath = theSelectedPath!!
+        populateList(mBundlePath, false)
+        secondaryChooserAdapter = SecondaryChooserAdapter(customStoragesList!!, requireContext(), mConfig)
+        secondaryChooserAdapter!!.prefixPath = theSelectedPath
 
         listView!!.adapter = secondaryChooserAdapter
         //listview should be clickable at first
-//        SecondaryChooserAdapter.shouldEnable = true
-//        listView!!.onItemClickListener = mSingleModeClickListener
+       SecondaryChooserAdapter.shouldEnable = true
+        listView!!.onItemClickListener = mSingleModeClickListener
 
 //        if (isFilePicker && mConfig!!.isMultiSelect()) {
 //            listView!!.onItemLongClickListener = mLongClickListener
@@ -525,7 +594,7 @@ class SecondaryChooserFragment : DialogFragment() {
      *
      * @param path defines the path for which list of folder is requested
      */
-    private fun populateList(path: String?) {
+    private fun populateList(path: String?, isFullPath: Boolean = true) {
         if (customStoragesList == null) {
             customStoragesList = ArrayList()
         } else {
@@ -533,29 +602,24 @@ class SecondaryChooserFragment : DialogFragment() {
         }
 
         fileUtil = FileUtil()
-        theSelectedPath = theSelectedPath!! + path!!
-//        if (secondaryChooserAdapter != null && secondaryChooserAdapter!!.getPrefixPath() != null) {
-//            secondaryChooserAdapter!!.setPrefixPath(theSelectedPath)
-//        }
-
-        //if the path length is greater than that of the addressbar length
-        // we need to clip the starting part so that it fits the length and makes some room
-        val pathLength = theSelectedPath!!.length
-        if (pathLength >= 25) {
-            // how many directories did user choose
-            val slashCount = getSlashCount(theSelectedPath!!)
-            if (slashCount > 2) {
-                mAddressClippedPath = theSelectedPath!!.substring(theSelectedPath!!.indexOf("/", theSelectedPath!!.indexOf("/") + 2), pathLength)
-            } else if (slashCount <= 2) {
-                mAddressClippedPath = theSelectedPath!!.substring(theSelectedPath!!.indexOf("/", theSelectedPath!!.indexOf("/") + 2), pathLength)
-            }
-        } else {
-//            mAddressClippedPath = theSelectedPath
+        if (!isFullPath) {
+            theSelectedPath += path!!
+        }
+        if (secondaryChooserAdapter != null && secondaryChooserAdapter?.prefixPath != null) {
+            secondaryChooserAdapter?.prefixPath = theSelectedPath
         }
 
-        val volumeList: Array<File>
+        val volumeList: List<DocumentFile>
+
         volumeList = fileUtil!!.listFilesInDir(theSelectedPath)
+            .map { file -> DocumentFile.fromFile(file) }
         setAdapterList(volumeList)
+
+        addressListAdapter?.addresses = theSelectedPath.split("/").toMutableList().filter {
+            it != ""
+        }.toMutableList()
+        refreshPathList()
+        refreshList()
 
 //        if (isFilePicker) {
 //            if (mConfig!!.isCustomFilter()) {
@@ -579,7 +643,7 @@ class SecondaryChooserFragment : DialogFragment() {
 //            refreshList()
 //            setBundlePathOnUpdate()
 //        }
-
+//
 //        playTheAddressBarAnimation()
     }
 
@@ -607,18 +671,24 @@ class SecondaryChooserFragment : DialogFragment() {
         }
     }
 
+    fun refreshPathList() {
+        addressListAdapter?.notifyDataSetChanged()
+        addressRecyclerView?.smoothScrollToPosition(addressListAdapter?.addresses?.count()?.minus(1)!!)
+    }
+
     /**
      * Accepts a file list and sets it for use of storage chooser. Called before all refreshList()
      *
      * @param volumeList File list to be shown in storage chooser
      */
-    fun setAdapterList(volumeList: Array<File>?) {
+    fun setAdapterList(volumeList: List<DocumentFile>?) {
+        Log.e("AA", volumeList!!.map{ it.name }.toString())
         if (volumeList != null) {
             for (f in volumeList) {
                 if (mConfig.showHidden) {
                     customStoragesList!!.add(f)
                 } else {
-                    if (!f.name.startsWith(".")) {
+                    if (!f.name?.startsWith(".")!!) {
                         customStoragesList!!.add(f)
                     }
                 }
@@ -628,11 +698,13 @@ class SecondaryChooserFragment : DialogFragment() {
         } else {
             customStoragesList!!.clear()
         }
+
+        secondaryChooserAdapter?.storagesList = customStoragesList!!
     }
 
 
-    private class FileTypeSorter: Comparator<File> {
-        override fun compare(f1: File?, f2: File?): Int {
+    private class FileTypeSorter: Comparator<DocumentFile> {
+        override fun compare(f1: DocumentFile?, f2: DocumentFile?): Int {
             return if (f1!!.isDirectory == f2!!.isDirectory)
                 0
             else if (f1.isDirectory && !f2.isDirectory)
@@ -640,7 +712,6 @@ class SecondaryChooserFragment : DialogFragment() {
             else {
                 1
             }
-
         }
 
     }
@@ -669,7 +740,7 @@ class SecondaryChooserFragment : DialogFragment() {
         if (volumeList != null) {
             for (f in volumeList) {
                 if (!f.name.startsWith(".")) {
-                    customStoragesList!!.add(f)
+                    customStoragesList!!.add(DocumentFile.fromFile(f))
                 }
             }
 
@@ -686,12 +757,6 @@ class SecondaryChooserFragment : DialogFragment() {
     }
 
     // ======================= ANIMATIONS =========================
-    private fun playTheAddressBarAnimation() {
-        mPathChosen!!.text = mAddressClippedPath
-        val animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_address_bar)
-        mPathChosen!!.startAnimation(animation)
-    }
-
 
     private fun playTheMultipleButtonAnimation() {
         val animation = AnimationUtils.loadAnimation(mContext, R.anim.anim_multiple_button)
@@ -712,7 +777,7 @@ class SecondaryChooserFragment : DialogFragment() {
             it.applicationContext
             val d = Dialog(it, R.style.DialogTheme)
 //            d.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT));
-            d.setContentView(getLayout(LayoutInflater.from(activity!!.applicationContext), mContainer))
+            d.setContentView(getLayout(LayoutInflater.from(requireContext()), mContainer))
             val lp = WindowManager.LayoutParams()
             lp.copyFrom(d.window!!.attributes)
             lp.width = WindowManager.LayoutParams.MATCH_PARENT
@@ -720,21 +785,18 @@ class SecondaryChooserFragment : DialogFragment() {
             d.window!!.attributes = lp
             return  d
         }
-        return Dialog(this.activity!!.applicationContext, R.style.DialogTheme)
+        return Dialog(requireContext(), R.style.DialogTheme)
     }
 
-    override fun onDismiss(dialog: DialogInterface?) {
+    override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         theSelectedPath = ""
-        mAddressClippedPath = ""
     }
 
-    override fun onCancel(dialog: DialogInterface?) {
+    override fun onCancel(dialog: DialogInterface) {
         super.onCancel(dialog)
 //        StorageChooser.LAST_SESSION_PATH = theSelectedPath
         theSelectedPath = ""
-        mAddressClippedPath = ""
-
 //        StorageChooser.onCancelListener.onCancel()
     }
 
@@ -763,7 +825,7 @@ class SecondaryChooserFragment : DialogFragment() {
 
     @SuppressLint("StaticFieldLeak")
     internal inner class FileFilterTask(private val mConfig: Config, private val isMultiple: Boolean) : AsyncTask<Void, String, Boolean>() {
-        private var fileList: Array<File>? = null
+        private var fileList: List<DocumentFile>? = null
 
         override fun onPreExecute() {
             super.onPreExecute()
@@ -773,10 +835,10 @@ class SecondaryChooserFragment : DialogFragment() {
         override fun doInBackground(vararg voids: Void): Boolean? {
 //            if (isMultiple) {
 //                val universalFileFilter = UniversalFileFilter(mConfig.isCustomFilter(), mConfig.getCustomEnum())
-//                fileList = File(theSelectedPath!!)
+//                fileList = File(theSelectedPath)
 //                        .listFiles(universalFileFilter)
 //            } else {
-//                fileList = File(theSelectedPath!!).listFiles(UniversalFileFilter(mConfig.getSingleFilter()))
+//                fileList = File(theSelectedPath).listFiles(UniversalFileFilter(mConfig.getSingleFilter()))
 //            }
             return true
         }
@@ -788,16 +850,5 @@ class SecondaryChooserFragment : DialogFragment() {
             refreshList()
             setBundlePathOnUpdate()
         }
-    }
-
-    companion object {
-
-        private val INTERNAL_STORAGE_TITLE = "Internal Storage"
-        private val EXTERNAL_STORAGE_TITLE = "ExtSD"
-        private val FLAG_DISSMISS_NORMAL = 0
-        private val FLAG_DISSMISS_INIT_DIALOG = 1
-        private var MODE_MULTIPLE = false
-        private var theSelectedPath: String? = ""
-        private var mAddressClippedPath = ""
     }
 }
