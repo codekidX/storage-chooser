@@ -14,7 +14,8 @@
         android:layout_marginTop="10dp"/>
 
     <ImageView
-        android:src="@drawable/ic_chevron_left_black_18dp"
+        android:id="@+id/address_arrow_iv"
+        android:src="@drawable/baseline_chevron_right_black_18"
         android:layout_toEndOf="@id/storage_name"
         android:layout_marginTop="12dp"
         android:layout_width="16dp"

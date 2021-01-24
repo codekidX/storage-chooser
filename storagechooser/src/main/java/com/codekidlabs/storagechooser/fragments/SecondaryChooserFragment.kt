@@ -9,6 +9,7 @@ import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.text.BoringLayout
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
@@ -52,14 +53,24 @@ class SecondaryChooserFragment : DialogFragment() {
     class AddressListAdapter(var addresses: MutableList<String>, private val context: Context, private val onClick: (Int, Int) -> Unit): RecyclerView.Adapter<AddressListAdapter.AddressHolder>() {
         class AddressHolder(private val v: View): RecyclerView.ViewHolder(v) {
             private var pathTextView: TextView? = null
+            private var pathImage: ImageView? = null
 
             init {
                 pathTextView = v.findViewById(R.id.storage_name)
+                pathImage = v.findViewById(R.id.address_arrow_iv)
             }
+
             fun bindName(name: String) {
                 pathTextView?.text = name
             }
 
+            fun setArrowImageVisibility(show: Boolean) {
+                if (show) {
+                    pathImage?.visibility = View.VISIBLE
+                } else {
+                    pathImage?.visibility = View.GONE
+                }
+            }
         }
 
         fun <T : RecyclerView.ViewHolder> T.listen(event: (position: Int, type: Int) -> Unit): T {
@@ -85,6 +96,12 @@ class SecondaryChooserFragment : DialogFragment() {
         override fun onBindViewHolder(holder: AddressHolder, position: Int) {
             holder.itemView.requestLayout()
             holder.bindName(addresses[position])
+
+            if (position == addresses.count() - 1) {
+                holder.setArrowImageVisibility(false)
+            } else {
+                holder.setArrowImageVisibility(true)
+            }
         }
     }
 
