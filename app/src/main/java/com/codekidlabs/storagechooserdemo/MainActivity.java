@@ -231,7 +231,6 @@ public class MainActivity extends AppCompatActivity {
 //                chooser.show();
 
                 Config config = new Config();
-//                config.setDarkMode(true);
                 config.setType(ChooserType.FILE);
                 config.setShowMemoryBar(true);
                 config.setMemoryBarHeight(1.0f);

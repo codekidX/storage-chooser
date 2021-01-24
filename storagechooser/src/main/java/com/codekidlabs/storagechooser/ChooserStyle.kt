@@ -7,34 +7,16 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 class ChooserStyle(
-        // colors
-        var overviewStyle: OverviewStyle,
-        var pickerStyle: PickerStyle
+        @ColorRes var backgroundColor: Int,
+        @ColorRes var textColor: Int,
+        @ColorRes var secondaryTextColor: Int,
+        @ColorRes var accentColor: Int
 ) : Parcelable {
 
     constructor() : this(
-            overviewStyle = OverviewStyle(),
-            pickerStyle = PickerStyle()
+            backgroundColor = android.R.color.white,
+            textColor = R.color.dark_mode_bg,
+            secondaryTextColor = R.color.dark_mode_secondary_bg,
+            accentColor = R.color.colorAccent
     )
-
-
-    @Parcelize
-    class OverviewStyle(
-            @ColorRes var backgroundColor: Int
-    ): Parcelable {
-
-        constructor() : this(
-                backgroundColor = R.color.dark_mode_bg
-        )
-    }
-
-    @Parcelize
-    class PickerStyle(
-            @ColorRes var backgroundColor: Int
-    ): Parcelable {
-
-        constructor() : this(
-                backgroundColor = R.color.dark_mode_bg
-        )
-    }
 }
