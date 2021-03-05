@@ -71,7 +71,7 @@ android:configChanges="orientation|screenSize"
 
 ### Simple Type
 
-- Let's you toggle between inernal/external root directory.
+- Let's you toggle between internal/external root directory.
 
 ```java
 // Initialize Builder
