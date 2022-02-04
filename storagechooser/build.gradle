@@ -1,5 +1,11 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'findbugs'
+
+findbugs {
+    sourceSets = []
+    ignoreFailures = false
+}
 
 group = 'com.github.codekidX'
 
@@ -51,4 +57,23 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 
 artifacts {
     archives javadocJar
+}
+
+task findbugs(type: FindBugs, dependsOn: 'assembleDebug') {
+
+    description 'Run findbugs'
+    group 'verification'
+
+    classes = fileTree('build/intermediates/classes/debug/')
+    source = fileTree('src/main/java')
+    classpath = files()
+
+    effort = 'max'
+
+    excludeFilter = file("./config/findbugs/exclude.xml")
+
+    reports {
+        xml.enabled = false
+        html.enabled = true
+    }
 }
