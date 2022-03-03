@@ -244,7 +244,7 @@ public class ChooserDialogFragment extends android.app.DialogFragment {
         storagesList = new ArrayList<>();
 
         File storageDir = new File("/storage");
-        String internalStoragePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        String internalStoragePath =  mConfig.getPredefinedPath() != null ? mConfig.getPredefinedPath() : Environment.getExternalStorageDirectory().getAbsolutePath();
 
         File[] volumeList = storageDir.listFiles();
 
